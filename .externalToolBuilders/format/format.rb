@@ -39,9 +39,18 @@ def filter_svn(file)
     flag == 'M' || flag == 'A'
 end
 
+def filter_git(file)
+    Open3.popen3("git status #{file}") { |i, o, e, t|
+        line = o.read.chomp
+        return true if line =~ /#\s+modified:\s+#{file}/ || line =~ /#\s+new file:\s+#{file}/
+    }
+
+    return false
+end
+
 def filter(file)
     return false if File.extname(file).casecmp('.java') != 0
-    $ignore_svn_flag || filter_svn(file)
+    $ignore_svn_flag || filter_svn(file) || filter_git(file)
 end
 
 def format(file)
