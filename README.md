@@ -6,10 +6,12 @@ Simple but powerful replacement for ./hbase shell
 
 Execute:
 
-    $ wget http://nodeload.github.com/xxjapp/HBShell/zip/master
+    $ wget --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master
     $ unzip master
     $ mv HBShell-master HBShell
     $ cd HBShell/
+    $ chmod +x run.rb
+    $ ./run.rb
 
 ## System Shell Commands
 
@@ -21,7 +23,7 @@ Execute:
 
     ** WARNING : 'clear'(and its alias) will clear contents of all tables in database
     ** NOTE    : use 'clear! ...' to force clear
-    
+
       usage   : clear [table_pattern]
       example : clear ^test_table
       alias   : [cle, clr]
@@ -31,7 +33,7 @@ Execute:
     ** NOTE: for permanent change of quorums, modify hosts file
     [windows: C:\Windows\System32\drivers\etc\hosts / linux: /etc/hosts]
     or change value of 'hbase.zookeeper.quorum' in conf/hbase-site.xml
-    
+
       usage   : connect [quorums_separated_by_comma]
       example : connect 172.17.1.206
       alias   : [con]
@@ -46,7 +48,7 @@ Execute:
 
     ** WARNING : 'delete'(and its alias) will delete all tables in database
     ** NOTE    : use 'delete! ...' to force delete
-    
+
       usage   : delete [table_pattern [row_pattern [family_pattern [qualifier_pattern [value_pattern]]]]]
       example : delete ^test_table family1
       alias   : [d, del]
@@ -109,7 +111,7 @@ Execute:
 
     ** NOTE: for permanent change of readonly status, modify setting file
     [conf/config.ini]
-    
+
       usage   : readonly [0, false or 1, true]
       example : readonly false
       alias   : [r]
