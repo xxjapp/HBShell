@@ -12,8 +12,8 @@ import utils.Utils;
 public class TNodeFamily extends TNodeBase {
     private final NavigableMap<byte[], byte[]> familyMap;
 
-    public TNodeFamily(TaskBase task, TNodeRow parent, String family, NavigableMap<byte[], byte[]> familyMap) {
-        super(task, parent, family, Level.FAMILY);
+    public TNodeFamily(TaskBase task, TNodeRow parent, String family, NavigableMap<byte[], byte[]> familyMap, boolean toOutput) {
+        super(task, parent, family, Level.FAMILY, toOutput);
 
         this.familyMap = familyMap;
     }
@@ -24,11 +24,21 @@ public class TNodeFamily extends TNodeBase {
     }
 
     @Override
+    public void output()
+    throws IOException {
+        if (!outputted) {
+            HBShell.increaseCount(HBShell.FAMILY);
+        }
+
+        super.output();
+    }
+
+    @Override
     protected void travelChildren()
     throws IOException {
         for (byte[] bQualifier : familyMap.keySet()) {
             String qualifier = Utils.bytes2str(bQualifier);
-            new TNodeQualifier(task, this, qualifier, familyMap.get(bQualifier)).handle();
+            new TNodeQualifier(task, this, qualifier, familyMap.get(bQualifier), toOutput).handle();
         }
     }
 

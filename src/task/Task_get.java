@@ -110,11 +110,11 @@ public class Task_get extends TaskBase {
     }
 
     private TNodeDatabase getDatabase() {
-        return new TNodeDatabase(this);
+        return new TNodeDatabase(this, true);
     }
 
     private TNodeTable getTable(String table) {
-        return new TNodeTable(this, null, table);
+        return new TNodeTable(this, null, table, true);
     }
 
     // see: TNodeTable.travelChildren()
@@ -134,7 +134,7 @@ public class Task_get extends TaskBase {
                 throw new IOException("row not found '" + row + "'");
             }
 
-            return new TNodeRow(this, nTable, hTable, firstKVResult);
+            return new TNodeRow(this, nTable, hTable, firstKVResult, true);
         } finally {
             hTable.close();
         }
@@ -170,7 +170,7 @@ public class Task_get extends TaskBase {
         }
 
         NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(family.getBytes());
-        return new TNodeFamily(this, nRow, family, familyMap);
+        return new TNodeFamily(this, nRow, family, familyMap, true);
     }
 
     // see: TNodeRow.getFamilyFileData()
@@ -210,7 +210,7 @@ public class Task_get extends TaskBase {
 
         byte[] bValue = result.getValue(family.getBytes(), qualifier.getBytes());
 
-        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, result.getFamilyMap(family.getBytes()));
-        return new TNodeQualifier(this, nFamily, qualifier, bValue);
+        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, result.getFamilyMap(family.getBytes()), true);
+        return new TNodeQualifier(this, nFamily, qualifier, bValue, true);
     }
 }

@@ -9,8 +9,8 @@ import task.TaskBase.Level;
 import utils.Utils;
 
 public class TNodeDatabase extends TNodeBase {
-    public TNodeDatabase(TaskBase task) {
-        super(task, null, null, null);
+    public TNodeDatabase(TaskBase task, boolean toOutput) {
+        super(task, null, null, null, toOutput);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class TNodeDatabase extends TNodeBase {
             String tableName = hTableDescriptor.getNameAsString();
 
             if (task.isMatch(Level.TABLE, tableName)) {
-                new TNodeTable(task, this, tableName).handle();
+                new TNodeTable(task, this, tableName, toOutput).handle();
             }
         }
     }

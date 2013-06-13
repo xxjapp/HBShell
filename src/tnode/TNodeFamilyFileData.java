@@ -23,8 +23,8 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
     private final TNodeFamily familyNode;
 
-    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTable table, String firstFileDataQualifier, byte[] firstFileDataBValue, TNodeFamily familyNode) {
-        super(task, parent, family, null);
+    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTable table, String firstFileDataQualifier, byte[] firstFileDataBValue, TNodeFamily familyNode, boolean toOutput) {
+        super(task, parent, family, null, toOutput);
 
         this.table               = table;
         this.firstFileDataBValue = firstFileDataBValue;
@@ -57,11 +57,11 @@ public class TNodeFamilyFileData extends TNodeFamily {
             // no qualifier and value filter, show only the first and last file data qualifier
 
             // first file data qualifier
-            new TNodeQualifier(task, this, fileDataQualifier(firstIndex), firstFileDataBValue).handle();
+            new TNodeQualifier(task, this, fileDataQualifier(firstIndex), firstFileDataBValue, toOutput).handle();
 
             if (lastIndex != firstIndex) {
                 if (lastIndex > firstIndex + 1) {
-                    new TNodeQualifierOmit(task, this).handle();
+                    new TNodeQualifierOmit(task, this, firstIndex, lastIndex, toOutput).handle();
                 }
 
                 // last file data qualifier
@@ -71,7 +71,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
                 Result result = table.get(get);
                 byte[] bValue = result.getValue(name.getBytes(), lastFileDataQualifier.getBytes());
-                new TNodeQualifier(task, this, lastFileDataQualifier, bValue).handle();
+                new TNodeQualifier(task, this, lastFileDataQualifier, bValue, toOutput).handle();
             }
         } else {
             // qualifier or value filter exists, so filter all
@@ -106,7 +106,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
                 if (!result.isEmpty()) {
                     byte[] bValue = result.getValue(name.getBytes(), fileDataQualifierI.getBytes());
-                    new TNodeQualifier(task, this, fileDataQualifierI, bValue).handle();
+                    new TNodeQualifier(task, this, fileDataQualifierI, bValue, toOutput).handle();
                 }
             }
         }

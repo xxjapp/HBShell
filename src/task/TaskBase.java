@@ -23,6 +23,7 @@ public abstract class TaskBase implements Task {
     public enum TaskType {
         CLEAR,
         CONNECT,
+        COUNT,
         CREATE,
         DELETE,
         DESCRIBE,
@@ -105,8 +106,7 @@ public abstract class TaskBase implements Task {
             return;
         }
 
-        HBShell.resetTableCount();
-        HBShell.resetRowCount();
+        HBShell.resetAllCount();
 
         execute();
     }
@@ -187,6 +187,10 @@ public abstract class TaskBase implements Task {
         return false;
     }
 
+    protected boolean isToOutput() {
+        return true;
+    }
+
     private void outputParam() {
         log.info("taskType        : " + getTaskType());
 
@@ -223,7 +227,7 @@ public abstract class TaskBase implements Task {
 
     public void execute()
     throws IOException {
-        new TNodeDatabase(this).handle();
+        new TNodeDatabase(this, isToOutput()).handle();
     }
 
     //

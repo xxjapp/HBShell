@@ -10,8 +10,8 @@ import task.TaskBase.Level;
 public class TNodeQualifier extends TNodeBase {
     private final byte[] bValue;
 
-    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, byte[] bValue) {
-        super(task, parent, qualifier, Level.QUALIFIER);
+    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, byte[] bValue, boolean toOutput) {
+        super(task, parent, qualifier, Level.QUALIFIER, toOutput);
 
         this.bValue = bValue;
     }
@@ -22,8 +22,18 @@ public class TNodeQualifier extends TNodeBase {
     }
 
     @Override
+    public void output()
+    throws IOException {
+        if (!outputted) {
+            HBShell.increaseCount(HBShell.QUALIFIER);
+        }
+
+        super.output();
+    }
+
+    @Override
     protected void travelChildren()
     throws IOException {
-        new TNodeValue(task, this, bValue).handle();
+        new TNodeValue(task, this, bValue, toOutput).handle();
     }
 }

@@ -53,7 +53,7 @@
   </property>
   <property>
     <name>hbase.tmp.dir</name>
-<value>/usr/hadoop/pids/tmp</value>
+    <value>/usr/hadoop/pids/tmp</value>
     <description>Temporary directory on the local filesystem.</description>
   </property>
   <property>

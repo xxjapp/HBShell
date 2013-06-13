@@ -25,8 +25,8 @@ public class TNodeRow extends TNodeBase {
     private List<String> families         = null;
     private List<String> fileDataFamilies = null;
 
-    public TNodeRow(TaskBase task, TNodeTable parent, HTable table, Result firstKVResult) {
-        super(task, parent, Utils.resultGetRowKey(firstKVResult), Level.ROW);
+    public TNodeRow(TaskBase task, TNodeTable parent, HTable table, Result firstKVResult, boolean toOutput) {
+        super(task, parent, Utils.resultGetRowKey(firstKVResult), Level.ROW, toOutput);
 
         this.table         = table;
         this.firstKVResult = firstKVResult;
@@ -41,7 +41,7 @@ public class TNodeRow extends TNodeBase {
     public void output()
     throws IOException {
         if (!outputted) {
-            HBShell.increaseRowCount();
+            HBShell.increaseCount(HBShell.ROW);
         }
 
         super.output();
@@ -66,7 +66,7 @@ public class TNodeRow extends TNodeBase {
         }
 
         // travel non-file-data
-        // if file-data is in the same family, them will also be travelled
+        // if file-data is in the same family, they will also be travelled
         travelChildrenNonFileData();
 
         // travel remained file-data
@@ -127,7 +127,7 @@ public class TNodeRow extends TNodeBase {
                 continue;
             }
 
-            TNodeFamily familyNode = new TNodeFamily(task, this, family, map.get(bFamily));
+            TNodeFamily familyNode = new TNodeFamily(task, this, family, map.get(bFamily), toOutput);
 
             familyNode.handle();
 
@@ -185,7 +185,7 @@ public class TNodeRow extends TNodeBase {
             String firstFileDataQualifier = Utils.bytes2str(bFirstKey);
             byte[] firstFileDataBValue = familyMap.get(bFirstKey);
 
-            return new TNodeFamilyFileData(task, this, family, table, firstFileDataQualifier, firstFileDataBValue, familyNode);
+            return new TNodeFamilyFileData(task, this, family, table, firstFileDataQualifier, firstFileDataBValue, familyNode, toOutput);
         }
 
         return null;
@@ -200,7 +200,7 @@ public class TNodeRow extends TNodeBase {
 
             if (Utils.isMatch(qualifier, FILE_DATA_QUALIFIER_PATTERN)) {
                 byte[] bValue = familyMap.get(bFirstKey);
-                return new TNodeFamilyFileData(task, this, family, table, qualifier, bValue, familyNode);
+                return new TNodeFamilyFileData(task, this, family, table, qualifier, bValue, familyNode, toOutput);
             }
         }
 
