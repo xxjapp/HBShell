@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Scanner;
@@ -12,6 +14,8 @@ import java.util.Scanner;
 import jline.ConsoleReader;
 
 import org.apache.commons.io.FileUtils;
+
+import common.JarInfo;
 
 import task.Task;
 import task.TaskBase;
@@ -55,6 +59,7 @@ public class HBShell {
 
     public static List<String> alias_clear    = Arrays.asList("cle", "clr");
     public static List<String> alias_connect  = Arrays.asList("con");
+    public static List<String> alias_count    = Arrays.asList("cnt");
     public static List<String> alias_create   = Arrays.asList("c", "cre");
     public static List<String> alias_delete   = Arrays.asList("d", "del");
     public static List<String> alias_describe = Arrays.asList("des");
@@ -81,8 +86,13 @@ public class HBShell {
     private static ConsoleReader consoleReader = null; // for linux
     private static String        lastCmd       = Task_history.getLastCmd();
 
-    private static Long tableCount = null;
-    private static Long rowCount   = null;
+    private static Map<String, Long> countMap = new HashMap<String, Long>();
+
+    public static final String TABLE     = "table";
+    public static final String ROW       = "row";
+    public static final String FAMILY    = "family";
+    public static final String QUALIFIER = "qualifier";
+    public static final String VALUE     = "value";
 
     private static void init() {
         // read main configure file
@@ -98,6 +108,7 @@ public class HBShell {
 
         alias_clear    = PropertiesHelper.getProperty(properties, "alias_clear",    alias_clear);
         alias_connect  = PropertiesHelper.getProperty(properties, "alias_connect",  alias_connect);
+        alias_count    = PropertiesHelper.getProperty(properties, "alias_count",    alias_count);
         alias_create   = PropertiesHelper.getProperty(properties, "alias_create",   alias_create);
         alias_delete   = PropertiesHelper.getProperty(properties, "alias_delete",   alias_delete);
         alias_describe = PropertiesHelper.getProperty(properties, "alias_describe", alias_describe);
@@ -148,6 +159,13 @@ public class HBShell {
     throws IOException {
         init();
 
+        try {
+            JarInfo.checkJarFiles();
+        } catch (IOException e) {
+            log.error(null, e);
+            return;
+        }
+
         do {
             String[] cmdArgs = null;
 
@@ -173,8 +191,7 @@ public class HBShell {
 
             Date start = new Date();
 
-            resetTableCount();
-            resetRowCount();
+            resetAllCount();
 
             try {
                 doTask(cmdArgs);
@@ -194,16 +211,29 @@ public class HBShell {
 
             log.info("---------------------------------------");
 
-            if (tableCount != null) {
-                log.info("表数　　    ：" + tableCount);
+            if (countMap.get(TABLE) != null) {
+                log.info("CNT_TABLE     ：" + countMap.get(TABLE));
             }
 
-            if (rowCount != null) {
-                log.info("行数　　    ：" + rowCount);
+            if (countMap.get(ROW) != null) {
+                log.info("CNT_ROW       ：" + countMap.get(ROW));
+            }
+
+            if (countMap.get(FAMILY) != null) {
+                log.info("CNT_FAMILY    ：" + countMap.get(FAMILY));
+            }
+
+            if (countMap.get(QUALIFIER) != null) {
+                log.info("CNT_QUALIFIER ：" + countMap.get(QUALIFIER));
+            }
+
+            if (countMap.get(VALUE) != null) {
+                log.info("CNT_VALUE     ：" + countMap.get(VALUE));
             }
 
             log.stopLogToFile();
-            log.info("時間　　    ：" + timeUsed + " [sec]");
+            log.info("");
+            log.info("時間          ：" + timeUsed + " [sec]");
             log.info("");
 
             historyAdd(cmdArgs);
@@ -228,28 +258,22 @@ public class HBShell {
         return userInput.equals(CONFIRM_YES);
     }
 
-    public static void resetRowCount() {
-        rowCount = null;
+    public static void resetAllCount() {
+        countMap.clear();
     }
 
-    public static void increaseRowCount() {
-        if (rowCount == null) {
-            rowCount = 1L;
-        } else {
-            rowCount++;
+    public static void increaseCount(String key) {
+        increaseCount(key, 1);
+    }
+
+    public static void increaseCount(String key, long count) {
+        Long oldCount = countMap.get(key);
+
+        if (oldCount == null) {
+            oldCount = 0L;
         }
-    }
 
-    public static void resetTableCount() {
-        tableCount = null;
-    }
-
-    public static void increaseTableCount() {
-        if (tableCount == null) {
-            tableCount = 1L;
-        } else {
-            tableCount++;
-        }
+        countMap.put(key, oldCount + count);
     }
 
     private static String[] getCmdArgs()

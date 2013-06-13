@@ -1,6 +1,7 @@
 package tnode;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 import main.HBShell;
 
@@ -9,8 +10,8 @@ import task.TaskBase.Level;
 import utils.Utils;
 
 public class TNodeValue extends TNodeBase {
-    public TNodeValue(TaskBase task, TNodeQualifier parent, byte[] bValue) {
-        super(task, parent, valueString(bValue), Level.VALUE);
+    public TNodeValue(TaskBase task, TNodeQualifier parent, byte[] bValue, boolean toOutput) {
+        super(task, parent, valueString(bValue), Level.VALUE, toOutput);
     }
 
     @Override
@@ -25,8 +26,13 @@ public class TNodeValue extends TNodeBase {
             return;
         }
 
-        parent.parent.output();
-        log.info(String.format(formatString(), parent.name, name));
+        HBShell.increaseCount(HBShell.QUALIFIER);
+        HBShell.increaseCount(HBShell.VALUE);
+
+        if (toOutput) {
+            parent.parent.output();
+            log.info(String.format(formatString(), parent.name, name));
+        }
 
         if (task != null) {
             task.notifyFound(this);
@@ -39,6 +45,10 @@ public class TNodeValue extends TNodeBase {
     }
 
     private static String valueString(byte[] bValue) {
+        if (bValue.length == 0) {
+            return "";
+        }
+
         String value = null;
 
         if (!Utils.isPrintableData(bValue, HBShell.maxPrintableDetectCnt)) {
@@ -49,6 +59,13 @@ public class TNodeValue extends TNodeBase {
 
             if (bValue.length > HBShell.maxPrintableDetectCnt) {
                 value += " ...";
+            }
+
+            // show only first line
+            String firstLine = new Scanner(value).nextLine();
+
+            if (firstLine.length() < value.length()) {
+                value = firstLine + " ...";
             }
         }
 

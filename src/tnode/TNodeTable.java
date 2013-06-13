@@ -22,8 +22,8 @@ import utils.Utils;
 public class TNodeTable extends TNodeBase {
     private HTable table = null;
 
-    public TNodeTable(TaskBase task, TNodeDatabase parent, String name) {
-        super(task, parent, name, Level.TABLE);
+    public TNodeTable(TaskBase task, TNodeDatabase parent, String name, boolean toOutput) {
+        super(task, parent, name, Level.TABLE, toOutput);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class TNodeTable extends TNodeBase {
     public void output()
     throws IOException {
         if (!outputted) {
-            HBShell.increaseTableCount();
+            HBShell.increaseCount(HBShell.TABLE);
         }
 
         super.output();
@@ -59,7 +59,7 @@ public class TNodeTable extends TNodeBase {
             ResultScanner resultScanner = table.getScanner(scan);
 
             for (Result firstKVResult : resultScanner) {
-                new TNodeRow(task, this, table, firstKVResult).handle();
+                new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
             }
         } finally {
             table.close();

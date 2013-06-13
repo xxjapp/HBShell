@@ -206,6 +206,11 @@ public class Utils {
 
     private static boolean isPrintableChar(char c) {
         Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
+
+        if (Character.isWhitespace(c)) {
+            return true;
+        }
+
         return (!Character.isISOControl(c)) &&
                c != KeyEvent.CHAR_UNDEFINED &&
                block != null &&

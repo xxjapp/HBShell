@@ -58,7 +58,7 @@ public class Task_describe extends TaskBase {
 
         for (String family : families) {
             if (isMatch(Level.FAMILY, family)) {
-                new TNodeFamily(null, null, family, null).output();
+                new TNodeFamily(null, null, family, null, true).output();
             }
         }
     }

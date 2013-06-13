@@ -20,17 +20,19 @@ public abstract class TNodeBase implements TNode {
     public final TNodeBase parent;
     public final String    name;
     public final Level     level;
+    public final boolean   toOutput;
 
     protected static final ResultLog log = ResultLog.getLog();
 
     protected boolean outputted         = false;
     private Boolean   otherFilterPassed = null;
 
-    protected TNodeBase(TaskBase task, TNodeBase parent, String name, Level level) {
-        this.task   = task;
-        this.parent = parent;
-        this.name   = name;
-        this.level  = level;
+    protected TNodeBase(TaskBase task, TNodeBase parent, String name, Level level, boolean toOutput) {
+        this.task     = task;
+        this.parent   = parent;
+        this.name     = name;
+        this.level    = level;
+        this.toOutput = toOutput;
     }
 
     @Override
@@ -56,7 +58,9 @@ public abstract class TNodeBase implements TNode {
         }
 
         if (name != null) {
-            log.info(String.format(formatString(), name));
+            if (toOutput) {
+                log.info(String.format(formatString(), name));
+            }
 
             if (task != null) {
                 task.notifyFound(this);
