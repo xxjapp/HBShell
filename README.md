@@ -1,6 +1,6 @@
 # HBShell
 
-Simple but powerful replacement for ./hbase shell
+A simple but powerful replacement for ./hbase shell
 
 ## Installation
 
