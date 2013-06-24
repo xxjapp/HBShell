@@ -61,11 +61,13 @@ public class TNodeValue extends TNodeBase {
                 value += " ...";
             }
 
-            // show only first line
-            String firstLine = new Scanner(value).nextLine();
+            if (!HBShell.multiline) {
+                // show only first line
+                String firstLine = new Scanner(value).nextLine();
 
-            if (firstLine.length() < value.length()) {
-                value = firstLine + " ...";
+                if (firstLine.length() < value.length()) {
+                    value = firstLine + " ...";
+                }
             }
         }
 

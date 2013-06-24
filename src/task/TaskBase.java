@@ -32,6 +32,7 @@ public abstract class TaskBase implements Task {
         HELP,
         HISTORY,
         LIST,
+        MULTILINE,
         PUT,
         QUIT,
         RENAME,
