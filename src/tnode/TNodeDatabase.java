@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.apache.hadoop.hbase.HTableDescriptor;
 
+import exception.HBSException;
+
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
@@ -20,7 +22,7 @@ public class TNodeDatabase extends TNodeBase {
 
     @Override
     protected void travelChildren()
-    throws IOException {
+    throws IOException, HBSException {
         HTableDescriptor[] hTableDescriptors = Utils.listTables();
 
         for (HTableDescriptor hTableDescriptor : hTableDescriptors) {

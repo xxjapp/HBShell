@@ -9,6 +9,8 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
 
+import exception.HBSException;
+
 import task.TaskBase;
 import task.TaskBase.Level;
 
@@ -37,7 +39,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         // this file data family has other non-file-data
         if ((familyNode != null) && (familyNode.outputted)) {
             return;
@@ -48,7 +50,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
     @Override
     protected void travelChildren()
-    throws IOException {
+    throws IOException, HBSException {
         // find last file data qualifier
         long firstIndex = minIndex;
         long lastIndex  = searchLastFileDataQualifier(minIndex, maxIndex, maxIndex * 2 - minIndex);

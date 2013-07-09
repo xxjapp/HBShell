@@ -280,6 +280,16 @@ public class HBShell {
         countMap.put(key, oldCount + count);
     }
 
+    public static Long getCount(String key) {
+        Long count = countMap.get(key);
+
+        if (count == null) {
+            return 0L;
+        }
+
+        return count;
+    }
+
     private static String[] getCmdArgs()
     throws IOException {
         return MyStringTokenizer.getTokens(getUserInput("> "));

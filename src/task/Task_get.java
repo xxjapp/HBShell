@@ -9,6 +9,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
+import exception.HBSException;
+
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
 import tnode.TNodeFamily;
@@ -61,7 +63,7 @@ public class Task_get extends TaskBase {
 
     @Override
     public void execute()
-    throws IOException {
+    throws IOException, HBSException {
         String table = (String) levelParam.get(Level.TABLE);
 
         // get database

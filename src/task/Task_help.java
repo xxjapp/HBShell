@@ -57,7 +57,7 @@ public class Task_help extends TaskBase {
     }
 
     private void printSpecialNote() {
-        log.info("** NOTE" + " - " + "Keyboard in linux");
+        log.info("** NOTE 1)" + " - " + "Keyboard in linux");
         log.info("");
         log.info(" - all control keys are not usable before jline added");
         log.info(" - thanks to jline, arrow left/right/up/down are usable, but");
@@ -69,6 +69,14 @@ public class Task_help extends TaskBase {
         log.info("   - '4~' -> end, go to end of line");
         log.info("   - '5~' -> page up, move to first history entry");
         log.info("   - '6~' -> page down, move to last history entry");
+        log.info("");
+        log.info("** NOTE 2)" + " - " + "Set row limit to command");
+        log.info("");
+        log.info(" - all commands can be added with a row limit number to only operate on first found rows");
+        log.info("");
+        log.info("** NOTE 3)" + " - " + "Force to execute command");
+        log.info("");
+        log.info(" - all commands can be added with a '!' mark to execute without confirmation");
         log.info("");
     }
 

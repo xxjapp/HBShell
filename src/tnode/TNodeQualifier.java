@@ -2,6 +2,8 @@ package tnode;
 
 import java.io.IOException;
 
+import exception.HBSException;
+
 import main.HBShell;
 
 import task.TaskBase;
@@ -23,7 +25,7 @@ public class TNodeQualifier extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.QUALIFIER);
         }
@@ -33,7 +35,7 @@ public class TNodeQualifier extends TNodeBase {
 
     @Override
     protected void travelChildren()
-    throws IOException {
+    throws IOException, HBSException {
         new TNodeValue(task, this, bValue, toOutput).handle();
     }
 }

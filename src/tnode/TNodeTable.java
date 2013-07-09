@@ -15,6 +15,9 @@ import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.RowFilter;
 
+import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
+
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
@@ -33,7 +36,7 @@ public class TNodeTable extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.TABLE);
         }
@@ -43,7 +46,7 @@ public class TNodeTable extends TNodeBase {
 
     @Override
     protected void travelChildren()
-    throws IOException {
+    throws IOException, HBSException {
         // set filter list
         FilterList filterList = new FilterList(Operator.MUST_PASS_ALL);
 
@@ -60,6 +63,11 @@ public class TNodeTable extends TNodeBase {
 
             for (Result firstKVResult : resultScanner) {
                 new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
+
+                // check row limit
+                if (HBShell.getCount(HBShell.ROW) >= TaskBase.getRowLimit()) {
+                    throw new HBSExceptionRowLimitReached();
+                }
             }
         } finally {
             table.close();

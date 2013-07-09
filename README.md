@@ -95,6 +95,14 @@ Execute:
       example : list ^135530186920f18b9049b0a0743e86ac3185887c5d file
       alias   : [l, ls]
 
+### MULTILINE - show current multiline status or set new multiline status temporarily
+
+    ** NOTE: for permanent change of multiline status, modify setting file [conf/config.ini]
+
+      usage   : multiline [0, false or 1, true]
+      example : multiline false
+      alias   : [m]
+
 ### PUT - put a cell 'value' at specified table/row/family:qualifier
 
       usage   : put table_name row_key family_name qualifier_name value
@@ -134,7 +142,7 @@ Execute:
       example : version
       alias   : [v, ver]
 
-## Special Note - Keyboard in linux
+## Note 1) - Keyboard in linux
 
      - all control keys are not usable before jline added
      - thanks to jline, arrow left/right/up/down are usable, but
@@ -146,6 +154,14 @@ Execute:
        - '4~' -> end, go to end of line
        - '5~' -> page up, move to first history entry
        - '6~' -> page down, move to last history entry
+
+## NOTE 2) - Set row limit to command
+
+     - all commands can be added with a row limit number to only operate on first found rows
+
+## NOTE 3) - Force to execute command
+
+     - all commands can be added with a '!' mark to execute without confirmation
 
 ## Contributing
 

@@ -237,6 +237,26 @@ public class Utils {
     // regexp
     //
 
+    // example:
+    // match("a0x12b", "a(\\d+)b") => []
+    // match("a0012b", "a(\\d+)b") => [a0012b, 0012]
+    public static List<String> match(String targetString, String patternString) {
+        List<String> groups = new ArrayList<String>();
+
+        Pattern pattern = Pattern.compile(patternString);
+        Matcher matcher = pattern.matcher(targetString);
+
+        if (matcher.find()) {
+            int groupCount = matcher.groupCount();
+
+            for (int i = 0; i < groupCount + 1; i++) {
+                groups.add(matcher.group(i));
+            }
+        }
+
+        return groups;
+    }
+
     public static boolean isMatch(String target, String patternString) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(target);

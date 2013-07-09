@@ -4,6 +4,7 @@
 
 logs/
 src/main/Version.java
+lib/_jar_list.txt
 
 #################
 ## Eclipse

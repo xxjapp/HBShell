@@ -8,6 +8,8 @@ import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
 
+import exception.HBSException;
+
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.ResultLog;
@@ -37,7 +39,7 @@ public abstract class TNodeBase implements TNode {
 
     @Override
     public void handle()
-    throws IOException {
+    throws IOException, HBSException {
         if (level == task.level) {
             output();
         } else {
@@ -46,7 +48,7 @@ public abstract class TNodeBase implements TNode {
     }
 
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (outputted) {
             return;
         }
@@ -99,7 +101,7 @@ public abstract class TNodeBase implements TNode {
     protected abstract String formatString();
 
     protected abstract void travelChildren()
-    throws IOException;
+    throws IOException, HBSException;
 
     //
     // filter

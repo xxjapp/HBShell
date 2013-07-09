@@ -3,6 +3,8 @@ package tnode;
 import java.io.IOException;
 import java.util.NavigableMap;
 
+import exception.HBSException;
+
 import main.HBShell;
 
 import task.TaskBase;
@@ -25,7 +27,7 @@ public class TNodeFamily extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.FAMILY);
         }
@@ -35,7 +37,7 @@ public class TNodeFamily extends TNodeBase {
 
     @Override
     protected void travelChildren()
-    throws IOException {
+    throws IOException, HBSException {
         for (byte[] bQualifier : familyMap.keySet()) {
             String qualifier = Utils.bytes2str(bQualifier);
             new TNodeQualifier(task, this, qualifier, familyMap.get(bQualifier), toOutput).handle();

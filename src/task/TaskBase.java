@@ -13,11 +13,15 @@ import main.HBShell;
 
 import org.apache.hadoop.hbase.client.HTable;
 
+import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
+
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
 import tnode.TNodeRow;
 import tnode.TNodeTable;
 import utils.ResultLog;
+import utils.Utils;
 
 public abstract class TaskBase implements Task {
     public enum TaskType {
@@ -62,6 +66,7 @@ public abstract class TaskBase implements Task {
 
     private static Map<String, TaskType> aliasMap = null;
     private static boolean               forced   = false;
+    private static long                  rowLimit = Long.MAX_VALUE;
 
     private TaskType taskType = null;
 
@@ -109,7 +114,13 @@ public abstract class TaskBase implements Task {
 
         HBShell.resetAllCount();
 
-        execute();
+        try {
+            execute();
+        } catch (HBSExceptionRowLimitReached e) {
+            // OK
+        } catch (HBSException e) {
+            log.error(null, e);
+        }
     }
 
     @Override
@@ -125,7 +136,15 @@ public abstract class TaskBase implements Task {
 
         boolean notifyEnabled = this.notifyEnabled;
         this.notifyEnabled = false;
-        execute();
+
+        try {
+            execute();
+        } catch (HBSExceptionRowLimitReached e) {
+            // OK
+        } catch (HBSException e) {
+            log.error(null, e);
+        }
+
         this.notifyEnabled = notifyEnabled;
 
         System.out.print("******************************\n");
@@ -227,7 +246,7 @@ public abstract class TaskBase implements Task {
     }
 
     public void execute()
-    throws IOException {
+    throws IOException, HBSException {
         new TNodeDatabase(this, isToOutput()).handle();
     }
 
@@ -256,7 +275,7 @@ public abstract class TaskBase implements Task {
 
     public static final TaskType getTaskType(String string)
     throws IOException {
-        String   command  = checkIfForced(string);
+        String   command  = parseCommand(string);
         TaskType taskType = getAliasMap().get(command);
 
         if (taskType == null) {
@@ -266,14 +285,26 @@ public abstract class TaskBase implements Task {
         return taskType;
     }
 
-    private static String checkIfForced(String string) {
-        if (string.endsWith("!")) {
-            forced = true;
-            return string.substring(0, string.length() - 1);
-        } else {
-            forced = false;
-            return string;
+    private static String parseCommand(String string) {
+        // check if forced
+        forced = string.endsWith("!");
+
+        if (forced) {
+            string = string.substring(0, string.length() - 1);
         }
+
+        // get row limit parameter
+        List<String> groups = Utils.match(string, "(\\d+)$");
+
+        if (groups.size() == 2) {
+            String g1 = groups.get(1);
+            rowLimit = Long.valueOf(g1);
+            string   = string.substring(0, string.length() - g1.length());
+        } else {
+            rowLimit = Long.MAX_VALUE;
+        }
+
+        return string;
     }
 
     public static final Task getTask(TaskType taskType) {
@@ -318,7 +349,7 @@ public abstract class TaskBase implements Task {
     //
 
     public void notifyFound(TNodeBase node)
-    throws IOException {
+    throws IOException, HBSException {
         if (!notifyEnabled) {
             return;
         }
@@ -363,7 +394,7 @@ public abstract class TaskBase implements Task {
     }
 
     protected void foundTable(HTable table)
-    throws IOException {
+    throws IOException, HBSException {
         // Do nothing
     }
 
@@ -404,5 +435,9 @@ public abstract class TaskBase implements Task {
 
     public boolean isFilter() {
         return getTaskType() == TaskType.FILTER;
+    }
+
+    public static long getRowLimit() {
+        return rowLimit;
     }
 }

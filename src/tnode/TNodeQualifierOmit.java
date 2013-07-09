@@ -2,6 +2,8 @@ package tnode;
 
 import java.io.IOException;
 
+import exception.HBSException;
+
 import main.HBShell;
 
 import task.TaskBase;
@@ -27,7 +29,7 @@ public class TNodeQualifierOmit extends TNodeBase {
 
     @Override
     public void handle()
-    throws IOException {
+    throws IOException, HBSException {
         long count = lastIndex - firstIndex - 1;
 
         HBShell.increaseCount(HBShell.QUALIFIER, count);

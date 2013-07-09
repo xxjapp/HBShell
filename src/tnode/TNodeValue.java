@@ -3,6 +3,8 @@ package tnode;
 import java.io.IOException;
 import java.util.Scanner;
 
+import exception.HBSException;
+
 import main.HBShell;
 
 import task.TaskBase;
@@ -21,7 +23,7 @@ public class TNodeValue extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!otherFilterPassed()) {
             return;
         }

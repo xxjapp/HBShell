@@ -14,6 +14,8 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
+
+import exception.HBSException;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
@@ -39,7 +41,7 @@ public class TNodeRow extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.ROW);
         }
@@ -49,7 +51,7 @@ public class TNodeRow extends TNodeBase {
 
     @Override
     protected void travelChildren()
-    throws IOException {
+    throws IOException, HBSException {
         // get filtered families and fileDataFamilies
         List<String> allFamilies = Utils.getFamilies(table);
         this.families         = new ArrayList<String>();
@@ -80,7 +82,7 @@ public class TNodeRow extends TNodeBase {
     }
 
     private void travelChildrenNonFileData()
-    throws IOException {
+    throws IOException, HBSException {
         Get get = new Get(name.getBytes());
 
         // filter family
