@@ -24,6 +24,8 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 
+import common.OemInfo;
+
 public class Utils {
     private static final String UTF_8 = "UTF-8";
 
@@ -267,7 +269,6 @@ public class Utils {
     // hbase
     //
 
-    private static final String       HBASE_CONF_FILE        = "./conf/hbase-site.xml";
     private static final String       HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
     private static final int          MAX_VERSIONS           = 1;
     private static HBaseConfiguration m_hBaseConfiguration   = null;
@@ -291,7 +292,7 @@ public class Utils {
 
     private static void setDefaultHBaseConfiguration() {
         m_hBaseConfiguration = new HBaseConfiguration();
-        m_hBaseConfiguration.addResource(new Path(HBASE_CONF_FILE));
+        m_hBaseConfiguration.addResource(new Path(OemInfo.hbaseUrl()));
     }
 
     public static HTableDescriptor[] listTables()
