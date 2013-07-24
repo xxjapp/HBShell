@@ -1,5 +1,7 @@
 package task;
 
+import static common.Common.*;
+
 import java.io.IOException;
 import java.util.NavigableMap;
 
@@ -124,7 +126,7 @@ public class Task_get extends TaskBase {
     throws IOException {
         TNodeTable nTable = getTable(table);
 
-        Get get = new Get(row.getBytes());
+        Get get = new Get(str2bytes(row));
         get.setFilter(new FirstKeyOnlyFilter());
 
         HTable hTable = Utils.getTable(table);
@@ -145,10 +147,10 @@ public class Task_get extends TaskBase {
     // see: TNodeRow.travelChildrenNonFileData()
     private TNodeFamily getFamily(String row, String family, TNodeRow nRow)
     throws IOException {
-        Get get = new Get(row.getBytes());
+        Get get = new Get(str2bytes(row));
 
         // filter family
-        get.addFamily(family.getBytes());
+        get.addFamily(str2bytes(family));
 
         // filter file data qualifier (excluded)
         get.setFilter(TNodeBase.getFileDataQualifierFilter(false));
@@ -171,7 +173,7 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + FAMILY_IS_VALID_BUT_WITHOUT_DATA);
         }
 
-        NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(family.getBytes());
+        NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
         return new TNodeFamily(this, nRow, family, familyMap, true);
     }
 
@@ -191,10 +193,10 @@ public class Task_get extends TaskBase {
     throws IOException {
         TNodeRow nRow = getRow(table, row);
 
-        Get get = new Get(row.getBytes());
+        Get get = new Get(str2bytes(row));
 
         // filter family & qualifier
-        get.addColumn(family.getBytes(), qualifier.getBytes());
+        get.addColumn(str2bytes(family), str2bytes(qualifier));
 
         // get result
         Result result = null;
@@ -210,9 +212,9 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + ":" + qualifier);
         }
 
-        byte[] bValue = result.getValue(family.getBytes(), qualifier.getBytes());
+        byte[] bValue = result.getValue(str2bytes(family), str2bytes(qualifier));
 
-        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, result.getFamilyMap(family.getBytes()), true);
+        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, result.getFamilyMap(str2bytes(family)), true);
         return new TNodeQualifier(this, nFamily, qualifier, bValue, true);
     }
 }

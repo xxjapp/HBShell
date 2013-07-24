@@ -1,5 +1,7 @@
 package utils;
 
+import static common.Common.*;
+
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
@@ -316,7 +318,7 @@ public class Utils {
 
     public static void createTable(String tableName, List< ? > families)
     throws IOException {
-        HTableDescriptor tableDescriptor = new HTableDescriptor(tableName.getBytes());
+        HTableDescriptor tableDescriptor = new HTableDescriptor(str2bytes(tableName));
 
         for (Object family : families) {
             HColumnDescriptor columnDescriptor = new HColumnDescriptor(family.toString());
@@ -371,8 +373,8 @@ public class Utils {
     throws IOException {
         RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier + " = " + value);
 
-        Put put = new Put(rowKey.getBytes());
-        put.add(family.getBytes(), qualifier.getBytes(), value.getBytes());
+        Put put = new Put(str2bytes(rowKey));
+        put.add(str2bytes(family), str2bytes(qualifier), str2bytes(value));
         hTable.put(put);
     }
 
@@ -380,7 +382,7 @@ public class Utils {
     throws IOException {
         RootLog.getLog().info(rowKey);
 
-        Delete delete = new Delete(rowKey.getBytes());
+        Delete delete = new Delete(str2bytes(rowKey));
         hTable.delete(delete);
     }
 
@@ -388,8 +390,8 @@ public class Utils {
     throws IOException {
         RootLog.getLog().info(rowKey + "/" + family);
 
-        Delete delete = new Delete(rowKey.getBytes());
-        delete.deleteFamily(family.getBytes());
+        Delete delete = new Delete(str2bytes(rowKey));
+        delete.deleteFamily(str2bytes(family));
         hTable.delete(delete);
     }
 
@@ -397,8 +399,8 @@ public class Utils {
     throws IOException {
         RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier);
 
-        Delete delete = new Delete(rowKey.getBytes());
-        delete.deleteColumns(family.getBytes(), qualifier.getBytes());
+        Delete delete = new Delete(str2bytes(rowKey));
+        delete.deleteColumns(str2bytes(family), str2bytes(qualifier));
         hTable.delete(delete);
     }
 }

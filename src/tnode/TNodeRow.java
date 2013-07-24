@@ -1,5 +1,7 @@
 package tnode;
 
+import static common.Common.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,11 +85,11 @@ public class TNodeRow extends TNodeBase {
 
     private void travelChildrenNonFileData()
     throws IOException, HBSException {
-        Get get = new Get(name.getBytes());
+        Get get = new Get(str2bytes(name));
 
         // filter family
         for (String family : families) {
-            get.addFamily(family.getBytes());
+            get.addFamily(str2bytes(family));
         }
 
         FilterList filterList = new FilterList(Operator.MUST_PASS_ALL);
@@ -158,10 +160,10 @@ public class TNodeRow extends TNodeBase {
             return familyFileData;
         }
 
-        Get get = new Get(name.getBytes());
+        Get get = new Get(str2bytes(name));
 
         // filter family
-        get.addFamily(family.getBytes());
+        get.addFamily(str2bytes(family));
 
         FilterList filterList = new FilterList(Operator.MUST_PASS_ALL);
 
@@ -181,7 +183,7 @@ public class TNodeRow extends TNodeBase {
         Result result = table.get(get);
 
         if (!result.isEmpty()) {
-            NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(family.getBytes());
+            NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
 
             byte[] bFirstKey = familyMap.firstKey();
             String firstFileDataQualifier = Utils.bytes2str(bFirstKey);
@@ -194,7 +196,7 @@ public class TNodeRow extends TNodeBase {
     }
 
     private TNodeFamilyFileData getFamilyFileDataUsingFirstKVResult(String family, TNodeFamily familyNode) {
-        NavigableMap<byte[], byte[]> familyMap = firstKVResult.getFamilyMap(family.getBytes());
+        NavigableMap<byte[], byte[]> familyMap = firstKVResult.getFamilyMap(str2bytes(family));
 
         if (!familyMap.isEmpty()) {
             byte[] bFirstKey = familyMap.firstKey();

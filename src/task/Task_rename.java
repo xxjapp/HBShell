@@ -1,5 +1,7 @@
 package task;
 
+import static common.Common.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,7 +175,7 @@ public class Task_rename extends TaskBase {
 
     // Returns true if the region belongs to passed table
     private boolean isTableRegion(String tableName, HRegionInfo hri) {
-        return Bytes.equals(hri.getTableDesc().getName(), tableName.getBytes());
+        return Bytes.equals(hri.getTableDesc().getName(), str2bytes(tableName));
     }
 
     // Create new HRI based off passed 'oldHRI'

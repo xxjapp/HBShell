@@ -1,5 +1,7 @@
 package tnode;
 
+import static common.Common.*;
+
 import java.io.IOException;
 
 import org.apache.hadoop.hbase.client.Get;
@@ -67,18 +69,18 @@ public class TNodeFamilyFileData extends TNodeFamily {
                 }
 
                 // last file data qualifier
-                Get    get                   = new Get(parent.name.getBytes());
+                Get    get                   = new Get(str2bytes(parent.name));
                 String lastFileDataQualifier = fileDataQualifier(lastIndex);
-                get.addColumn(name.getBytes(), lastFileDataQualifier.getBytes());
+                get.addColumn(str2bytes(name), str2bytes(lastFileDataQualifier));
 
                 Result result = table.get(get);
-                byte[] bValue = result.getValue(name.getBytes(), lastFileDataQualifier.getBytes());
+                byte[] bValue = result.getValue(str2bytes(name), str2bytes(lastFileDataQualifier));
                 new TNodeQualifier(task, this, lastFileDataQualifier, bValue, toOutput).handle();
             }
         } else {
             // qualifier or value filter exists, so filter all
             for (long i = firstIndex; i <= lastIndex; i++) {
-                Get get = new Get(parent.name.getBytes());
+                Get get = new Get(str2bytes(parent.name));
 
                 // set filter list
                 FilterList filterList = new FilterList(Operator.MUST_PASS_ALL);
@@ -101,13 +103,13 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
                 // file data qualifier i only
                 String fileDataQualifierI = fileDataQualifier(i);
-                get.addColumn(name.getBytes(), fileDataQualifierI.getBytes());
+                get.addColumn(str2bytes(name), str2bytes(fileDataQualifierI));
 
                 // get result
                 Result result = table.get(get);
 
                 if (!result.isEmpty()) {
-                    byte[] bValue = result.getValue(name.getBytes(), fileDataQualifierI.getBytes());
+                    byte[] bValue = result.getValue(str2bytes(name), str2bytes(fileDataQualifierI));
                     new TNodeQualifier(task, this, fileDataQualifierI, bValue, toOutput).handle();
                 }
             }
@@ -117,8 +119,8 @@ public class TNodeFamilyFileData extends TNodeFamily {
     // half search the last file data qualifier
     private long searchLastFileDataQualifier(long min, long lastIndex, long max)
     throws IOException {
-        Get get = new Get(parent.name.getBytes());
-        get.addColumn(name.getBytes(), fileDataQualifier(lastIndex).getBytes());
+        Get get = new Get(str2bytes(parent.name));
+        get.addColumn(str2bytes(name), str2bytes(fileDataQualifier(lastIndex)));
 
         if (table.exists(get)) {
             if (lastIndex == maxIndex || lastIndex == max - 1) {

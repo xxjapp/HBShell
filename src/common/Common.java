@@ -197,6 +197,21 @@ public class Common {
         return null;
     }
 
+    // SEE: org.apache.hadoop.hbase.util.Bytes.toBytes(String)
+    public static byte[] str2bytes(String string) {
+        if (string == null) {
+            return null;
+        }
+
+        try {
+            return string.getBytes(UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            LogHelper.getLog().error(null, e);
+        }
+
+        return null;
+    }
+
     //
     // regexp
     //
@@ -392,7 +407,7 @@ public class Common {
             LogHelper.getLog().error(null, e);
         }
 
-        byte[] digest = messageDigest.digest(string.getBytes());
+        byte[] digest = messageDigest.digest(str2bytes(string));
         return getHexString(digest);
     }
 
