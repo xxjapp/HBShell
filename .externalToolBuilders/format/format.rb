@@ -157,7 +157,7 @@ def format(files)
 end
 
 def format_file(file)
-    `#{UNCRUSTIFY} -l JAVA -c #{CONFIG_FILE} --no-backup #{file}`
+    `#{UNCRUSTIFY} -l JAVA -c #{CONFIG_FILE} --no-backup #{file} -q`
 end
 
 # ----------------------------------------------------------------
