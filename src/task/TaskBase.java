@@ -66,6 +66,7 @@ public abstract class TaskBase implements Task {
 
     private static Map<String, TaskType> aliasMap = null;
     private static boolean               forced   = false;
+    private static boolean               quiet    = false;
     private static long                  rowLimit = Long.MAX_VALUE;
 
     private TaskType taskType = null;
@@ -115,7 +116,9 @@ public abstract class TaskBase implements Task {
         HBShell.resetAllCount();
 
         try {
+            log.setQuiet(quiet);
             execute();
+            log.setQuiet(false);
         } catch (HBSExceptionRowLimitReached e) {
             // OK
         } catch (HBSException e) {
@@ -290,6 +293,13 @@ public abstract class TaskBase implements Task {
         forced = string.endsWith("!");
 
         if (forced) {
+            string = string.substring(0, string.length() - 1);
+        }
+
+        // check if quiet
+        quiet = string.endsWith("-");
+
+        if (quiet) {
             string = string.substring(0, string.length() - 1);
         }
 

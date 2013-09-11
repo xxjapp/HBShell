@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import main.HBShell;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -17,7 +18,6 @@ import org.apache.hadoop.hbase.filter.RowFilter;
 
 import exception.HBSException;
 import exception.HBSExceptionRowLimitReached;
-
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
@@ -61,13 +61,17 @@ public class TNodeTable extends TNodeBase {
         try {
             ResultScanner resultScanner = table.getScanner(scan);
 
-            for (Result firstKVResult : resultScanner) {
-                new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
+            try {
+                for (Result firstKVResult : resultScanner) {
+                    new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
 
-                // check row limit
-                if (HBShell.getCount(HBShell.ROW) >= TaskBase.getRowLimit()) {
-                    throw new HBSExceptionRowLimitReached();
+                    // check row limit
+                    if (HBShell.getCount(HBShell.ROW) >= TaskBase.getRowLimit()) {
+                        throw new HBSExceptionRowLimitReached();
+                    }
                 }
+            } finally {
+                IOUtils.closeQuietly(resultScanner);
             }
         } finally {
             table.close();

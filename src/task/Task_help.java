@@ -70,11 +70,15 @@ public class Task_help extends TaskBase {
         log.info("   - '5~' -> page up, move to first history entry");
         log.info("   - '6~' -> page down, move to last history entry");
         log.info("");
-        log.info("** NOTE 2)" + " - " + "Set row limit to command");
+        log.info("** NOTE 2)" + " - " + "Command modifier/row limit");
         log.info("");
         log.info(" - all commands can be added with a row limit number to only operate on first found rows");
         log.info("");
-        log.info("** NOTE 3)" + " - " + "Force to execute command");
+        log.info("** NOTE 3)" + " - " + "Command modifier/quiet mode");
+        log.info("");
+        log.info(" - all commands can be added with a '-' mark to execute without logging to console and normal log file");
+        log.info("");
+        log.info("** NOTE 4)" + " - " + "Command modifier/force to execute");
         log.info("");
         log.info(" - all commands can be added with a '!' mark to execute without confirmation");
         log.info("");

@@ -19,6 +19,7 @@ public class ResultLog {
     private boolean startNew      = false;  // log to a new file
     private boolean stopLogToFile = false;  // logger.result defined in LOG4J_CONF_FILE will go on
     private boolean infoEnabled   = true;   // info log enabled?
+    private boolean quiet         = false;  // this may disable log to normal log file and console on info level
 
     private ResultLog() {
         // call RootLog methods to make sure
@@ -43,12 +44,19 @@ public class ResultLog {
         this.infoEnabled = enabled;
     }
 
+    public void setQuiet(boolean quiet) {
+        this.quiet = quiet;
+    }
+
     public void info(String string) {
         if (!infoEnabled) {
             return;
         }
 
-        logger_result().info(string);
+        if (!quiet) {
+            logger_result().info(string);
+        }
+
         appendToLogFile(string);
     }
 
