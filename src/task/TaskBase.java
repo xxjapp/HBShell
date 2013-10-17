@@ -41,6 +41,7 @@ public abstract class TaskBase implements Task {
         QUIT,
         RENAME,
         READONLY,
+        REG_DELETE,
         SCAN,
         VERSION,
     }
@@ -113,7 +114,7 @@ public abstract class TaskBase implements Task {
             return;
         }
 
-        HBShell.resetAllCount();
+        resetAllCount();
 
         try {
             log.setQuiet(quiet);
@@ -141,7 +142,7 @@ public abstract class TaskBase implements Task {
         this.notifyEnabled = false;
 
         try {
-            execute();
+            confirm();
         } catch (HBSExceptionRowLimitReached e) {
             // OK
         } catch (HBSException e) {
@@ -155,6 +156,10 @@ public abstract class TaskBase implements Task {
         System.out.print("******************************\n");
 
         return confirmed;
+    }
+
+    public void resetAllCount() {
+        HBShell.resetAllCount();
     }
 
     protected void changeLogOnStart() {
@@ -246,6 +251,11 @@ public abstract class TaskBase implements Task {
         }
 
         log.info("---------------------------------------");
+    }
+
+    public void confirm()
+    throws IOException, HBSException {
+        execute();
     }
 
     public void execute()
