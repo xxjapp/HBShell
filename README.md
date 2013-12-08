@@ -50,13 +50,13 @@ Execute:
       example : create test_table family1 family2
       alias   : [c, cre]
 
-### DELETE - delete data in database with given filter
+### DELETE - delete data in database
 
     ** WARNING : 'delete'(and its alias) will delete all tables in database
     ** NOTE    : use 'delete! ...' to force delete
 
-      usage   : delete [table_pattern [row_pattern [family_pattern [qualifier_pattern [value_pattern]]]]]
-      example : delete ^test_table family1
+      usage   : delete [table_name [row_key [family_name [qualifier_name]]]]
+      example : delete test_table family1
       alias   : [d, del]
 
 ### DESCRIBE - describe the named table
@@ -115,12 +115,6 @@ Execute:
       example : quit
       alias   : [e, q, exit]
 
-### RENAME - rename table in hbase
-
-      usage   : rename old_table_name new_table_name
-      example : rename test_table test_table2
-      alias   : [rn, ren]
-
 ### READONLY - show current readonly status or set new readonly status temporarily
 
     ** NOTE: for permanent change of readonly status, modify setting file
@@ -128,6 +122,27 @@ Execute:
 
       usage   : readonly [0, false or 1, true]
       example : readonly false
+      alias   : [ro]
+
+### REG_DELETE - delete data in database with given filter
+
+    ** WARNING : 'delete'(and its alias) will delete all tables in database
+    ** NOTE    : use 'delete! ...' to force delete
+
+      usage   : reg_delete [table_pattern [row_pattern [family_pattern [qualifier_pattern [value_pattern]]]]]
+      example : reg_delete ^test_table family1
+      alias   : [rd]
+
+### RENAME - rename table in hbase
+
+      usage   : rename old_table_name new_table_name
+      example : rename test_table test_table2
+      alias   : [rn, ren]
+
+### RUN - run external hbshell command file
+
+      usage   : run file_path
+      example : run ./commands.hbc
       alias   : [r]
 
 ### SCAN - scan database data with given filter
@@ -155,11 +170,15 @@ Execute:
        - '5~' -> page up, move to first history entry
        - '6~' -> page down, move to last history entry
 
-## NOTE 2) - Set row limit to command
+## NOTE 2) - Command modifier/row limit
 
      - all commands can be added with a row limit number to only operate on first found rows
 
-## NOTE 3) - Force to execute command
+## NOTE 3) - Command modifier/quiet mode
+
+     - all commands can be added with a '-' mark to execute without logging to console and normal log file
+
+## NOTE 4) - Command modifier/force to execute
 
      - all commands can be added with a '!' mark to execute without confirmation
 

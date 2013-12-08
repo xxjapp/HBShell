@@ -39,9 +39,10 @@ public abstract class TaskBase implements Task {
         MULTILINE,
         PUT,
         QUIT,
-        RENAME,
         READONLY,
         REG_DELETE,
+        RENAME,
+        RUN,
         SCAN,
         VERSION,
     }

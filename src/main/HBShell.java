@@ -72,9 +72,10 @@ public class HBShell {
     public static List<String> alias_multiline  = Arrays.asList("m");
     public static List<String> alias_put        = Arrays.asList("p");
     public static List<String> alias_quit       = Arrays.asList("e", "q", "exit");
-    public static List<String> alias_readonly   = Arrays.asList("r");
+    public static List<String> alias_readonly   = Arrays.asList("ro");
     public static List<String> alias_reg_delete = Arrays.asList("rd");
     public static List<String> alias_rename     = Arrays.asList("rn", "ren");
+    public static List<String> alias_run        = Arrays.asList("r");
     public static List<String> alias_scan       = Arrays.asList("s");
     public static List<String> alias_version    = Arrays.asList("v", "ver");
 
@@ -127,6 +128,7 @@ public class HBShell {
         alias_readonly   = PropertiesHelper.getProperty(properties, "alias_readonly",   alias_readonly);
         alias_reg_delete = PropertiesHelper.getProperty(properties, "alias_reg_delete", alias_reg_delete);
         alias_rename     = PropertiesHelper.getProperty(properties, "alias_rename",     alias_rename);
+        alias_run        = PropertiesHelper.getProperty(properties, "alias_run",        alias_run);
         alias_scan       = PropertiesHelper.getProperty(properties, "alias_scan",       alias_scan);
         alias_version    = PropertiesHelper.getProperty(properties, "alias_version",    alias_version);
 
@@ -150,7 +152,7 @@ public class HBShell {
         closeInputScanner();
     }
 
-    private static void doTask(String[] cmdArgs)
+    public static void doTask(String[] cmdArgs)
     throws IOException {
         TaskType taskType = TaskBase.getTaskType(cmdArgs[0]);
         Task     task     = TaskBase.getTask(taskType);

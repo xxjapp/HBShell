@@ -113,10 +113,10 @@ def get_files_by_svn_status(dir)
 
     stdin, stdout, stderr = Open3.popen3("svn status #{dir}")
     stdout.readlines.each { |line|
-        file = line[8..-1].chomp
         flag = line[0]
+        file = line[8..-1].chomp
 
-        files << file if File.extname(file).casecmp('.java') == 0 && updated?(file) && (flag == 'M' || flag == 'A')
+        files << file if (flag == 'M' || flag == 'A') && File.extname(file).casecmp('.java') == 0 && updated?(file)
     }
 
     files

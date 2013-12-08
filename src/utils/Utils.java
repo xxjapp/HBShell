@@ -163,6 +163,10 @@ public class Utils {
     //
 
     public static String bytes2str(byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+
         try {
             return new String(bytes, UTF_8);
         } catch (UnsupportedEncodingException e) {
@@ -173,6 +177,10 @@ public class Utils {
     }
 
     public static String bytes2str(byte[] bytes, int offset, int length) {
+        if (bytes == null) {
+            return null;
+        }
+
         try {
             return new String(bytes, offset, length, UTF_8);
         } catch (UnsupportedEncodingException e) {

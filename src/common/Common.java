@@ -181,7 +181,8 @@ public class Common {
     // bytes
     //
 
-    public static final String UTF_8 = "UTF-8";
+    public static final String UTF_8     = "UTF-8";
+    public static final byte[] UTF_8_BOM = new byte[] { (byte)0xEF, (byte)0xBB, (byte)0xBF };
 
     public static String bytes2str(byte[] bytes) {
         if (bytes == null) {
@@ -210,6 +211,18 @@ public class Common {
         }
 
         return null;
+    }
+
+    public static String removeUtf8Bom(String string) {
+        byte[] bytes = str2bytes(string);
+
+        if (bytes.length >= UTF_8_BOM.length && bytes[0] == UTF_8_BOM[0] && bytes[1] == UTF_8_BOM[1] && bytes[2] == UTF_8_BOM[2]) {
+            byte[] bytes2 = new byte[bytes.length - UTF_8_BOM.length];
+            System.arraycopy(bytes, UTF_8_BOM.length, bytes2, 0, bytes2.length);
+            string = bytes2str(bytes2);
+        }
+
+        return string;
     }
 
     //
