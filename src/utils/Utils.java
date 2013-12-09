@@ -12,6 +12,8 @@ import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -364,14 +366,30 @@ public class Utils {
 
     // table
 
+    private static String tableName(HTable hTable) {
+        return bytes2str(hTable.getTableName());
+    }
+
+    // TODO: temporary method to speed getTableDescriptor
+    //       better not to use very very slow operation getTableDescriptor!
+    // WARN: incorrect info on renaming table
+    private static Map<String, List<String> > familiesMap = new TreeMap<String, List<String> >();
+
     public static List<String> getFamilies(HTable hTable)
     throws IOException {
-        List<String> families = new ArrayList<String>();
+        String       tableName = tableName(hTable);
+        List<String> families  = familiesMap.get(tableName);
 
-        HTableDescriptor descriptor = hTable.getTableDescriptor();
+        if (families == null) {
+            families = new ArrayList<String>();
 
-        for (byte[] bFamily : descriptor.getFamiliesKeys()) {
-            families.add(bytes2str(bFamily));
+            HTableDescriptor descriptor = hTable.getTableDescriptor();
+
+            for (byte[] bFamily : descriptor.getFamiliesKeys()) {
+                families.add(bytes2str(bFamily));
+            }
+
+            familiesMap.put(tableName, families);
         }
 
         return families;
