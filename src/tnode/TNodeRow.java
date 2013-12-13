@@ -5,6 +5,7 @@ import static common.Common.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 
 import main.HBShell;
@@ -131,7 +132,8 @@ public class TNodeRow extends TNodeBase {
                 continue;
             }
 
-            TNodeFamily familyNode = new TNodeFamily(task, this, family, map.get(bFamily), toOutput);
+            Map<String, Long> timestampMap = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result) : null;
+            TNodeFamily       familyNode   = new TNodeFamily(task, this, family, timestampMap, map.get(bFamily), toOutput);
 
             familyNode.handle();
 
@@ -187,9 +189,10 @@ public class TNodeRow extends TNodeBase {
 
             byte[] bFirstKey = familyMap.firstKey();
             String firstFileDataQualifier = Utils.bytes2str(bFirstKey);
+            Long   timestamp              = HBShell.showtimestamp ? result.raw()[0].getTimestamp() : null;
             byte[] firstFileDataBValue = familyMap.get(bFirstKey);
 
-            return new TNodeFamilyFileData(task, this, family, table, firstFileDataQualifier, firstFileDataBValue, familyNode, toOutput);
+            return new TNodeFamilyFileData(task, this, family, table, firstFileDataQualifier, timestamp, firstFileDataBValue, familyNode, toOutput);
         }
 
         return null;
@@ -203,8 +206,10 @@ public class TNodeRow extends TNodeBase {
             String qualifier = Utils.bytes2str(bFirstKey);
 
             if (Utils.isMatch(qualifier, FILE_DATA_QUALIFIER_PATTERN)) {
+                Long timestamp = HBShell.showtimestamp ? firstKVResult.raw()[0].getTimestamp() : null;
                 byte[] bValue = familyMap.get(bFirstKey);
-                return new TNodeFamilyFileData(task, this, family, table, qualifier, bValue, familyNode, toOutput);
+
+                return new TNodeFamilyFileData(task, this, family, table, qualifier, timestamp, bValue, familyNode, toOutput);
             }
         }
 

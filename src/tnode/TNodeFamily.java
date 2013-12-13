@@ -1,23 +1,24 @@
 package tnode;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.NavigableMap;
 
 import exception.HBSException;
-
 import main.HBShell;
-
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
 
 public class TNodeFamily extends TNodeBase {
+    private final Map<String, Long>            timestampMap;
     private final NavigableMap<byte[], byte[]> familyMap;
 
-    public TNodeFamily(TaskBase task, TNodeRow parent, String family, NavigableMap<byte[], byte[]> familyMap, boolean toOutput) {
+    public TNodeFamily(TaskBase task, TNodeRow parent, String family, Map<String, Long> timestampMap, NavigableMap<byte[], byte[]> familyMap, boolean toOutput) {
         super(task, parent, family, Level.FAMILY, toOutput);
 
-        this.familyMap = familyMap;
+        this.timestampMap = timestampMap;
+        this.familyMap    = familyMap;
     }
 
     @Override
@@ -40,7 +41,9 @@ public class TNodeFamily extends TNodeBase {
     throws IOException, HBSException {
         for (byte[] bQualifier : familyMap.keySet()) {
             String qualifier = Utils.bytes2str(bQualifier);
-            new TNodeQualifier(task, this, qualifier, familyMap.get(bQualifier), toOutput).handle();
+            Long   timestamp = HBShell.showtimestamp ? timestampMap.get(qualifier) : null;
+
+            new TNodeQualifier(task, this, qualifier, timestamp, familyMap.get(bQualifier), toOutput).handle();
         }
     }
 

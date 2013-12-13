@@ -3,7 +3,10 @@ package task;
 import static common.Common.*;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.NavigableMap;
+
+import main.HBShell;
 
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
@@ -12,7 +15,6 @@ import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
 import exception.HBSException;
-
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
 import tnode.TNodeFamily;
@@ -20,7 +22,6 @@ import tnode.TNodeFamilyFileData;
 import tnode.TNodeQualifier;
 import tnode.TNodeRow;
 import tnode.TNodeTable;
-
 import utils.Utils;
 
 public class Task_get extends TaskBase {
@@ -173,8 +174,10 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + FAMILY_IS_VALID_BUT_WITHOUT_DATA);
         }
 
+        Map<String, Long> timestampMap = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result) : null;
+
         NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
-        return new TNodeFamily(this, nRow, family, familyMap, true);
+        return new TNodeFamily(this, nRow, family, timestampMap, familyMap, true);
     }
 
     // see: TNodeRow.getFamilyFileData()
@@ -193,10 +196,15 @@ public class Task_get extends TaskBase {
     throws IOException {
         TNodeRow nRow = getRow(table, row);
 
-        Get get = new Get(str2bytes(row));
+        byte[] bRow       = str2bytes(row);
+        byte[] bFamily    = str2bytes(family);
+        byte[] bQualifier = str2bytes(qualifier);
+
+        Get get = new Get(bRow);
 
         // filter family & qualifier
-        get.addColumn(str2bytes(family), str2bytes(qualifier));
+
+        get.addColumn(bFamily, bQualifier);
 
         // get result
         Result result = null;
@@ -212,9 +220,17 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + ":" + qualifier);
         }
 
-        byte[] bValue = result.getValue(str2bytes(family), str2bytes(qualifier));
+        Map<String, Long> timestampMap = null;
+        Long              timestamp    = null;
 
-        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, result.getFamilyMap(str2bytes(family)), true);
-        return new TNodeQualifier(this, nFamily, qualifier, bValue, true);
+        if (HBShell.showtimestamp) {
+            timestampMap = Utils.resultGetTimestampMap(result);
+            timestamp    = timestampMap.get(qualifier);
+        }
+
+        byte[] bValue = result.getValue(bFamily, bQualifier);
+
+        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, timestampMap, result.getFamilyMap(bFamily), true);
+        return new TNodeQualifier(this, nFamily, qualifier, timestamp, bValue, true);
     }
 }

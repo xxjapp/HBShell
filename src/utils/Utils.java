@@ -11,6 +11,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,6 +22,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -362,6 +364,17 @@ public class Utils {
     public static String resultGetRowKey(Result result) {
         byte[] bRowKey = result.getRow();
         return bytes2str(bRowKey);
+    }
+
+    // This should be used only in one family to avoid name-duplicated qualifier
+    public static Map<String, Long> resultGetTimestampMap(Result result) {
+        Map<String, Long> timestampMap = new HashMap<String, Long>();
+
+        for (KeyValue kv : result.list()) {
+            timestampMap.put(bytes2str(kv.getQualifier()), kv.getTimestamp());
+        }
+
+        return timestampMap;
     }
 
     // table

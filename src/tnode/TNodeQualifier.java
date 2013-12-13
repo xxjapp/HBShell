@@ -11,11 +11,13 @@ import task.TaskBase.Level;
 
 public class TNodeQualifier extends TNodeBase {
     private final byte[] bValue;
+    private final Long   timestamp;
 
-    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, byte[] bValue, boolean toOutput) {
+    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, Long timestamp, byte[] bValue, boolean toOutput) {
         super(task, parent, qualifier, Level.QUALIFIER, toOutput);
 
-        this.bValue = bValue;
+        this.timestamp = timestamp;
+        this.bValue    = bValue;
     }
 
     @Override
@@ -36,6 +38,6 @@ public class TNodeQualifier extends TNodeBase {
     @Override
     protected void travelChildren()
     throws IOException, HBSException {
-        new TNodeValue(task, this, bValue, toOutput).handle();
+        new TNodeValue(task, this, timestamp, bValue, toOutput).handle();
     }
 }

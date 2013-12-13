@@ -44,6 +44,7 @@ public abstract class TaskBase implements Task {
         RENAME,
         RUN,
         SCAN,
+        SHOWTIMESTAMP,
         VERSION,
     }
 
