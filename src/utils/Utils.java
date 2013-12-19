@@ -417,6 +417,15 @@ public class Utils {
         hTable.put(put);
     }
 
+    public static void put(HTable hTable, String rowKey, String family, String qualifier, byte[] bValue)
+    throws IOException {
+        RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier + " = " + "0x...");
+
+        Put put = new Put(str2bytes(rowKey));
+        put.add(str2bytes(family), str2bytes(qualifier), bValue);
+        hTable.put(put);
+    }
+
     public static void deleteRow(HTable hTable, String rowKey)
     throws IOException {
         RootLog.getLog().info(rowKey);

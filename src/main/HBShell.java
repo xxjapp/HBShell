@@ -58,6 +58,7 @@ public class HBShell {
     public static SessionMode sessionMode             = SessionMode.auto;
     public static Long        maxResultLogFileCount   = 10L;
     public static Long        defaultHistoryCount     = 30L;
+    public static String      binaryDataDir           = "./bin_data";
 
     public static List<String> alias_clear         = Arrays.asList("cle", "clr");
     public static List<String> alias_connect       = Arrays.asList("con");
@@ -65,10 +66,12 @@ public class HBShell {
     public static List<String> alias_create        = Arrays.asList("c", "cre");
     public static List<String> alias_delete        = Arrays.asList("d", "del");
     public static List<String> alias_describe      = Arrays.asList("des");
+    public static List<String> alias_export        = Arrays.asList("ex");
     public static List<String> alias_filter        = Arrays.asList("f");
     public static List<String> alias_get           = Arrays.asList("g");
     public static List<String> alias_help          = Arrays.asList("h");
     public static List<String> alias_history       = Arrays.asList("his");
+    public static List<String> alias_import        = Arrays.asList("im");
     public static List<String> alias_list          = Arrays.asList("l", "ls");
     public static List<String> alias_multiline     = Arrays.asList("m");
     public static List<String> alias_put           = Arrays.asList("p");
@@ -114,6 +117,7 @@ public class HBShell {
         sessionMode             = PropertiesHelper.getProperty(properties, "sessionMode",               sessionMode);
         maxResultLogFileCount   = PropertiesHelper.getProperty(properties, "maxResultLogFileCount",     maxResultLogFileCount);
         defaultHistoryCount     = PropertiesHelper.getProperty(properties, "defaultHistoryCount",       defaultHistoryCount);
+        binaryDataDir           = PropertiesHelper.getProperty(properties, "binaryDataDir",             binaryDataDir);
 
         alias_clear         = PropertiesHelper.getProperty(properties, "alias_clear",           alias_clear);
         alias_connect       = PropertiesHelper.getProperty(properties, "alias_connect",         alias_connect);
@@ -121,10 +125,12 @@ public class HBShell {
         alias_create        = PropertiesHelper.getProperty(properties, "alias_create",          alias_create);
         alias_delete        = PropertiesHelper.getProperty(properties, "alias_delete",          alias_delete);
         alias_describe      = PropertiesHelper.getProperty(properties, "alias_describe",        alias_describe);
+        alias_export        = PropertiesHelper.getProperty(properties, "alias_export",          alias_export);
         alias_filter        = PropertiesHelper.getProperty(properties, "alias_filter",          alias_filter);
         alias_get           = PropertiesHelper.getProperty(properties, "alias_get",             alias_get);
         alias_help          = PropertiesHelper.getProperty(properties, "alias_help",            alias_help);
         alias_history       = PropertiesHelper.getProperty(properties, "alias_history",         alias_history);
+        alias_import        = PropertiesHelper.getProperty(properties, "alias_import",          alias_import);
         alias_list          = PropertiesHelper.getProperty(properties, "alias_list",            alias_list);
         alias_multiline     = PropertiesHelper.getProperty(properties, "alias_multiline",       alias_multiline);
         alias_put           = PropertiesHelper.getProperty(properties, "alias_put",             alias_put);

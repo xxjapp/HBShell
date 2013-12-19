@@ -31,10 +31,12 @@ public abstract class TaskBase implements Task {
         CREATE,
         DELETE,
         DESCRIBE,
+        EXPORT,
         FILTER,
         GET,
         HELP,
         HISTORY,
+        IMPORT,
         LIST,
         MULTILINE,
         PUT,
@@ -132,6 +134,11 @@ public abstract class TaskBase implements Task {
     @Override
     public boolean isReadOnly() {
         return true;
+    }
+
+    @Override
+    public boolean outpuBinary() {
+        return false;
     }
 
     private boolean doConfirm()

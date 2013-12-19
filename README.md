@@ -65,6 +65,12 @@ Execute:
       example : describe ^135530186920f18b9049b0a0743e86ac3185887c5d
       alias   : [des]
 
+### EXPORT - export binary contents of database, table, row, family or qualifier
+
+      usage   : export [table_name [row_key [family_name [qualifier_name]]]]
+      example : export 135530186920f18b9049b0a0743e86ac3185887c5d f30dab5e-4b42-11e2-b324-998f21848d86file
+      alias   : [ex]
+
 ### FILTER - scan database data with given filter, other_pattern will be applied like grep finally
 
       usage   : filter [table_pattern [row_pattern [family_pattern [qualifier_pattern [value_pattern]]]]] other_pattern
@@ -88,6 +94,12 @@ Execute:
       usage   : history [count [pattern]]
       example : history 3 get
       alias   : [his]
+
+### IMPORT - import binary contents of database, table, row, family or qualifier into database
+
+      usage   : import [table_name [row_key [family_name [qualifier_name]]]]
+      example : import 135530186920f18b9049b0a0743e86ac3185887c5d f30dab5e-4b42-11e2-b324-998f21848d86file
+      alias   : [im]
 
 ### LIST - list database data at a specified level
 

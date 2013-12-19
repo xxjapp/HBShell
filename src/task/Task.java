@@ -14,4 +14,6 @@ public interface Task {
     String example();
 
     boolean isReadOnly();
+
+    boolean outpuBinary();
 }

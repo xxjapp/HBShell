@@ -1,10 +1,13 @@
 package tnode;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
+
+import org.apache.commons.io.FileUtils;
 
 import exception.HBSException;
 import main.HBShell;
@@ -15,11 +18,13 @@ import utils.Utils;
 public class TNodeValue extends TNodeBase {
     private static final SimpleDateFormat timestampFormat = new SimpleDateFormat(HBShell.format_timestamp, Locale.US);
 
+    private final byte[] bValue;
     private final String timestamp;
 
     public TNodeValue(TaskBase task, TNodeQualifier parent, Long timestamp, byte[] bValue, boolean toOutput) {
         super(task, parent, valueString(bValue), Level.VALUE, toOutput);
 
+        this.bValue    = bValue;
         this.timestamp = timestampString(timestamp);
     }
 
@@ -49,6 +54,11 @@ public class TNodeValue extends TNodeBase {
                 log.info(String.format(formatString(), parent.name, timestamp, name));
             } else {
                 log.info(String.format(formatString(), parent.name, name));
+            }
+
+            if (task.outpuBinary()) {
+                String valueFilePath = String.format("%s/%s/%s/%s/%s.txt", HBShell.binaryDataDir, parent.parent.parent.parent.name, parent.parent.parent.name, parent.parent.name, parent.name);
+                FileUtils.writeByteArrayToFile(new File(valueFilePath), bValue);
             }
         }
 
