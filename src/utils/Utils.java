@@ -11,6 +11,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,9 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import main.HBShell;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -30,6 +34,7 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 
+import common.Common;
 import common.OemInfo;
 
 public class Utils {
@@ -386,23 +391,70 @@ public class Utils {
     // TODO: temporary method to speed getTableDescriptor
     //       better not to use very very slow operation getTableDescriptor!
     // WARN: incorrect info on renaming table
-    private static Map<String, List<String> > familiesMap = new TreeMap<String, List<String> >();
+    private static final Map<String, List<String> > familiesMap = new TreeMap<String, List<String> >();
 
     public static List<String> getFamilies(HTable hTable)
     throws IOException {
+        if (!HBShell.usefamilycache) {
+            return getFamilies2(hTable);
+        }
+
         String       tableName = tableName(hTable);
         List<String> families  = familiesMap.get(tableName);
 
         if (families == null) {
-            families = new ArrayList<String>();
+            families = readLocalFamilies(tableName);
 
-            HTableDescriptor descriptor = hTable.getTableDescriptor();
-
-            for (byte[] bFamily : descriptor.getFamiliesKeys()) {
-                families.add(bytes2str(bFamily));
+            if (families == null) {
+                families = getFamilies2(hTable);
+                writeLocalFamilies(tableName, families);
             }
 
             familiesMap.put(tableName, families);
+        }
+
+        return families;
+    }
+
+    private static void writeLocalFamilies(String tableName, List<String> families)
+    throws IOException {
+        String familyInfo = Common.join(families.toArray(), "\n");
+        FileUtils.writeStringToFile(localFamilyFile(tableName), familyInfo, UTF_8);
+    }
+
+    private static List<String> readLocalFamilies(String tableName) {
+        try {
+            String familyInfo = FileUtils.readFileToString(localFamilyFile(tableName), UTF_8);
+
+            if (!isEmpty(familyInfo)) {
+                return Arrays.asList(familyInfo.split("\n"));
+            }
+        } catch (IOException e) {
+        }
+
+        return null;
+    }
+
+    public static void clearFamilyCache() {
+        familiesMap.clear();
+
+        String path = String.format("%s/_families", getTmpDir());
+        FileUtils.deleteQuietly(new File(path));
+    }
+
+    private static File localFamilyFile(String tableName) {
+        String path = String.format("%s/_families/%s.txt", getTmpDir(), tableName);
+        return new File(path);
+    }
+
+    private static List<String> getFamilies2(HTable hTable)
+    throws IOException {
+        List<String> families = new ArrayList<String>();
+
+        HTableDescriptor descriptor = hTable.getTableDescriptor();
+
+        for (byte[] bFamily : descriptor.getFamiliesKeys()) {
+            families.add(bytes2str(bFamily));
         }
 
         return families;

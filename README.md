@@ -163,6 +163,24 @@ Execute:
       example : scan ^135530186920f18b9049b0a0743e86ac3185887c5d . fileinfo
       alias   : [s]
 
+### SHOWTIMESTAMP - show current showtimestamp status or set new showtimestamp status temporarily
+
+    ** NOTE: for permanent change of showtimestamp status, modify setting file
+    [conf/config.ini]
+
+      usage   : showtimestamp [0, false or 1, true]
+      example : showtimestamp false
+      alias   : [st]
+
+### USEFAMILYCACHE - show current usefamilycache status or set new usefamilycache status temporarily
+
+    ** NOTE: for permanent change of usefamilycache status, modify setting file
+    [conf/config.ini]
+
+      usage   : usefamilycache [0, false or 1, true]
+      example : usefamilycache false
+      alias   : [fc]
+
 ### VERSION - show version message
 
       usage   : version

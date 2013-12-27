@@ -69,7 +69,7 @@ public class TaskStatusBase extends TaskBase {
         }
     }
 
-    private void setStatus(String status)
+    protected void setStatus(String status)
     throws IOException {
         try {
             HBShell.class.getField(name).set(null, Boolean.valueOf(status));

@@ -47,6 +47,7 @@ public abstract class TaskBase implements Task {
         RUN,
         SCAN,
         SHOWTIMESTAMP,
+        USEFAMILYCACHE,
         VERSION,
     }
 
