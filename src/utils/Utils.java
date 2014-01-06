@@ -388,9 +388,6 @@ public class Utils {
         return bytes2str(hTable.getTableName());
     }
 
-    // TODO: temporary method to speed getTableDescriptor
-    //       better not to use very very slow operation getTableDescriptor!
-    // WARN: incorrect info on renaming table
     private static final Map<String, List<String> > familiesMap = new TreeMap<String, List<String> >();
 
     public static List<String> getFamilies(HTable hTable)
