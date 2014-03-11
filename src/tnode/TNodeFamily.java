@@ -12,13 +12,15 @@ import utils.Utils;
 
 public class TNodeFamily extends TNodeBase {
     private final Map<String, Long>            timestampMap;
+    private final Map<String, Integer>         valuelengthMap;
     private final NavigableMap<byte[], byte[]> familyMap;
 
-    public TNodeFamily(TaskBase task, TNodeRow parent, String family, Map<String, Long> timestampMap, NavigableMap<byte[], byte[]> familyMap, boolean toOutput) {
+    public TNodeFamily(TaskBase task, TNodeRow parent, String family, Map<String, Long> timestampMap, Map<String, Integer> valuelengthMap, NavigableMap<byte[], byte[]> familyMap, boolean toOutput) {
         super(task, parent, family, Level.FAMILY, toOutput);
 
-        this.timestampMap = timestampMap;
-        this.familyMap    = familyMap;
+        this.timestampMap   = timestampMap;
+        this.valuelengthMap = valuelengthMap;
+        this.familyMap      = familyMap;
     }
 
     @Override
@@ -28,7 +30,7 @@ public class TNodeFamily extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException, HBSException {
+    throws IOException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.FAMILY);
         }
@@ -41,9 +43,11 @@ public class TNodeFamily extends TNodeBase {
     throws IOException, HBSException {
         for (byte[] bQualifier : familyMap.keySet()) {
             String qualifier = Utils.bytes2str(bQualifier);
-            Long   timestamp = HBShell.showtimestamp ? timestampMap.get(qualifier) : null;
 
-            new TNodeQualifier(task, this, qualifier, timestamp, familyMap.get(bQualifier), toOutput).handle();
+            Long    timestamp   = HBShell.showtimestamp ? timestampMap.get(qualifier) : null;
+            Integer valuelength = HBShell.showvaluelength ? valuelengthMap.get(qualifier) : null;
+
+            new TNodeQualifier(task, this, qualifier, timestamp, valuelength, familyMap.get(bQualifier), toOutput).handle();
         }
     }
 

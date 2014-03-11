@@ -9,37 +9,47 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 
-import exception.HBSException;
 import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
 
 public class TNodeValue extends TNodeBase {
-    private static final SimpleDateFormat timestampFormat = new SimpleDateFormat(HBShell.format_timestamp, Locale.US);
+    private static final SimpleDateFormat timestampFormat   = new SimpleDateFormat(HBShell.format_timestamp, Locale.US);
+    private static final String           valuelengthFormat = HBShell.format_valuelength;
 
     private final byte[] bValue;
     private final String timestamp;
+    private final String valuelength;
 
-    public TNodeValue(TaskBase task, TNodeQualifier parent, Long timestamp, byte[] bValue, boolean toOutput) {
+    public TNodeValue(TaskBase task, TNodeQualifier parent, Long timestamp, Integer valuelength, byte[] bValue, boolean toOutput) {
         super(task, parent, valueString(bValue), Level.VALUE, toOutput);
 
-        this.bValue    = bValue;
-        this.timestamp = timestampString(timestamp);
+        this.bValue      = bValue;
+        this.timestamp   = timestampString(timestamp);
+        this.valuelength = valuelengthString(valuelength);
     }
 
     @Override
     protected String formatString() {
+        String format = parent.formatString() + " = ";
+
         if (HBShell.showtimestamp) {
-            return parent.formatString() + " = %s " + HBShell.format_value;
-        } else {
-            return parent.formatString() + " = " + HBShell.format_value;
+            format += "%s ";
         }
+
+        if (HBShell.showvaluelength) {
+            format += "%s ";
+        }
+
+        format += HBShell.format_value;
+
+        return format;
     }
 
     @Override
     public void output()
-    throws IOException, HBSException {
+    throws IOException {
         if (!otherFilterPassed()) {
             return;
         }
@@ -50,8 +60,12 @@ public class TNodeValue extends TNodeBase {
         if (toOutput) {
             parent.parent.output();
 
-            if (HBShell.showtimestamp) {
+            if (HBShell.showtimestamp && HBShell.showvaluelength) {
+                log.info(String.format(formatString(), parent.name, timestamp, valuelength, name));
+            } else if (HBShell.showtimestamp && !HBShell.showvaluelength) {
                 log.info(String.format(formatString(), parent.name, timestamp, name));
+            } else if (!HBShell.showtimestamp && HBShell.showvaluelength) {
+                log.info(String.format(formatString(), parent.name, valuelength, name));
             } else {
                 log.info(String.format(formatString(), parent.name, name));
             }
@@ -79,6 +93,14 @@ public class TNodeValue extends TNodeBase {
 
         Date date = new Date(timestamp);
         return timestampFormat.format(date);
+    }
+
+    private static String valuelengthString(Integer valuelength) {
+        if (valuelength == null) {
+            return null;
+        }
+
+        return String.format(valuelengthFormat, valuelength.intValue());
     }
 
     private static String valueString(byte[] bValue) {

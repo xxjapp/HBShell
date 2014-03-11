@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.hbase.client.HTable;
 
-import exception.HBSException;
-
 import tnode.TNodeFamily;
 import utils.Utils;
 
@@ -55,12 +53,12 @@ public class Task_describe extends TaskBase {
 
     @Override
     protected void foundTable(HTable table)
-    throws IOException, HBSException {
+    throws IOException {
         List<String> families = Utils.getFamilies(table);
 
         for (String family : families) {
             if (isMatch(Level.FAMILY, family)) {
-                new TNodeFamily(null, null, family, null, null, true).output();
+                new TNodeFamily(null, null, family, null, null, null, true).output();
             }
         }
     }

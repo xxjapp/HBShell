@@ -29,6 +29,8 @@ def version()
     end
 
     sprintf("%04d", version_num)
+rescue
+    "UNKNOWN(svnversion not found)"
 end
 
 def build_time()

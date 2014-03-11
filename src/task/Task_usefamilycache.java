@@ -1,7 +1,5 @@
 package task;
 
-import java.io.IOException;
-
 import utils.Utils;
 
 public class Task_usefamilycache extends TaskStatusBase {
@@ -10,8 +8,7 @@ public class Task_usefamilycache extends TaskStatusBase {
     }
 
     @Override
-    protected void setStatus(String status)
-    throws IOException {
+    protected void setStatus(String status) {
         super.setStatus(status);
 
         if (!Boolean.valueOf(status)) {

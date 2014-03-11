@@ -60,8 +60,7 @@ public class TaskStatusBase extends TaskBase {
         }
     }
 
-    private void outputStatus()
-    throws IOException {
+    private void outputStatus() {
         try {
             log.info("Current " + name + " status: " + HBShell.class.getField(name).get(null));
         } catch (Exception e) {
@@ -69,8 +68,7 @@ public class TaskStatusBase extends TaskBase {
         }
     }
 
-    protected void setStatus(String status)
-    throws IOException {
+    protected void setStatus(String status) {
         try {
             HBShell.class.getField(name).set(null, Boolean.valueOf(status));
         } catch (Exception e) {

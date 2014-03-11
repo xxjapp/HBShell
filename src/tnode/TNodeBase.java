@@ -48,7 +48,7 @@ public abstract class TNodeBase implements TNode {
     }
 
     public void output()
-    throws IOException, HBSException {
+    throws IOException {
         if (outputted) {
             return;
         }

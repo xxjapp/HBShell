@@ -382,6 +382,16 @@ public class Utils {
         return timestampMap;
     }
 
+    public static Map<String, Integer> resultGetValueLengthMap(Result result) {
+        Map<String, Integer> valuelengthMap = new HashMap<String, Integer>();
+
+        for (KeyValue kv : result.list()) {
+            valuelengthMap.put(bytes2str(kv.getQualifier()), kv.getValueLength());
+        }
+
+        return valuelengthMap;
+    }
+
     // table
 
     private static String tableName(HTable hTable) {

@@ -36,7 +36,7 @@ public class TNodeTable extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException, HBSException {
+    throws IOException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.TABLE);
         }

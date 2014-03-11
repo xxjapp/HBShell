@@ -174,10 +174,11 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + FAMILY_IS_VALID_BUT_WITHOUT_DATA);
         }
 
-        Map<String, Long> timestampMap = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result) : null;
+        Map<String, Long>    timestampMap   = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result) : null;
+        Map<String, Integer> valuelengthMap = HBShell.showvaluelength ? Utils.resultGetValueLengthMap(result) : null;
 
         NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
-        return new TNodeFamily(this, nRow, family, timestampMap, familyMap, true);
+        return new TNodeFamily(this, nRow, family, timestampMap, valuelengthMap, familyMap, true);
     }
 
     // see: TNodeRow.getFamilyFileData()
@@ -228,9 +229,17 @@ public class Task_get extends TaskBase {
             timestamp    = timestampMap.get(qualifier);
         }
 
+        Map<String, Integer> valuelengthMap = null;
+        Integer              valuelength    = null;
+
+        if (HBShell.showvaluelength) {
+            valuelengthMap = Utils.resultGetValueLengthMap(result);
+            valuelength    = valuelengthMap.get(qualifier);
+        }
+
         byte[] bValue = result.getValue(bFamily, bQualifier);
 
-        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, timestampMap, result.getFamilyMap(bFamily), true);
-        return new TNodeQualifier(this, nFamily, qualifier, timestamp, bValue, true);
+        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, timestampMap, valuelengthMap, result.getFamilyMap(bFamily), true);
+        return new TNodeQualifier(this, nFamily, qualifier, timestamp, valuelength, bValue, true);
     }
 }

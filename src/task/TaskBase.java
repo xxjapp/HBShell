@@ -47,6 +47,7 @@ public abstract class TaskBase implements Task {
         RUN,
         SCAN,
         SHOWTIMESTAMP,
+        SHOWVALUELENGTH,
         USEFAMILYCACHE,
         VERSION,
     }
@@ -200,6 +201,9 @@ public abstract class TaskBase implements Task {
 
     protected abstract boolean checkArgNumber(int argNumber);
 
+    /**
+     * @throws IOException
+     */
     protected void assignParam(String[] args)
     throws IOException {
         try {
@@ -277,8 +281,7 @@ public abstract class TaskBase implements Task {
     // utils
     //
 
-    private static String getTaskClassName(TaskType taskType)
-    throws ClassNotFoundException {
+    private static String getTaskClassName(TaskType taskType) {
         return CLASS_NAME_PREFIX + taskType.toString().toLowerCase();
     }
 
@@ -379,7 +382,7 @@ public abstract class TaskBase implements Task {
     //
 
     public void notifyFound(TNodeBase node)
-    throws IOException, HBSException {
+    throws IOException {
         if (!notifyEnabled) {
             return;
         }
@@ -423,26 +426,56 @@ public abstract class TaskBase implements Task {
         }
     }
 
+    /**
+     * @param table
+     * @throws IOException
+     */
     protected void foundTable(HTable table)
-    throws IOException, HBSException {
+    throws IOException {
         // Do nothing
     }
 
+    /**
+     * @param table
+     * @param row
+     * @throws IOException
+     */
     protected void foundRow(HTable table, String row)
     throws IOException {
         // Do nothing
     }
 
+    /**
+     * @param table
+     * @param row
+     * @param family
+     * @throws IOException
+     */
     protected void foundFamily(HTable table, String row, String family)
     throws IOException {
         // Do nothing
     }
 
+    /**
+     * @param table
+     * @param row
+     * @param family
+     * @param qualifier
+     * @throws IOException
+     */
     protected void foundQualifier(HTable table, String row, String family, String qualifier)
     throws IOException {
         // Do nothing
     }
 
+    /**
+     * @param table
+     * @param row
+     * @param family
+     * @param qualifier
+     * @param value
+     * @throws IOException
+     */
     protected void foundValue(HTable table, String row, String family, String qualifier, String value)
     throws IOException {
         // Do nothing
