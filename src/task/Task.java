@@ -16,4 +16,6 @@ public interface Task {
     boolean isReadOnly();
 
     boolean outpuBinary();
+
+    boolean isHandleAll();
 }

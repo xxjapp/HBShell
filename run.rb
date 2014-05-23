@@ -19,9 +19,8 @@ SRC_DIR = 'src'
 LIB_DIR = 'lib'
 BIN_DIR = 'bin'
 
-# platform(linux or windows) related constances
-IS_LINUX        = File.exist?('/dev/null')
-CLASSPATH_JOIN  = IS_LINUX ? ':' : ';'
+# platform related constances
+CLASSPATH_JOIN  = Gem.win_platform? ? ';' : ':'
 
 # main class related constances
 MAIN_CLASS_NAME = File.basename(THIS_FILE_DIR)
@@ -82,10 +81,8 @@ def run_java(args)
     # build class files if necessary
     if main_class_file_not_found || class_files_out_of_date(source_files, class_files)
         FileUtils.mkpath BIN_DIR
-        exec_cmd "javac -encoding UTF-8 -d #{BIN_DIR} -classpath #{classpath_for_compile} #{source_files.join(' ')}"
 
-        # create jar file list
-        exec_cmd "ruby .externalToolBuilders/init_tool.rb"
+        exec_cmd "javac -encoding UTF-8 -d #{BIN_DIR} -classpath #{classpath_for_compile} #{source_files.join(' ')}"
     end
 
     # run java program

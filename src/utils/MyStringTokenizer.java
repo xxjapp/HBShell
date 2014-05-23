@@ -22,7 +22,7 @@ public class MyStringTokenizer {
         IN_QUOTE_TOKEN,
         BACKSLASH_FOUND,
         QUOTE1_FOUND,
-    };
+    }
 
     // Valid token string example
     //

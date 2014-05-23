@@ -20,4 +20,9 @@ public class Task_export extends Task_get {
     public boolean outpuBinary() {
         return true;
     }
+
+    @Override
+    public boolean isHandleAll() {
+        return true;
+    }
 }

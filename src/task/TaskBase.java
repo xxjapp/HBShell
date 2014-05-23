@@ -71,10 +71,11 @@ public abstract class TaskBase implements Task {
     private boolean notifyEnabled = false;
     private boolean needConfirm   = false;
 
-    private static Map<String, TaskType> aliasMap = null;
-    private static boolean               forced   = false;
-    private static boolean               quiet    = false;
-    private static long                  rowLimit = Long.MAX_VALUE;
+    private static Map<String, TaskType> aliasMap  = null;
+    private static boolean               forced    = false;
+    private static boolean               quiet     = false;
+    private static boolean               handleAll = false;
+    private static long                  rowLimit  = Long.MAX_VALUE;
 
     private TaskType taskType = null;
 
@@ -141,6 +142,11 @@ public abstract class TaskBase implements Task {
     @Override
     public boolean outpuBinary() {
         return false;
+    }
+
+    @Override
+    public boolean isHandleAll() {
+        return handleAll;
     }
 
     private boolean doConfirm()
@@ -323,6 +329,13 @@ public abstract class TaskBase implements Task {
         quiet = string.endsWith("-");
 
         if (quiet) {
+            string = string.substring(0, string.length() - 1);
+        }
+
+        // check if handle all
+        handleAll = string.endsWith("*");
+
+        if (handleAll) {
             string = string.substring(0, string.length() - 1);
         }
 

@@ -311,7 +311,7 @@ public class Utils {
 
     private static void setDefaultHBaseConfiguration() {
         m_hBaseConfiguration = new HBaseConfiguration();
-        m_hBaseConfiguration.addResource(new Path(OemInfo.hbaseUrl()));
+        m_hBaseConfiguration.addResource(new Path(OemInfo.hbaseSiteXml()));
     }
 
     public static HTableDescriptor[] listTables()

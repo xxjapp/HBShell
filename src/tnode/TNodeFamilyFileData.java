@@ -62,7 +62,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
         long firstIndex = minIndex;
         long lastIndex  = searchLastFileDataQualifier(minIndex, maxIndex, maxIndex * 2 - minIndex);
 
-        if ((task.levelParam.get(Level.QUALIFIER) == null) && (task.levelParam.get(Level.VALUE) == null) && (task.levelParam.get(Level.OTHER) == null)) {
+        if (travelQuickly()) {
             // no qualifier and value filter, show only the first and last file data qualifier
 
             // first file data qualifier
@@ -127,6 +127,14 @@ public class TNodeFamilyFileData extends TNodeFamily {
                 }
             }
         }
+    }
+
+    private boolean travelQuickly() {
+        if (task.isHandleAll()) {
+            return false;
+        }
+
+        return (task.levelParam.get(Level.QUALIFIER) == null) && (task.levelParam.get(Level.VALUE) == null) && (task.levelParam.get(Level.OTHER) == null);
     }
 
     // half search the last file data qualifier

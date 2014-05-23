@@ -15,8 +15,6 @@ import jline.ConsoleReader;
 
 import org.apache.commons.io.FileUtils;
 
-import common.JarInfo;
-
 import task.Task;
 import task.TaskBase;
 import task.Task_history;
@@ -188,13 +186,6 @@ public class HBShell {
     public static void main(String[] args)
     throws IOException {
         init();
-
-        try {
-            JarInfo.checkJarFiles();
-        } catch (IOException e) {
-            log.error(null, e);
-            return;
-        }
 
         do {
             String[] cmdArgs = null;

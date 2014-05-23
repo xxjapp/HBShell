@@ -12,7 +12,7 @@ public class Task_connect extends TaskBase {
                "\n" +
                "** NOTE: for permanent change of quorums, modify hosts file\n" +
                "[windows: C:\\Windows\\System32\\drivers\\etc\\hosts / linux: /etc/hosts]\n" +
-               "or change value of 'hbase.zookeeper.quorum' in conf/hbase-site.xml";
+               "or change value of 'hbase.zookeeper.quorum' in 'hbase-site.xml'";
     }
 
     @Override

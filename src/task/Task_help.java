@@ -74,11 +74,16 @@ public class Task_help extends TaskBase {
         log.info("");
         log.info(" - all commands can be added with a row limit number to only operate on first found rows");
         log.info("");
-        log.info("** NOTE 3)" + " - " + "Command modifier/quiet mode");
+        log.info("** NOTE 3)" + " * " + "Command modifier/all-handle mode");
+        log.info("");
+        log.info(" - all commands can be added with a '*' mark to execute without omitting series of qualifiers, thus 'f0, ..., f3' => 'f0, f1, f2, f3'");
+        log.info(" - some commands always use this mode, eg. 'export'");
+        log.info("");
+        log.info("** NOTE 4)" + " - " + "Command modifier/quiet mode");
         log.info("");
         log.info(" - all commands can be added with a '-' mark to execute without logging to console and normal log file");
         log.info("");
-        log.info("** NOTE 4)" + " - " + "Command modifier/force to execute");
+        log.info("** NOTE 5)" + " - " + "Command modifier/force to execute");
         log.info("");
         log.info(" - all commands can be added with a '!' mark to execute without confirmation");
         log.info("");
