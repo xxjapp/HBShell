@@ -214,7 +214,7 @@ Execute:
 
      - all commands can be added with a row limit number to only operate on first found rows
 
-## NOTE 3) * Command modifier/all-handle mode
+## NOTE 3) - Command modifier/all-handle mode
 
      - all commands can be added with a '*' mark to execute without omitting series of qualifiers, thus 'f0, ..., f3' => 'f0, f1, f2, f3'
      - some commands always use this mode, eg. 'export'
