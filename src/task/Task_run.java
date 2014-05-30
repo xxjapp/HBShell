@@ -81,7 +81,7 @@ public class Task_run extends TaskBase {
         }
     }
 
-    private String[] getCmdArgs(String line) {
+    private static String[] getCmdArgs(String line) {
         return MyStringTokenizer.getTokens(line);
     }
 }

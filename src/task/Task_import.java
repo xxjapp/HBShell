@@ -94,7 +94,7 @@ public class Task_import extends TaskBase {
         }
     }
 
-    private void importQualifier(HTable hTable, String table, String row, String family, String qualifier)
+    private static void importQualifier(HTable hTable, String table, String row, String family, String qualifier)
     throws IOException {
         String valueFilePath = String.format("%s/%s/%s/%s/%s.txt", HBShell.binaryDataDir, table, row, family, qualifier);
         byte[] bValue = FileUtils.readFileToByteArray(new File(valueFilePath));
@@ -102,7 +102,7 @@ public class Task_import extends TaskBase {
         Utils.put(hTable, row, family, qualifier, bValue);
     }
 
-    private void importFamily(HTable hTable, String table, String row, String family)
+    private static void importFamily(HTable hTable, String table, String row, String family)
     throws IOException {
         String familyDirPath = String.format("%s/%s/%s/%s", HBShell.binaryDataDir, table, row, family);
         File   familyDir     = new File(familyDirPath);
@@ -114,7 +114,7 @@ public class Task_import extends TaskBase {
         }
     }
 
-    private void importRow(HTable hTable, String table, String row)
+    private static void importRow(HTable hTable, String table, String row)
     throws IOException {
         String rowDirPath = String.format("%s/%s/%s", HBShell.binaryDataDir, table, row);
         File   rowDir     = new File(rowDirPath);
@@ -125,7 +125,7 @@ public class Task_import extends TaskBase {
         }
     }
 
-    private void importTable(HTable hTable, String table)
+    private static void importTable(HTable hTable, String table)
     throws IOException {
         String tableDirPath = String.format("%s/%s", HBShell.binaryDataDir, table);
         File   tableDir     = new File(tableDirPath);
@@ -136,7 +136,7 @@ public class Task_import extends TaskBase {
         }
     }
 
-    private void importDatabase()
+    private static void importDatabase()
     throws IOException {
         String dbDirPath = String.format("%s", HBShell.binaryDataDir);
         File   dbDir     = new File(dbDirPath);

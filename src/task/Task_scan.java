@@ -22,7 +22,7 @@ public class Task_scan extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         return Level.VALUE;
     }
 }

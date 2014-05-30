@@ -36,7 +36,7 @@ public class Task_filter extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         return Level.VALUE;
     }
 }

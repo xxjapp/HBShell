@@ -11,8 +11,8 @@ public class Task_reg_delete extends TaskBase {
     protected String description() {
         return "delete data in database with given filter\n" +
                "\n" +
-               "** WARNING : 'delete'(and its alias) will delete all tables in database\n" +
-               "** NOTE    : use 'delete! ...' to force delete";
+               "    ** WARNING : 'delete'(and its alias) will delete all tables in database\n" +
+               "    ** NOTE    : use 'delete! ...' to force delete";
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Task_reg_delete extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         if (levelParam.size() > 0) {
             return Level.values()[levelParam.size() - 1];
         }
@@ -45,12 +45,12 @@ public class Task_reg_delete extends TaskBase {
     }
 
     @Override
-    protected boolean needConfirm() {
+    public boolean needConfirm() {
         return true;
     }
 
     @Override
-    protected boolean notifyEnabled() {
+    public boolean notifyEnabled() {
         return true;
     }
 

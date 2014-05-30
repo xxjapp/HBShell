@@ -197,9 +197,9 @@ public class HBShell {
 
                 if (sessionMode == SessionMode.single) {
                     break;
-                } else {
-                    continue;
                 }
+
+                continue;
             }
 
             if (cmdArgs.length == 0) {
@@ -221,9 +221,9 @@ public class HBShell {
 
                 if (sessionMode == SessionMode.single) {
                     break;
-                } else {
-                    continue;
                 }
+
+                continue;
             }
 
             Date stop = new Date();

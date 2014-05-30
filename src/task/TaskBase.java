@@ -81,11 +81,11 @@ public abstract class TaskBase implements Task {
 
     @Override
     public final void printHelp() {
-        log.info(getTaskType() + " - " + description());
+        log.info("### " + getTaskType() + " - " + description());
         log.info("");
-        log.info("  usage   : " + usage());
-        log.info("  example : " + example());
-        log.info("  alias   : " + alias());
+        log.info("      usage   : " + usage());
+        log.info("      example : " + example());
+        log.info("      alias   : " + alias());
         log.info("");
     }
 
@@ -175,11 +175,13 @@ public abstract class TaskBase implements Task {
         return confirmed;
     }
 
+    @Override
     public void resetAllCount() {
         HBShell.resetAllCount();
     }
 
-    protected void changeLogOnStart() {
+    @Override
+    public void changeLogOnStart() {
         log.startNew();
     }
 
@@ -223,19 +225,23 @@ public abstract class TaskBase implements Task {
         }
     }
 
-    protected Level getLevel() {
+    @Override
+    public Level getLevel() {
         return null;
     }
 
-    protected boolean needConfirm() {
+    @Override
+    public boolean needConfirm() {
         return false;
     }
 
-    protected boolean notifyEnabled() {
+    @Override
+    public boolean notifyEnabled() {
         return false;
     }
 
-    protected boolean isToOutput() {
+    @Override
+    public boolean isToOutput() {
         return true;
     }
 

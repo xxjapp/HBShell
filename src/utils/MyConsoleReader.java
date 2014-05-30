@@ -2,8 +2,6 @@ package utils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -29,7 +27,7 @@ public class MyConsoleReader extends ConsoleReader {
 
     public MyConsoleReader()
     throws IOException {
-        super(new FileInputStream(FileDescriptor.in),
+        super(System.in,
               new PrintWriter(new OutputStreamWriter(System.out, OUTPUT_ENCODING)),
               null,
               MyUnixTerminal.getTerminal());

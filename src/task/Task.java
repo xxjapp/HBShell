@@ -3,6 +3,8 @@ package task;
 import java.io.IOException;
 import java.util.List;
 
+import task.TaskBase.Level;
+
 public interface Task {
     void doTask(String[] args)
     throws IOException;
@@ -18,4 +20,16 @@ public interface Task {
     boolean outpuBinary();
 
     boolean isHandleAll();
+
+    void changeLogOnStart();
+
+    Level getLevel();
+
+    boolean needConfirm();
+
+    boolean notifyEnabled();
+
+    boolean isToOutput();
+
+    void resetAllCount();
 }

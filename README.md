@@ -32,7 +32,7 @@ Execute:
 
     ** NOTE: for permanent change of quorums, modify hosts file
     [windows: C:\Windows\System32\drivers\etc\hosts / linux: /etc/hosts]
-    or change value of 'hbase.zookeeper.quorum' in conf/hbase-site.xml
+    or change value of 'hbase.zookeeper.quorum' in 'hbase-site.xml'
 
       usage   : connect [quorums_separated_by_comma]
       example : connect 172.17.1.206
@@ -109,7 +109,8 @@ Execute:
 
 ### MULTILINE - show current multiline status or set new multiline status temporarily
 
-    ** NOTE: for permanent change of multiline status, modify setting file [conf/config.ini]
+    ** NOTE: for permanent change of multiline status, modify setting file
+    [conf/config.ini]
 
       usage   : multiline [0, false or 1, true]
       example : multiline false
@@ -172,6 +173,15 @@ Execute:
       example : showtimestamp false
       alias   : [st]
 
+### SHOWVALUELENGTH - show current showvaluelength status or set new showvaluelength status temporarily
+
+    ** NOTE: for permanent change of showvaluelength status, modify setting file
+    [conf/config.ini]
+
+      usage   : showvaluelength [0, false or 1, true]
+      example : showvaluelength false
+      alias   : [sl]
+
 ### USEFAMILYCACHE - show current usefamilycache status or set new usefamilycache status temporarily
 
     ** NOTE: for permanent change of usefamilycache status, modify setting file
@@ -187,7 +197,7 @@ Execute:
       example : version
       alias   : [v, ver]
 
-## Note 1) - Keyboard in linux
+## NOTE 1) - Keyboard in linux
 
      - all control keys are not usable before jline added
      - thanks to jline, arrow left/right/up/down are usable, but
@@ -204,11 +214,16 @@ Execute:
 
      - all commands can be added with a row limit number to only operate on first found rows
 
-## NOTE 3) - Command modifier/quiet mode
+## NOTE 3) * Command modifier/all-handle mode
+
+     - all commands can be added with a '*' mark to execute without omitting series of qualifiers, thus 'f0, ..., f3' => 'f0, f1, f2, f3'
+     - some commands always use this mode, eg. 'export'
+
+## NOTE 4) - Command modifier/quiet mode
 
      - all commands can be added with a '-' mark to execute without logging to console and normal log file
 
-## NOTE 4) - Command modifier/force to execute
+## NOTE 5) - Command modifier/force to execute
 
      - all commands can be added with a '!' mark to execute without confirmation
 

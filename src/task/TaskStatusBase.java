@@ -15,8 +15,8 @@ public class TaskStatusBase extends TaskBase {
     protected String description() {
         return "show current " + name + " status or set new " + name + " status temporarily\n" +
                "\n" +
-               "** NOTE: for permanent change of " + name + " status, modify setting file\n" +
-               "[conf/config.ini]";
+               "    ** NOTE: for permanent change of " + name + " status, modify setting file\n" +
+               "    [conf/config.ini]";
     }
 
     @Override

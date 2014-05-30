@@ -10,9 +10,9 @@ public class Task_connect extends TaskBase {
     protected String description() {
         return "show current quorums or set new quorums temporarily\n" +
                "\n" +
-               "** NOTE: for permanent change of quorums, modify hosts file\n" +
-               "[windows: C:\\Windows\\System32\\drivers\\etc\\hosts / linux: /etc/hosts]\n" +
-               "or change value of 'hbase.zookeeper.quorum' in 'hbase-site.xml'";
+               "    ** NOTE: for permanent change of quorums, modify hosts file\n" +
+               "    [windows: C:\\Windows\\System32\\drivers\\etc\\hosts / linux: /etc/hosts]\n" +
+               "    or change value of 'hbase.zookeeper.quorum' in 'hbase-site.xml'";
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Task_connect extends TaskBase {
         }
     }
 
-    private void outputQuorums()
+    private static void outputQuorums()
     throws IOException {
         String quorums = Utils.getQuorums();
         log.info("Current quorums: " + quorums);
@@ -60,7 +60,7 @@ public class Task_connect extends TaskBase {
         }
     }
 
-    private void setQuorums(String quorums)
+    private static void setQuorums(String quorums)
     throws IOException {
         Utils.setQuorums(quorums);
         outputQuorums();

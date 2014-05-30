@@ -17,7 +17,7 @@ public class Task_quit extends TaskBase {
     }
 
     @Override
-    protected void changeLogOnStart() {
+    public void changeLogOnStart() {
         log.enableInfo(false);
     }
 

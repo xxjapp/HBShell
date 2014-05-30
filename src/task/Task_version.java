@@ -31,7 +31,7 @@ public class Task_version extends TaskBase {
         printVersion();
     }
 
-    private void printVersion() {
+    private static void printVersion() {
         log.info("HBase Shell");
         log.info(" - Simple but powerful replacement for ./hbase shell");
         log.info(" - Designed especially for KeepData database");

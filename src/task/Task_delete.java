@@ -13,8 +13,8 @@ public class Task_delete extends TaskBase {
     protected String description() {
         return "delete data in database\n" +
                "\n" +
-               "** WARNING : 'delete'(and its alias) will delete all tables in database\n" +
-               "** NOTE    : use 'delete! ...' to force delete";
+               "    ** WARNING : 'delete'(and its alias) will delete all tables in database\n" +
+               "    ** NOTE    : use 'delete! ...' to force delete";
     }
 
     @Override
@@ -38,7 +38,7 @@ public class Task_delete extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         if (levelParam.size() > 0) {
             return Level.values()[levelParam.size() - 1];
         }
@@ -47,7 +47,7 @@ public class Task_delete extends TaskBase {
     }
 
     @Override
-    protected boolean needConfirm() {
+    public boolean needConfirm() {
         return true;
     }
 
@@ -118,7 +118,7 @@ public class Task_delete extends TaskBase {
         deleteQualifier(table, row, family, qualifier);
     }
 
-    private void deleteDatabase()
+    private static void deleteDatabase()
     throws IOException {
         HTableDescriptor[] hTableDescriptors = Utils.listTables();
 
@@ -128,12 +128,12 @@ public class Task_delete extends TaskBase {
         }
     }
 
-    private void deleteTable(String table)
+    private static void deleteTable(String table)
     throws IOException {
         Utils.deleteTable(table);
     }
 
-    private void deleteRow(String table, String row)
+    private static void deleteRow(String table, String row)
     throws IOException {
         HTable hTable = Utils.getTable(table);
 
@@ -144,7 +144,7 @@ public class Task_delete extends TaskBase {
         }
     }
 
-    private void deleteFamily(String table, String row, String family)
+    private static void deleteFamily(String table, String row, String family)
     throws IOException {
         HTable hTable = Utils.getTable(table);
 
@@ -155,7 +155,7 @@ public class Task_delete extends TaskBase {
         }
     }
 
-    private void deleteQualifier(String table, String row, String family, String qualifier)
+    private static void deleteQualifier(String table, String row, String family, String qualifier)
     throws IOException {
         HTable hTable = Utils.getTable(table);
 

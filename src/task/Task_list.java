@@ -22,7 +22,7 @@ public class Task_list extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         if (levelParam.size() > 0) {
             return Level.values()[levelParam.size() - 1];
         }

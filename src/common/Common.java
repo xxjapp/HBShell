@@ -5,8 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.CodeSource;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.ProtectionDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -410,19 +408,6 @@ public class Common {
     //
     // md5
     //
-
-    public static String md5(String string) {
-        MessageDigest messageDigest = null;
-
-        try {
-            messageDigest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            LogHelper.getLog().error(null, e);
-        }
-
-        byte[] digest = messageDigest.digest(str2bytes(string));
-        return getHexString(digest);
-    }
 
     public static String getHexString(byte[] bytes) {
         return getHexStringBase(bytes, bytes.length, false);

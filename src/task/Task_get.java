@@ -48,7 +48,7 @@ public class Task_get extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         return Level.VALUE;
     }
 
@@ -182,7 +182,7 @@ public class Task_get extends TaskBase {
     }
 
     // see: TNodeRow.getFamilyFileData()
-    private TNodeFamilyFileData getFamilyFileData(String family, TNodeRow nRow, TNodeFamily nFamily)
+    private static TNodeFamilyFileData getFamilyFileData(String family, TNodeRow nRow, TNodeFamily nFamily)
     throws IOException {
         TNodeFamilyFileData familyFileData = nRow.getFamilyFileData(family, nFamily);
 

@@ -42,12 +42,12 @@ public class Task_describe extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         return Level.TABLE;
     }
 
     @Override
-    protected boolean notifyEnabled() {
+    public boolean notifyEnabled() {
         return true;
     }
 

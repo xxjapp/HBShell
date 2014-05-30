@@ -146,23 +146,23 @@ public class TNodeFamilyFileData extends TNodeFamily {
         if (table.exists(get)) {
             if (lastIndex == maxIndex || lastIndex == max - 1) {
                 return lastIndex;           // last file data qualifier(lastIndex) found
-            } else {
-                return searchLastFileDataQualifier(lastIndex, (lastIndex + max) / 2, max);
             }
-        } else {
-            if (lastIndex == min + 1) {
-                return min;                 // last file data qualifier(min) found
-            } else {
-                return searchLastFileDataQualifier(min, (min + lastIndex) / 2, lastIndex);
-            }
+
+            return searchLastFileDataQualifier(lastIndex, (lastIndex + max) / 2, max);
         }
+
+        if (lastIndex == min + 1) {
+            return min;                 // last file data qualifier(min) found
+        }
+
+        return searchLastFileDataQualifier(min, (min + lastIndex) / 2, lastIndex);
     }
 
     private static String fileDataQualifier(long index) {
         return "f" + index;
     }
 
-    private long fileDataQualifierIndex(String fileDataQualifier) {
+    private static long fileDataQualifierIndex(String fileDataQualifier) {
         return Long.valueOf(fileDataQualifier.substring(1));
     }
 }

@@ -12,8 +12,8 @@ public class Task_clear extends TaskBase {
     protected String description() {
         return "clear table contents\n" +
                "\n" +
-               "** WARNING : 'clear'(and its alias) will clear contents of all tables in database\n" +
-               "** NOTE    : use 'clear! ...' to force clear";
+               "    ** WARNING : 'clear'(and its alias) will clear contents of all tables in database\n" +
+               "    ** NOTE    : use 'clear! ...' to force clear";
     }
 
     @Override
@@ -37,17 +37,17 @@ public class Task_clear extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         return Level.TABLE;
     }
 
     @Override
-    protected boolean needConfirm() {
+    public boolean needConfirm() {
         return true;
     }
 
     @Override
-    protected boolean notifyEnabled() {
+    public boolean notifyEnabled() {
         return true;
     }
 

@@ -22,7 +22,7 @@ public class Task_count extends TaskBase {
     }
 
     @Override
-    protected Level getLevel() {
+    public Level getLevel() {
         if (levelParam.size() > 0) {
             return Level.values()[levelParam.size() - 1];
         }
@@ -31,7 +31,7 @@ public class Task_count extends TaskBase {
     }
 
     @Override
-    protected boolean isToOutput() {
+    public boolean isToOutput() {
         return false;
     }
 }

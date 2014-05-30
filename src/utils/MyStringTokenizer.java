@@ -28,7 +28,7 @@ public class MyStringTokenizer {
     //
     // "12 34"          => ["12", "34"]
     // "12 ''"          => ["12", ""]
-    // "12 ' '"          => ["12", " "]
+    // "12 ' '"         => ["12", " "]
     // "12 '34'"        => ["12", "34"]
     // "12 '3 4'"       => ["12", "3 4"]
     // "12 '3 \'4'"     => ["12", "3 '4"]
@@ -39,7 +39,7 @@ public class MyStringTokenizer {
         input = input + ' ';
 
         List<String>  tokens    = new ArrayList<String>();
-        StringBuilder sbToken   = null;
+        StringBuilder sbToken   = new StringBuilder();
         Status        status    = Status.READY;
         int           lastQuote = -1;
 
@@ -95,9 +95,9 @@ public class MyStringTokenizer {
                 } else {
                     if (i == input.length() - 1) {
                         throw new IllegalArgumentException(String.format("Unclosed quote string at %d", lastQuote));
-                    } else {
-                        sbToken.append(ch);
                     }
+
+                    sbToken.append(ch);
                 }
 
                 break;
