@@ -57,7 +57,7 @@ public class Task_help extends TaskBase {
     }
 
     private static void printSpecialNote() {
-        log.info("## NOTE 1)" + " - " + "Keyboard in linux");
+        log.info("## NOTE 1) - Keyboard in linux");
         log.info("");
         log.info("     - all control keys are not usable before jline added");
         log.info("     - thanks to jline, arrow left/right/up/down are usable, but");
@@ -70,20 +70,20 @@ public class Task_help extends TaskBase {
         log.info("       - '5~' -> page up, move to first history entry");
         log.info("       - '6~' -> page down, move to last history entry");
         log.info("");
-        log.info("## NOTE 2)" + " - " + "Command modifier/row limit");
+        log.info("## NOTE 2) - Command modifier/row limit");
         log.info("");
         log.info("     - all commands can be added with a row limit number to only operate on first found rows");
         log.info("");
-        log.info("## NOTE 3)" + " * " + "Command modifier/all-handle mode");
+        log.info("## NOTE 3) - Command modifier/all-handle mode");
         log.info("");
         log.info("     - all commands can be added with a '*' mark to execute without omitting series of qualifiers, thus 'f0, ..., f3' => 'f0, f1, f2, f3'");
         log.info("     - some commands always use this mode, eg. 'export'");
         log.info("");
-        log.info("## NOTE 4)" + " - " + "Command modifier/quiet mode");
+        log.info("## NOTE 4) - Command modifier/quiet mode");
         log.info("");
         log.info("     - all commands can be added with a '-' mark to execute without logging to console and normal log file");
         log.info("");
-        log.info("## NOTE 5)" + " - " + "Command modifier/force to execute");
+        log.info("## NOTE 5) - Command modifier/force to execute");
         log.info("");
         log.info("     - all commands can be added with a '!' mark to execute without confirmation");
         log.info("");
