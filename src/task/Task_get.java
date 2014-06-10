@@ -174,8 +174,8 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + FAMILY_IS_VALID_BUT_WITHOUT_DATA);
         }
 
-        Map<String, Long>    timestampMap   = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result) : null;
-        Map<String, Integer> valuelengthMap = HBShell.showvaluelength ? Utils.resultGetValueLengthMap(result) : null;
+        Map<String, Long>    timestampMap   = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result, family) : null;
+        Map<String, Integer> valuelengthMap = HBShell.showvaluelength ? Utils.resultGetValueLengthMap(result, family) : null;
 
         NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
         return new TNodeFamily(this, nRow, family, timestampMap, valuelengthMap, familyMap, true);
@@ -225,7 +225,7 @@ public class Task_get extends TaskBase {
         Long              timestamp    = null;
 
         if (HBShell.showtimestamp) {
-            timestampMap = Utils.resultGetTimestampMap(result);
+            timestampMap = Utils.resultGetTimestampMap(result, family);
             timestamp    = timestampMap.get(qualifier);
         }
 
@@ -233,7 +233,7 @@ public class Task_get extends TaskBase {
         Integer              valuelength    = null;
 
         if (HBShell.showvaluelength) {
-            valuelengthMap = Utils.resultGetValueLengthMap(result);
+            valuelengthMap = Utils.resultGetValueLengthMap(result, family);
             valuelength    = valuelengthMap.get(qualifier);
         }
 

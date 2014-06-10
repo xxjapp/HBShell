@@ -132,8 +132,8 @@ public class TNodeRow extends TNodeBase {
                 continue;
             }
 
-            Map<String, Long>    timestampMap   = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result) : null;
-            Map<String, Integer> valuelengthMap = HBShell.showvaluelength ? Utils.resultGetValueLengthMap(result) : null;
+            Map<String, Long>    timestampMap   = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result, family) : null;
+            Map<String, Integer> valuelengthMap = HBShell.showvaluelength ? Utils.resultGetValueLengthMap(result, family) : null;
 
             TNodeFamily familyNode = new TNodeFamily(task, this, family, timestampMap, valuelengthMap, map.get(bFamily), toOutput);
 

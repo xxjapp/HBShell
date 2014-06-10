@@ -372,21 +372,25 @@ public class Utils {
     }
 
     // This should be used only in one family to avoid name-duplicated qualifier
-    public static Map<String, Long> resultGetTimestampMap(Result result) {
+    public static Map<String, Long> resultGetTimestampMap(Result result, String family) {
         Map<String, Long> timestampMap = new HashMap<String, Long>();
 
         for (KeyValue kv : result.list()) {
-            timestampMap.put(bytes2str(kv.getQualifier()), kv.getTimestamp());
+            if (bytes2str(kv.getFamily()).equals(family)) {
+                timestampMap.put(bytes2str(kv.getQualifier()), kv.getTimestamp());
+            }
         }
 
         return timestampMap;
     }
 
-    public static Map<String, Integer> resultGetValueLengthMap(Result result) {
+    public static Map<String, Integer> resultGetValueLengthMap(Result result, String family) {
         Map<String, Integer> valuelengthMap = new HashMap<String, Integer>();
 
         for (KeyValue kv : result.list()) {
-            valuelengthMap.put(bytes2str(kv.getQualifier()), kv.getValueLength());
+            if (bytes2str(kv.getFamily()).equals(family)) {
+                valuelengthMap.put(bytes2str(kv.getQualifier()), kv.getValueLength());
+            }
         }
 
         return valuelengthMap;
