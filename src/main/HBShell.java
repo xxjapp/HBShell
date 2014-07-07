@@ -15,6 +15,8 @@ import jline.ConsoleReader;
 
 import org.apache.commons.io.FileUtils;
 
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 import task.Task;
 import task.TaskBase;
 import task.Task_history;
@@ -95,6 +97,7 @@ public class HBShell {
     public static String format_valuelength   = "[%08d]";
     public static String format_value         = "%s";
 
+    private static Task          currentTask   = null;
     private static Scanner       inputScanner  = null; // for windows
     private static ConsoleReader consoleReader = null; // for linux
     private static String        lastCmd       = Task_history.getLastCmd();
@@ -162,6 +165,17 @@ public class HBShell {
         if (sessionMode == SessionMode.auto) {
             sessionMode = Utils.isLinux() ? SessionMode.single : SessionMode.multi;
         }
+
+        // add signal handler
+        // NOTE: No replacement found at present for these SUN private APIs
+        Signal.handle(new Signal("INT"), new SignalHandler() {
+                          @Override
+                          public void handle(Signal signal) {
+                              if (currentTask != null) {
+                                  currentTask.cancel();
+                              }
+                          }
+                      });
     }
 
     private static String removeQuotes(String string) {
@@ -175,12 +189,13 @@ public class HBShell {
     public static void doTask(String[] cmdArgs)
     throws IOException {
         TaskType taskType = TaskBase.getTaskType(cmdArgs[0]);
-        Task     task     = TaskBase.getTask(taskType);
 
         String[] args = new String[cmdArgs.length - 1];
         System.arraycopy(cmdArgs, 1, args, 0, cmdArgs.length - 1);        // remove first arg(task type)
 
-        task.doTask(args);
+        currentTask = TaskBase.getTask(taskType);
+        currentTask.doTask(args);
+        currentTask = null;
     }
 
     public static void main(String[] args)
@@ -317,6 +332,7 @@ public class HBShell {
         String line = null;
 
         if (Utils.isLinux()) {
+            // No exception can be caught, so nothing changes when user press ^C in linux
             line = getConsoleReader().readLine(prompt);
         } else {
             System.out.print(prompt);
@@ -326,8 +342,9 @@ public class HBShell {
             } catch (NoSuchElementException e) {
                 // user may press ^C (first input)
                 // the following lines may not be run
-                log.warn(null, e);
-                System.exit(-1);
+                forceDiscardInputScanner();
+                System.out.println();
+                return "";
             }
         }
 
@@ -343,6 +360,17 @@ public class HBShell {
         return inputScanner;
     }
 
+    private static void forceDiscardInputScanner() {
+        inputScanner = null;
+    }
+
+    private static void closeInputScanner() {
+        if (inputScanner != null) {
+            inputScanner.close();
+            inputScanner = null;
+        }
+    }
+
     private static ConsoleReader getConsoleReader()
     throws IOException {
         if (consoleReader != null) {
@@ -353,12 +381,5 @@ public class HBShell {
         consoleReader.setBellEnabled(false);    // bell does not work correctly, so disable it
 
         return consoleReader;
-    }
-
-    private static void closeInputScanner() {
-        if (inputScanner != null) {
-            inputScanner.close();
-            inputScanner = null;
-        }
     }
 }

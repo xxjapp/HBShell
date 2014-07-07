@@ -15,7 +15,8 @@ public class TNodeFamily extends TNodeBase {
     private final Map<String, Integer>         valuelengthMap;
     private final NavigableMap<byte[], byte[]> familyMap;
 
-    public TNodeFamily(TaskBase task, TNodeRow parent, String family, Map<String, Long> timestampMap, Map<String, Integer> valuelengthMap, NavigableMap<byte[], byte[]> familyMap, boolean toOutput) {
+    public TNodeFamily(TaskBase task, TNodeRow parent, String family, Map<String, Long> timestampMap, Map<String, Integer> valuelengthMap, NavigableMap<byte[], byte[]> familyMap, boolean toOutput)
+    throws HBSException {
         super(task, parent, family, Level.FAMILY, toOutput);
 
         this.timestampMap   = timestampMap;
@@ -30,7 +31,7 @@ public class TNodeFamily extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.FAMILY);
         }

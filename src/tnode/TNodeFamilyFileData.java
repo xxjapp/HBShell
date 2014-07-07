@@ -30,7 +30,8 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
     private final TNodeFamily familyNode;
 
-    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTable table, String firstFileDataQualifier, Long firstFileDataTimestamp, Integer firstFileDataValuelength, byte[] firstFileDataBValue, TNodeFamily familyNode, boolean toOutput) {
+    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTable table, String firstFileDataQualifier, Long firstFileDataTimestamp, Integer firstFileDataValuelength, byte[] firstFileDataBValue, TNodeFamily familyNode, boolean toOutput)
+    throws HBSException {
         super(task, parent, family, null, null, null, toOutput);
 
         this.table                    = table;
@@ -46,7 +47,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         // this file data family has other non-file-data
         if ((familyNode != null) && (familyNode.outputted)) {
             return;

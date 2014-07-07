@@ -48,9 +48,13 @@ public class Task_help extends TaskBase {
         }
     }
 
-    private static void printAllHelp() {
+    private void printAllHelp() {
         for (TaskType taskType : TaskType.values()) {
             printHelpOn(taskType);
+
+            if (isCancelled()) {
+                return;
+            }
         }
 
         printSpecialNote();

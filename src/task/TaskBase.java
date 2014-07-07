@@ -70,6 +70,7 @@ public abstract class TaskBase implements Task {
 
     private boolean notifyEnabled = false;
     private boolean needConfirm   = false;
+    private boolean cancelled     = false;
 
     private static Map<String, TaskType> aliasMap  = null;
     private static boolean               forced    = false;
@@ -401,7 +402,7 @@ public abstract class TaskBase implements Task {
     //
 
     public void notifyFound(TNodeBase node)
-    throws IOException {
+    throws IOException, HBSException {
         if (!notifyEnabled) {
             return;
         }
@@ -448,9 +449,10 @@ public abstract class TaskBase implements Task {
     /**
      * @param table
      * @throws IOException
+     * @throws HBSException
      */
     protected void foundTable(HTable table)
-    throws IOException {
+    throws IOException, HBSException {
         // Do nothing
     }
 
@@ -521,5 +523,14 @@ public abstract class TaskBase implements Task {
 
     public static long getRowLimit() {
         return rowLimit;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancel() {
+        this.cancelled = true;
     }
 }

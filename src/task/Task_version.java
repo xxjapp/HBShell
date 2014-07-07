@@ -36,6 +36,7 @@ public class Task_version extends TaskBase {
         log.info(" - Simple but powerful replacement for ./hbase shell");
         log.info(" - Designed especially for KeepData database");
         log.info(" - Enter 'help<RETURN>' for list of supported commands");
+        log.info(" - Enter 'exit<RETURN>' to exit");
         log.info("");
         log.info(String.format(" Version  : %d.%d.%s", VERSION_MAJOR, VERSION_MINOR, Version.REVISION));
         log.info(String.format(" Built on : %s", Version.BUILD_TIME));

@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
 
+import exception.HBSException;
 import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
@@ -22,7 +23,8 @@ public class TNodeValue extends TNodeBase {
     private final String timestamp;
     private final String valuelength;
 
-    public TNodeValue(TaskBase task, TNodeQualifier parent, Long timestamp, Integer valuelength, byte[] bValue, boolean toOutput) {
+    public TNodeValue(TaskBase task, TNodeQualifier parent, Long timestamp, Integer valuelength, byte[] bValue, boolean toOutput)
+    throws HBSException {
         super(task, parent, valueString(bValue), Level.VALUE, toOutput);
 
         this.bValue      = bValue;
@@ -49,7 +51,7 @@ public class TNodeValue extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!otherFilterPassed()) {
             return;
         }
@@ -122,7 +124,14 @@ public class TNodeValue extends TNodeBase {
 
             if (!HBShell.multiline) {
                 // show only first line
-                String firstLine = new Scanner(value).nextLine();
+                String  firstLine = null;
+                Scanner scanner   = new Scanner(value);
+
+                try {
+                    firstLine = scanner.nextLine();
+                } finally {
+                    scanner.close();
+                }
 
                 if (firstLine.length() < value.length()) {
                     value = firstLine + " ...";

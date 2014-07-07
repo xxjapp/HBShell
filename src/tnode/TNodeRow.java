@@ -30,7 +30,8 @@ public class TNodeRow extends TNodeBase {
     private List<String> families         = null;
     private List<String> fileDataFamilies = null;
 
-    public TNodeRow(TaskBase task, TNodeTable parent, HTable table, Result firstKVResult, boolean toOutput) {
+    public TNodeRow(TaskBase task, TNodeTable parent, HTable table, Result firstKVResult, boolean toOutput)
+    throws HBSException {
         super(task, parent, Utils.resultGetRowKey(firstKVResult), Level.ROW, toOutput);
 
         this.table         = table;
@@ -44,7 +45,7 @@ public class TNodeRow extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.ROW);
         }
@@ -152,7 +153,7 @@ public class TNodeRow extends TNodeBase {
     }
 
     public TNodeFamilyFileData getFamilyFileData(String family, TNodeFamily familyNode)
-    throws IOException {
+    throws IOException, HBSException {
         if (!HBShell.travelRowFBlockFamilies) {
             return null;
         }
@@ -202,7 +203,8 @@ public class TNodeRow extends TNodeBase {
         return null;
     }
 
-    private TNodeFamilyFileData getFamilyFileDataUsingFirstKVResult(String family, TNodeFamily familyNode) {
+    private TNodeFamilyFileData getFamilyFileDataUsingFirstKVResult(String family, TNodeFamily familyNode)
+    throws HBSException {
         NavigableMap<byte[], byte[]> familyMap = firstKVResult.getFamilyMap(str2bytes(family));
 
         if (!familyMap.isEmpty()) {

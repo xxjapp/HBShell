@@ -12,7 +12,8 @@ public class TNodeQualifier extends TNodeBase {
     private final Long    timestamp;
     private final Integer valuelength;
 
-    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, Long timestamp, Integer valuelength, byte[] bValue, boolean toOutput) {
+    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, Long timestamp, Integer valuelength, byte[] bValue, boolean toOutput)
+    throws HBSException {
         super(task, parent, qualifier, Level.QUALIFIER, toOutput);
 
         this.timestamp   = timestamp;
@@ -27,7 +28,7 @@ public class TNodeQualifier extends TNodeBase {
 
     @Override
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (!outputted) {
             HBShell.increaseCount(HBShell.QUALIFIER);
         }

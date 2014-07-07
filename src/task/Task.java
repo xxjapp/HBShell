@@ -32,4 +32,6 @@ public interface Task {
     boolean isToOutput();
 
     void resetAllCount();
+
+    void cancel();
 }

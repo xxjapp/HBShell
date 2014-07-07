@@ -15,7 +15,8 @@ public class TNodeQualifierOmit extends TNodeBase {
     private final long firstIndex;
     private final long lastIndex;
 
-    public TNodeQualifierOmit(TaskBase task, TNodeFamily parent, long firstIndex, long lastIndex, boolean toOutput) {
+    public TNodeQualifierOmit(TaskBase task, TNodeFamily parent, long firstIndex, long lastIndex, boolean toOutput)
+    throws HBSException {
         super(task, parent, NAME, Level.QUALIFIER, toOutput);
 
         this.firstIndex = firstIndex;

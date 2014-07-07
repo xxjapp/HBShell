@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.filter.ValueFilter;
 import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
 
 import exception.HBSException;
-
+import exception.HBSExceptionTaskCancelled;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.ResultLog;
@@ -29,7 +29,12 @@ public abstract class TNodeBase implements TNode {
     protected boolean outputted         = false;
     private Boolean   otherFilterPassed = null;
 
-    protected TNodeBase(TaskBase task, TNodeBase parent, String name, Level level, boolean toOutput) {
+    protected TNodeBase(TaskBase task, TNodeBase parent, String name, Level level, boolean toOutput)
+    throws HBSException {
+        if (task.isCancelled()) {
+            throw new HBSExceptionTaskCancelled();
+        }
+
         this.task     = task;
         this.parent   = parent;
         this.name     = name;
@@ -48,7 +53,7 @@ public abstract class TNodeBase implements TNode {
     }
 
     public void output()
-    throws IOException {
+    throws IOException, HBSException {
         if (outputted) {
             return;
         }

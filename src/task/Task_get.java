@@ -114,17 +114,19 @@ public class Task_get extends TaskBase {
         getQualifier(table, row, family, qualifier).handle();
     }
 
-    private TNodeDatabase getDatabase() {
+    private TNodeDatabase getDatabase()
+    throws HBSException {
         return new TNodeDatabase(this, true);
     }
 
-    private TNodeTable getTable(String table) {
+    private TNodeTable getTable(String table)
+    throws HBSException {
         return new TNodeTable(this, null, table, true);
     }
 
     // see: TNodeTable.travelChildren()
     private TNodeRow getRow(String table, String row)
-    throws IOException {
+    throws IOException, HBSException {
         TNodeTable nTable = getTable(table);
 
         Get get = new Get(str2bytes(row));
@@ -147,7 +149,7 @@ public class Task_get extends TaskBase {
 
     // see: TNodeRow.travelChildrenNonFileData()
     private TNodeFamily getFamily(String row, String family, TNodeRow nRow)
-    throws IOException {
+    throws IOException, HBSException {
         Get get = new Get(str2bytes(row));
 
         // filter family
@@ -183,7 +185,7 @@ public class Task_get extends TaskBase {
 
     // see: TNodeRow.getFamilyFileData()
     private static TNodeFamilyFileData getFamilyFileData(String family, TNodeRow nRow, TNodeFamily nFamily)
-    throws IOException {
+    throws IOException, HBSException {
         TNodeFamilyFileData familyFileData = nRow.getFamilyFileData(family, nFamily);
 
         if (familyFileData == null) {
@@ -194,7 +196,7 @@ public class Task_get extends TaskBase {
     }
 
     private TNodeBase getQualifier(String table, String row, String family, String qualifier)
-    throws IOException {
+    throws IOException, HBSException {
         TNodeRow nRow = getRow(table, row);
 
         byte[] bRow       = str2bytes(row);

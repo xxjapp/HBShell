@@ -11,7 +11,8 @@ import task.TaskBase.Level;
 import utils.Utils;
 
 public class TNodeDatabase extends TNodeBase {
-    public TNodeDatabase(TaskBase task, boolean toOutput) {
+    public TNodeDatabase(TaskBase task, boolean toOutput)
+    throws HBSException {
         super(task, null, null, null, toOutput);
     }
 

@@ -82,7 +82,7 @@ def run_java(args)
     if main_class_file_not_found || class_files_out_of_date(source_files, class_files)
         FileUtils.mkpath BIN_DIR
 
-        exec_cmd "javac -encoding UTF-8 -d #{BIN_DIR} -classpath #{classpath_for_compile} #{source_files.join(' ')}"
+        exec_cmd "javac -encoding UTF-8 -sourcepath #{SRC_DIR} -d #{BIN_DIR} -classpath #{classpath_for_compile} #{source_files.join(' ')}"
     end
 
     # run java program
