@@ -1,15 +1,14 @@
 package utils;
 
-import static common.Common.*;
+import static common.Common.getTmpDir;
+import static common.Common.isEmpty;
+import static common.Common.str2bytes;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,14 +48,6 @@ public class Utils {
         return trace[3];
     }
 
-    public static String getClassFilePath(Class< ? > refClass) {
-        ProtectionDomain pDomain = refClass.getProtectionDomain();
-        CodeSource       cSource = pDomain.getCodeSource();
-        URL              loc     = cSource.getLocation();
-
-        return loc.getPath();
-    }
-
     public static String join(Object[] objects, String separator) {
         StringBuffer sb = new StringBuffer();
 
@@ -76,24 +67,9 @@ public class Utils {
     // os
     //
 
-    public static boolean isLinux() {
-        return fileExists("/dev/null");
-    }
-
-    //
-    // path
-    //
-
-    public static String getParentPath(String path) {
-        File   file       = new File(path);
-        String parentPath = file.getParent();
-
-        return unixStylePath(parentPath);
-    }
-
-    private static String unixStylePath(String path) {
-        // change "\\" -> "/" on windows
-        return path.replaceAll("\\\\", "/");
+    public static boolean isWindows() {
+        String os = System.getProperty("os.name");
+        return (os != null) && os.startsWith("Windows");
     }
 
     //

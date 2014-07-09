@@ -41,46 +41,4 @@ public class PropertiesHelper {
 
         return propertyValue;
     }
-
-    // int
-    public static int getProperty(Properties properties, String propertyName, int defaultValue) {
-        String propertyValue = getProperty(properties, propertyName, String.valueOf(defaultValue));
-
-        try {
-            return Integer.valueOf(propertyValue);
-        } catch (NumberFormatException e) {
-            log.warn(null, e);
-            log.warn(String.format("%-25s --> %s (Exception occured, reset to default)", propertyName, String.valueOf(defaultValue)));
-
-            return defaultValue;
-        }
-    }
-
-    // long
-    public static long getProperty(Properties properties, String propertyName, long defaultValue) {
-        String propertyValue = getProperty(properties, propertyName, String.valueOf(defaultValue));
-
-        try {
-            return Long.valueOf(propertyValue);
-        } catch (NumberFormatException e) {
-            log.warn(null, e);
-            log.warn(String.format("%-25s --> %s (Exception occured, reset to default)", propertyName, String.valueOf(defaultValue)));
-
-            return defaultValue;
-        }
-    }
-
-    // boolean
-    public static boolean getProperty(Properties properties, String propertyName, boolean defaultValue) {
-        String propertyValue = getProperty(properties, propertyName, String.valueOf(defaultValue));
-
-        try {
-            return Boolean.valueOf(propertyValue);
-        } catch (NumberFormatException e) {
-            log.warn(null, e);
-            log.warn(String.format("%-25s --> %s (Exception occured, reset to default)", propertyName, String.valueOf(defaultValue)));
-
-            return defaultValue;
-        }
-    }
 }

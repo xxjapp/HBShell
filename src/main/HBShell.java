@@ -102,7 +102,7 @@ public class HBShell {
     private static ConsoleReader consoleReader = null; // for linux
     private static String        lastCmd       = Task_history.getLastCmd();
 
-    private static Map<String, Long> countMap = new HashMap<String, Long>();
+    private static final Map<String, Long> countMap = new HashMap<String, Long>();
 
     public static final String TABLE     = "table";
     public static final String ROW       = "row";
@@ -163,7 +163,7 @@ public class HBShell {
         format_value         = removeQuotes(PropertiesHelper.getProperty(properties, "format_value",         format_value));
 
         if (sessionMode == SessionMode.auto) {
-            sessionMode = Utils.isLinux() ? SessionMode.single : SessionMode.multi;
+            sessionMode = Utils.isWindows() ? SessionMode.multi : SessionMode.single;
         }
 
         // add signal handler
@@ -331,7 +331,7 @@ public class HBShell {
     throws IOException {
         String line = null;
 
-        if (Utils.isLinux()) {
+        if (!Utils.isWindows()) {
             // No exception can be caught, so nothing changes when user press ^C in linux
             line = getConsoleReader().readLine(prompt);
         } else {

@@ -17,14 +17,6 @@ public class PropertiesHelper {
     // getProperties
     //
 
-    public static Properties getProperties(Class< ? > refClass, String iniFileName) {
-        String classFilePath = Utils.getClassFilePath(refClass);
-        String folderPath    = Utils.getParentPath(classFilePath);
-        String iniFilePath   = Utils.makePath(folderPath, iniFileName);
-
-        return getProperties(iniFilePath);
-    }
-
     public static Properties getProperties(String iniFilePath) {
         log.info(iniFilePath);
         return getPropertiesBase(iniFilePath);
@@ -64,20 +56,6 @@ public class PropertiesHelper {
 
         try {
             return Boolean.valueOf(propertyValue);
-        } catch (NumberFormatException e) {
-            log.warn(e);
-            log.warn(String.format("%30s --> %s (Exception occured, reset to default)", propertyName, String.valueOf(defaultValue)));
-
-            return defaultValue;
-        }
-    }
-
-    // int
-    public static int getProperty(Properties properties, String propertyName, int defaultValue) {
-        String propertyValue = getProperty(properties, propertyName, String.valueOf(defaultValue));
-
-        try {
-            return Integer.valueOf(propertyValue);
         } catch (NumberFormatException e) {
             log.warn(e);
             log.warn(String.format("%30s --> %s (Exception occured, reset to default)", propertyName, String.valueOf(defaultValue)));
