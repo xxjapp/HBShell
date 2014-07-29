@@ -31,7 +31,7 @@ public abstract class TNodeBase implements TNode {
 
     protected TNodeBase(TaskBase task, TNodeBase parent, String name, Level level, boolean toOutput)
     throws HBSException {
-        if (task.isCancelled()) {
+        if ((task != null) && task.isCancelled()) {
             throw new HBSExceptionTaskCancelled();
         }
 
