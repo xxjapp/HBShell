@@ -13,6 +13,10 @@ Execute:
     $ chmod +x run.rb
     $ ./run.rb
 
+Or execute:
+
+    $ wget --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master && unzip master && mv HBShell-master HBShell && cd HBShell/ && chmod +x run.rb && ./run.rb
+
 ## System Shell Commands
 
     $ ruby run.rb
