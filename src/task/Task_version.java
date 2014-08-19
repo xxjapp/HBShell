@@ -38,7 +38,8 @@ public class Task_version extends TaskBase {
         log.info(" - Enter 'help<RETURN>' for list of supported commands");
         log.info(" - Enter 'exit<RETURN>' to exit");
         log.info("");
-        log.info(String.format(" Version  : %d.%d.%s", VERSION_MAJOR, VERSION_MINOR, Version.REVISION));
-        log.info(String.format(" Built on : %s", Version.BUILD_TIME));
+        log.info(String.format(" Version         : %d.%d.%s", VERSION_MAJOR, VERSION_MINOR, Version.REVISION));
+        log.info(String.format(" Built on        : %s", Version.BUILD_TIME));
+        log.info(String.format(" Last changed on : %s", Version.LAST_CHANGED_TIME));
     }
 }
