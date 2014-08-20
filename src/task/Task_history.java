@@ -2,10 +2,11 @@ package task;
 
 import java.io.IOException;
 
+import main.HBShell;
 import utils.Utils;
 import utils.Utils.FoundLine;
 
-import main.HBShell;
+import common.Common;
 
 public class Task_history extends TaskBase {
     private int    count   = (int)(HBShell.defaultHistoryCount + 0);
@@ -47,7 +48,7 @@ public class Task_history extends TaskBase {
         this.cmds = new String[count];
 
         // just for showing parameters
-        levelParam.put(Level.OTHER, Utils.join(args, ", "));
+        levelParam.put(Level.OTHER, Common.join(args, ", "));
     }
 
     @Override

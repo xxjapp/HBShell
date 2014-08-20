@@ -19,14 +19,16 @@ import sun.misc.Signal;
 import sun.misc.SignalHandler;
 import task.Task;
 import task.TaskBase;
-import task.Task_history;
 import task.TaskBase.TaskType;
+import task.Task_history;
 import utils.MyConsoleReader;
 import utils.MyStringTokenizer;
 import utils.PropertiesHelper;
 import utils.ResultLog;
 import utils.RootLog;
 import utils.Utils;
+
+import common.Common;
 
 public class HBShell {
     public static final String HISTORY_FILE = Utils.makePath(RootLog.logDir, "history.txt");
@@ -280,7 +282,7 @@ public class HBShell {
 
     private static void historyAdd(String[] cmdArgs)
     throws IOException {
-        String cmd = Utils.join(cmdArgs, " ");
+        String cmd = Common.join(cmdArgs, " ");
 
         if (!cmd.equals(lastCmd)) {
             lastCmd = cmd;

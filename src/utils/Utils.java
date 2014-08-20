@@ -48,21 +48,6 @@ public class Utils {
         return trace[3];
     }
 
-    public static String join(Object[] objects, String separator) {
-        StringBuffer sb = new StringBuffer();
-
-        for (Object object : objects) {
-            sb.append(object + separator);
-        }
-
-        // delete last separator
-        if (sb.length() > separator.length()) {
-            sb.delete(sb.length() - separator.length(), sb.length());
-        }
-
-        return sb.toString();
-    }
-
     //
     // os
     //
