@@ -93,7 +93,7 @@ public class HBShell {
     public static String format_table         = "T: %s";
     public static String format_row           = " R: %s";
     public static String format_family        = "  F: %s";
-    public static String format_qualifier     = "   Q: %-14s";
+    public static String format_qualifier     = "   Q: %-20s";
     public static String format_qualifierOmit = "   %s";
     public static String format_timestamp     = "[yyyy-MM-dd HH:mm:ss]";
     public static String format_valuelength   = "[%08d]";
