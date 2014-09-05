@@ -46,7 +46,7 @@ public class Task_version extends TaskBase {
         log.info(String.format(" Last changed time : %s", lastChangedTime));
 
         if (lastChangedTime.startsWith("2") && lastChangedTime.compareTo(Version.BUILD_TIME) > 0) {
-            log.info("New version available");
+            log.info(" * New version available * ");
         }
     }
 
@@ -58,6 +58,6 @@ public class Task_version extends TaskBase {
 
         StringBuilder sbOutput = new StringBuilder();
         KDOs.runExternalExe(commandline, sbOutput);
-        return sbOutput.toString();
+        return sbOutput.toString().trim();
     }
 }
