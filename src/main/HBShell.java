@@ -33,14 +33,11 @@ import common.Common;
 public class HBShell {
     public static final String HISTORY_FILE = Utils.makePath(RootLog.logDir, "history.txt");
 
-    private static final String[] DEFAULT_CMD_ARGS_FOR_SINGLE_SESSION = new String[] {"version"};
-
     private static final String CONFIRM_YES    = "yes";
     private static final String ENCODING       = "UTF-8";
     private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
 
-    public enum SessionMode {
-        auto,
+    private enum SessionMode {
         single,
         multi,
     }
@@ -51,18 +48,17 @@ public class HBShell {
     private static final File      historyFile = new File(HISTORY_FILE);
 
     // config default values
-    public static Long        maxPrintableDetectCnt   = 1000L;
-    public static Long        maxHexStringLength      = 8L;
-    public static Boolean     travelRowFBlockFamilies = true;
-    public static Boolean     readonly                = true;
-    public static Boolean     multiline               = false;
-    public static Boolean     showtimestamp           = true;
-    public static Boolean     showvaluelength         = false;
-    public static Boolean     usefamilycache          = true;
-    public static SessionMode sessionMode             = SessionMode.auto;
-    public static Long        maxResultLogFileCount   = 10L;
-    public static Long        defaultHistoryCount     = 30L;
-    public static String      binaryDataDir           = "./bin_data";
+    public static Long    maxPrintableDetectCnt   = 1000L;
+    public static Long    maxHexStringLength      = 8L;
+    public static Boolean travelRowFBlockFamilies = true;
+    public static Boolean readonly                = true;
+    public static Boolean multiline               = false;
+    public static Boolean showtimestamp           = true;
+    public static Boolean showvaluelength         = false;
+    public static Boolean usefamilycache          = true;
+    public static Long    maxResultLogFileCount   = 10L;
+    public static Long    defaultHistoryCount     = 30L;
+    public static String  binaryDataDir           = "./bin_data";
 
     public static List<String> alias_clear           = Arrays.asList("cle", "clr");
     public static List<String> alias_connect         = Arrays.asList("con");
@@ -99,6 +95,7 @@ public class HBShell {
     public static String format_valuelength   = "[%08d]";
     public static String format_value         = "%s";
 
+    private static SessionMode   sessionMode   = null;
     private static Task          currentTask   = null;
     private static Scanner       inputScanner  = null; // for windows
     private static ConsoleReader consoleReader = null; // for linux
@@ -124,7 +121,6 @@ public class HBShell {
         showtimestamp           = PropertiesHelper.getProperty(properties, "showtimestamp",             showtimestamp);
         showvaluelength         = PropertiesHelper.getProperty(properties, "showvaluelength",           showvaluelength);
         usefamilycache          = PropertiesHelper.getProperty(properties, "usefamilycache",            usefamilycache);
-        sessionMode             = PropertiesHelper.getProperty(properties, "sessionMode",               sessionMode);
         maxResultLogFileCount   = PropertiesHelper.getProperty(properties, "maxResultLogFileCount",     maxResultLogFileCount);
         defaultHistoryCount     = PropertiesHelper.getProperty(properties, "defaultHistoryCount",       defaultHistoryCount);
         binaryDataDir           = PropertiesHelper.getProperty(properties, "binaryDataDir",             binaryDataDir);
@@ -164,10 +160,6 @@ public class HBShell {
         format_valuelength   = removeQuotes(PropertiesHelper.getProperty(properties, "format_valuelength",   format_valuelength));
         format_value         = removeQuotes(PropertiesHelper.getProperty(properties, "format_value",         format_value));
 
-        if (sessionMode == SessionMode.auto) {
-            sessionMode = Utils.isWindows() ? SessionMode.multi : SessionMode.single;
-        }
-
         // add signal handler
         // NOTE: No replacement found at present for these SUN private APIs
         Signal.handle(new Signal("INT"), new SignalHandler() {
@@ -200,31 +192,53 @@ public class HBShell {
         currentTask = null;
     }
 
+    private static void printHelp() {
+        log.info("Usage: ");
+        log.info("1) start shell of HBShell");
+        log.info("#  ruby run.rb");
+        log.info("");
+        log.info("2) execute a single HBShell command");
+        log.info("#  ruby run.rb -c \"{command}\"");
+        log.info("");
+        log.info("3) print version information");
+        log.info("#  ruby run.rb -v");
+        log.info("");
+        log.info("4) print this message");
+        log.info("#  ruby run.rb -h");
+        log.info("");
+    }
+
     public static void main(String[] args)
     throws IOException {
         init();
+
+        String commandlineCommand = null;
+
+        if (args.length == 0) {
+            sessionMode = SessionMode.multi;
+        } else if (args.length == 2 && args[0].equals("-c")) {
+            sessionMode        = SessionMode.single;
+            commandlineCommand = args[1];
+        } else if (args.length == 1 && args[0].equals("-v")) {
+            sessionMode        = SessionMode.single;
+            commandlineCommand = "version";
+        } else {
+            printHelp();
+            return;
+        }
 
         do {
             String[] cmdArgs = null;
 
             try {
-                cmdArgs = (sessionMode == SessionMode.single) ? args : getCmdArgs();
+                cmdArgs = getCmdArgs(commandlineCommand);
             } catch (Exception e) {         // all exceptions
                 log.error(null, e);
-
-                if (sessionMode == SessionMode.single) {
-                    break;
-                }
-
                 continue;
             }
 
-            if (cmdArgs.length == 0) {
-                if (sessionMode == SessionMode.single) {
-                    cmdArgs = DEFAULT_CMD_ARGS_FOR_SINGLE_SESSION;
-                } else {
-                    continue;
-                }
+            if (sessionMode == SessionMode.multi && cmdArgs != null &&cmdArgs.length == 0) {
+                continue;
             }
 
             Date start = new Date();
@@ -235,11 +249,6 @@ public class HBShell {
                 doTask(cmdArgs);
             } catch (Exception e) {         // all exceptions
                 log.error(null, e);
-
-                if (sessionMode == SessionMode.single) {
-                    break;
-                }
-
                 continue;
             }
 
@@ -324,9 +333,17 @@ public class HBShell {
         return count;
     }
 
-    private static String[] getCmdArgs()
+    private static String[] getCmdArgs(String commandlineCommand)
     throws IOException {
-        return MyStringTokenizer.getTokens(getUserInput("> "));
+        if (sessionMode == SessionMode.multi) {
+            return MyStringTokenizer.getTokens(getUserInput("> "));
+        }
+
+        if (sessionMode == SessionMode.single) {
+            return commandlineCommand.split(" ");
+        }
+
+        return null;
     }
 
     private static String getUserInput(String prompt)

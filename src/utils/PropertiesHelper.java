@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import main.HBShell.SessionMode;
-
 import org.apache.commons.logging.Log;
 
 public class PropertiesHelper {
@@ -84,20 +82,6 @@ public class PropertiesHelper {
 
         try {
             return Arrays.asList(propertyValue.split("\\s*,\\s*"));
-        } catch (NumberFormatException e) {
-            log.warn(e);
-            log.warn(String.format("%30s --> %s (Exception occured, reset to default)", propertyName, String.valueOf(defaultValue)));
-
-            return defaultValue;
-        }
-    }
-
-    // special: SessionMode
-    public static SessionMode getProperty(Properties properties, String propertyName, SessionMode defaultValue) {
-        String propertyValue = getProperty(properties, propertyName, String.valueOf(defaultValue));
-
-        try {
-            return SessionMode.valueOf(propertyValue);
         } catch (NumberFormatException e) {
             log.warn(e);
             log.warn(String.format("%30s --> %s (Exception occured, reset to default)", propertyName, String.valueOf(defaultValue)));

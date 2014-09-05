@@ -65,7 +65,7 @@ def main_class_file_not_found()
     !File.exists?(MAIN_CLASS_FILE)
 end
 
-def run_java(args)
+def run_java(cmdline)
     # create version file if not found or out of date
     exec_cmd "ruby .externalToolBuilders/create_version_file.rb"
 
@@ -86,12 +86,15 @@ def run_java(args)
     end
 
     # run java program
-    exec_cmd "java -classpath #{classpath_for_run} #{MAIN_CLASS} #{args}"
+    exec_cmd "java -classpath #{classpath_for_run} #{MAIN_CLASS} #{cmdline}"
 end
 
 def main(argv)
     Dir.chdir THIS_FILE_DIR
-    run_java(argv.join(' '))
+
+    cmdline = argv.collect { |arg| '"' + arg + '"' }.join(' ')
+    run_java(cmdline)
+
     Dir.chdir CURRENT_DIR
 end
 

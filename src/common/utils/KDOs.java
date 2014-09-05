@@ -84,21 +84,31 @@ public class KDOs {
         }
     }
 
-    private static void setTimeout(final Process process, long timeout) {
-        final Timer timer     = new Timer();
-        TimerTask   timerTask = new TimerTask() {
+    private static void setTimeout(final Process process, final long timeout) {
+        final long  start = System.currentTimeMillis();
+        final Timer timer = new Timer();
+
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                timer.cancel();
+                boolean processIsAlive = processIsAlive(process);
 
-                if (processIsAlive(process)) {
-                    log.error("Kill process because of timeout!");
-                    process.destroy();
+                if (!processIsAlive) {
+                    timer.cancel();
+                } else {
+                    long now = System.currentTimeMillis();
+
+                    if (now - start > timeout) {
+                        log.error("Kill process because of timeout!");
+                        process.destroy();
+
+                        timer.cancel();
+                    }
                 }
             }
         };
 
-        timer.schedule(timerTask, timeout);
+        timer.schedule(timerTask, 0, 1000);        // check every second
     }
 
     private static boolean processIsAlive(Process process) {
