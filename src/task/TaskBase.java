@@ -13,15 +13,14 @@ import main.HBShell;
 
 import org.apache.hadoop.hbase.client.HTable;
 
-import exception.HBSException;
-import exception.HBSExceptionRowLimitReached;
-
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
 import tnode.TNodeRow;
 import tnode.TNodeTable;
 import utils.ResultLog;
 import utils.Utils;
+import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
 
 public abstract class TaskBase implements Task {
     public enum TaskType {
@@ -72,11 +71,15 @@ public abstract class TaskBase implements Task {
     private boolean needConfirm   = false;
     private boolean cancelled     = false;
 
-    private static Map<String, TaskType> aliasMap  = null;
-    private static boolean               forced    = false;
-    private static boolean               quiet     = false;
-    private static boolean               handleAll = false;
-    private static long                  rowLimit  = Long.MAX_VALUE;
+    private static Map<String, TaskType> aliasMap = null;
+
+    // command modifiers
+    private static boolean forced      = false;
+    private static boolean quiet       = false;
+    private static boolean handleAll   = false;
+    private static boolean increasePut = false;
+    private static boolean appendPut   = false;
+    private static long    rowLimit    = Long.MAX_VALUE;
 
     private TaskType taskType = null;
 
@@ -148,6 +151,21 @@ public abstract class TaskBase implements Task {
     @Override
     public boolean isHandleAll() {
         return handleAll;
+    }
+
+    @Override
+    public boolean isIncreasePut() {
+        return increasePut;
+    }
+
+    @Override
+    public boolean isAppendPut() {
+        return appendPut;
+    }
+
+    @Override
+    public long getRowLimit() {
+        return rowLimit;
     }
 
     private boolean doConfirm()
@@ -324,40 +342,64 @@ public abstract class TaskBase implements Task {
         return taskType;
     }
 
+    private static void initCommandModifiers() {
+        forced      = false;
+        quiet       = false;
+        handleAll   = false;
+        increasePut = false;
+        appendPut   = false;
+        rowLimit    = Long.MAX_VALUE;
+    }
+
     private static String parseCommand(String string) {
-        // check if forced
-        forced = string.endsWith("!");
+        initCommandModifiers();
 
-        if (forced) {
-            string = string.substring(0, string.length() - 1);
+        while (true) {
+            String string0 = string;
+
+            // check if forced
+            if (string.endsWith("!")) {
+                forced = true;
+                string = string.substring(0, string.length() - 1);
+            }
+
+            // check if quiet
+            if (string.endsWith("-")) {
+                quiet  = true;
+                string = string.substring(0, string.length() - 1);
+            }
+
+            // check if handle all
+            if (string.endsWith("*")) {
+                handleAll = true;
+                string    = string.substring(0, string.length() - 1);
+            }
+
+            // check if this is an increase put
+            if (string.endsWith("+")) {
+                increasePut = true;
+                string      = string.substring(0, string.length() - 1);
+            }
+
+            // check if this is an append put
+            if (string.endsWith("~")) {
+                appendPut = true;
+                string    = string.substring(0, string.length() - 1);
+            }
+
+            // get row limit parameter
+            List<String> groups = Utils.match(string, "(\\d+)$");
+
+            if (groups.size() == 2) {
+                String g1 = groups.get(1);
+                rowLimit = Long.valueOf(g1);
+                string   = string.substring(0, string.length() - g1.length());
+            }
+
+            if (string == string0) {
+                return string;
+            }
         }
-
-        // check if quiet
-        quiet = string.endsWith("-");
-
-        if (quiet) {
-            string = string.substring(0, string.length() - 1);
-        }
-
-        // check if handle all
-        handleAll = string.endsWith("*");
-
-        if (handleAll) {
-            string = string.substring(0, string.length() - 1);
-        }
-
-        // get row limit parameter
-        List<String> groups = Utils.match(string, "(\\d+)$");
-
-        if (groups.size() == 2) {
-            String g1 = groups.get(1);
-            rowLimit = Long.valueOf(g1);
-            string   = string.substring(0, string.length() - g1.length());
-        } else {
-            rowLimit = Long.MAX_VALUE;
-        }
-
-        return string;
     }
 
     public static final Task getTask(TaskType taskType) {
@@ -519,10 +561,6 @@ public abstract class TaskBase implements Task {
 
     public boolean isFilter() {
         return getTaskType() == TaskType.FILTER;
-    }
-
-    public static long getRowLimit() {
-        return rowLimit;
     }
 
     public boolean isCancelled() {

@@ -16,11 +16,11 @@ import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.RowFilter;
 
-import exception.HBSException;
-import exception.HBSExceptionRowLimitReached;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
+import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
 
 public class TNodeTable extends TNodeBase {
     private HTable table = null;
@@ -67,7 +67,7 @@ public class TNodeTable extends TNodeBase {
                     new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
 
                     // check row limit
-                    if (HBShell.getCount(HBShell.ROW) >= TaskBase.getRowLimit()) {
+                    if (HBShell.getCount(HBShell.ROW) >= task.getRowLimit()) {
                         throw new HBSExceptionRowLimitReached();
                     }
                 }

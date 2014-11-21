@@ -28,10 +28,12 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
 import common.Common;
 import common.OemInfo;
@@ -430,6 +432,33 @@ public class Utils {
         }
 
         return families;
+    }
+
+    public static String get(HTable table, String key, String family, String qualifier)
+    throws IOException {
+        byte[] bRow       = str2bytes(key);
+        byte[] bFamily    = str2bytes(family);
+        byte[] bQualifier = str2bytes(qualifier);
+
+        Get get = new Get(bRow);
+        get.addColumn(bFamily, bQualifier);
+
+        // get result
+        Result result = null;
+
+        try {
+            result = table.get(get);
+        } catch (NoSuchColumnFamilyException e) {
+            // make error clear
+            throw new NoSuchColumnFamilyException(family);
+        }
+
+        if (result.isEmpty()) {
+            throw new NoSuchColumnFamilyException(family + ":" + qualifier);
+        }
+
+        byte[] bValue = result.getValue(bFamily, bQualifier);
+        return bytes2str(bValue);
     }
 
     public static void put(HTable hTable, String rowKey, String family, String qualifier, String value)

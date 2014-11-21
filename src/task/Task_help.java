@@ -77,19 +77,33 @@ public class Task_help extends TaskBase {
         log.info("## NOTE 2) - Command modifier/row limit");
         log.info("");
         log.info("     - all commands can be added with a row limit number to only operate on first found rows");
+        log.info("     - e.g. scan10 table . family qualifier value");
         log.info("");
         log.info("## NOTE 3) - Command modifier/all-handle mode");
         log.info("");
         log.info("     - all commands can be added with a '*' mark to execute without omitting series of qualifiers, thus 'f0, ..., f3' => 'f0, f1, f2, f3'");
         log.info("     - some commands always use this mode, eg. 'export'");
+        log.info("     - e.g. get* table key");
         log.info("");
         log.info("## NOTE 4) - Command modifier/quiet mode");
         log.info("");
         log.info("     - all commands can be added with a '-' mark to execute without logging to console and normal log file");
+        log.info("     - e.g. scan- table");
         log.info("");
         log.info("## NOTE 5) - Command modifier/force to execute");
         log.info("");
         log.info("     - all commands can be added with a '!' mark to execute without confirmation");
+        log.info("     - e.g. delete! table key family qualifier");
+        log.info("");
+        log.info("## NOTE 6) - Command modifier/increase put");
+        log.info("");
+        log.info("     - put commands can be added with a '+' mark to put a numerical value added to the old numerical value");
+        log.info("     - e.g. put+ table key family qualifier 22");
+        log.info("");
+        log.info("## NOTE 7) - Command modifier/append put");
+        log.info("");
+        log.info("     - put commands can be added with a '~' mark to append value to the old value");
+        log.info("     - e.g. put~ table key family qualifier value");
         log.info("");
     }
 

@@ -217,19 +217,33 @@ Or execute:
 ## NOTE 2) - Command modifier/row limit
 
      - all commands can be added with a row limit number to only operate on first found rows
+     - e.g. scan10 table . family qualifier value
 
 ## NOTE 3) - Command modifier/all-handle mode
 
      - all commands can be added with a '*' mark to execute without omitting series of qualifiers, thus 'f0, ..., f3' => 'f0, f1, f2, f3'
      - some commands always use this mode, eg. 'export'
+     - e.g. get* table key
 
 ## NOTE 4) - Command modifier/quiet mode
 
      - all commands can be added with a '-' mark to execute without logging to console and normal log file
+     - e.g. scan- table
 
 ## NOTE 5) - Command modifier/force to execute
 
      - all commands can be added with a '!' mark to execute without confirmation
+     - e.g. delete! table key family qualifier
+
+## NOTE 6) - Command modifier/increase put
+
+     - put commands can be added with a '+' mark to put a numerical value added to the old numerical value
+     - e.g. put+ table key family qualifier 22
+
+## NOTE 7) - Command modifier/append put
+
+     - put commands can be added with a '~' mark to append value to the old value
+     - e.g. put~ table key family qualifier value
 
 ## Contributing
 

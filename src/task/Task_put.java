@@ -54,14 +54,26 @@ public class Task_put extends TaskBase {
         HTable hTable = Utils.getTable(table);
 
         try {
-            try {
-                Utils.put(hTable, row, family, qualifier, value);
-            } finally {
-                hTable.close();
+            if (isIncreasePut()) {
+                String oldValue = Utils.get(hTable, row, family, qualifier);
+                value = String.valueOf(Double.valueOf(oldValue) + Double.valueOf(value));
+
+                if (value.endsWith(".0")) {
+                    value = value.substring(0, value.length() - 2);
+                }
             }
+
+            if (isAppendPut()) {
+                String oldValue = Utils.get(hTable, row, family, qualifier);
+                value = oldValue + value;
+            }
+
+            Utils.put(hTable, row, family, qualifier, value);
         } catch (NoSuchColumnFamilyException e) {
             // make error clear
             throw new NoSuchColumnFamilyException(family);
+        } finally {
+            hTable.close();
         }
     }
 }

@@ -21,6 +21,12 @@ public interface Task {
 
     boolean isHandleAll();
 
+    boolean isIncreasePut();
+
+    boolean isAppendPut();
+
+    long getRowLimit();
+
     void changeLogOnStart();
 
     Level getLevel();
