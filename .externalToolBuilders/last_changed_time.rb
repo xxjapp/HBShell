@@ -25,7 +25,7 @@ def last_changed_time()
 
     # return result
     begin
-        return Time.parse(time).to_s
+        return Time.parse(time).localtime.to_s
     rescue
         return "Not available"
     end
