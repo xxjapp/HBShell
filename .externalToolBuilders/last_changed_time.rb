@@ -13,7 +13,7 @@ def last_changed_time()
     # use the following instead of "svn info --xml https://github.com/xxjapp/HBShell" because of
     #  - 'svn' may not exist
     #  - 'wget' is faster
-    cmd = "wget --no-check-certificate --output-document=#{tmp_file} https://github.com/xxjapp/HBShell"
+    cmd = "wget --no-check-certificate --output-document=#{tmp_file} https://github.com/xxjapp/HBShell/commits/master"
     stdin, stdout, stderr = Open3.popen3(cmd)
 
     # wait for end
@@ -21,7 +21,7 @@ def last_changed_time()
 
     # parse page data
     xml  = Nokogiri::XML(IO.read(tmp_file))
-    time = xml.xpath("//div[@class='authorship']/time/@datetime").to_s
+    time = xml.xpath("//div[@class='commit-meta']/time/@datetime").to_s
 
     # return result
     begin
