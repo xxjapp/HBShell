@@ -3,31 +3,26 @@
 #
 
 require 'open3'
-require 'nokogiri'
 require 'time'
 
-# get last changed time from https://github.com/xxjapp/HBShell
+def get_info(url, pattern)
+    cmd = "curl --insecure #{url}"
+    # puts cmd
+
+    Open3.popen3(cmd) { |stdin, stdout, stderr|
+        return stdout.read.match(pattern)[1]
+    }
+end
+
+# get last changed time from github api
 def last_changed_time()
-    tmp_file = '/tmp/HBShell.html'
+    url_of_latest_commit = get_info('https://api.github.com/repos/xxjapp/HBShell/git/refs/heads', /"url": "(.*commits.*)"/)
+    last_changed_time    = get_info(url_of_latest_commit, /"date": "(.*)"/)
 
-    # use the following instead of "svn info --xml https://github.com/xxjapp/HBShell" because of
-    #  - 'svn' may not exist
-    #  - 'wget' is faster
-    cmd = "wget --no-check-certificate --output-document=#{tmp_file} https://github.com/xxjapp/HBShell/commits/master"
-    stdin, stdout, stderr = Open3.popen3(cmd)
-
-    # wait for end
-    stdout.readlines
-
-    # parse page data
-    xml  = Nokogiri::XML(IO.read(tmp_file))
-    time = xml.xpath("//div[@class='commit-meta']/time/@datetime").to_s
-
-    # return result
     begin
-        return Time.parse(time).localtime.to_s
+        return Time.parse(last_changed_time).localtime.to_s
     rescue
-        return "Not available"
+        return 'Not available'
     end
 end
 
