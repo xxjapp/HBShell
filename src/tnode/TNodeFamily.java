@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.NavigableMap;
 
-import exception.HBSException;
 import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
+import exception.HBSException;
 
 public class TNodeFamily extends TNodeBase {
     private final Map<String, Long>            timestampMap;
@@ -53,6 +53,6 @@ public class TNodeFamily extends TNodeBase {
     }
 
     public static boolean isFileDataFamily(String family) {
-        return family.equals("file") || family.equals("tmp");
+        return family.equals("file") || family.equals("tmp") || family.equals("textmemo");
     }
 }
