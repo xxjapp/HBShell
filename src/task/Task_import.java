@@ -83,6 +83,7 @@ public class Task_import extends TaskBase {
             // get family
             if (qualifier == null) {
                 importFamily(hTable, table, row, family);
+                return;
             }
 
             // get qualifier
