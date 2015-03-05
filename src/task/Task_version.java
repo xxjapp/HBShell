@@ -1,6 +1,10 @@
 package task;
 
+import java.util.List;
+
 import main.Version;
+import utils.Utils;
+
 import common.utils.KDOs;
 
 public class Task_version extends TaskBase {
@@ -33,8 +37,6 @@ public class Task_version extends TaskBase {
     }
 
     private static void printVersion() {
-        String lastChangedTime = getLastChangedTime();
-
         log.info("HBase Shell");
         log.info(" - Simple but powerful replacement for ./hbase shell");
         log.info(" - Designed especially for KeepData database");
@@ -42,22 +44,29 @@ public class Task_version extends TaskBase {
         log.info(" - Enter 'exit<RETURN>' to exit");
         log.info("");
         log.info(String.format(" Version           : %d.%d.%s", VERSION_MAJOR, VERSION_MINOR, Version.REVISION));
-        log.info(String.format(" Built time        : %s", Version.BUILD_TIME));
-        log.info(String.format(" Last changed time : %s", lastChangedTime));
+        log.info(String.format(" Commit time       : %s", Version.COMMIT_TIME));
 
-        if (lastChangedTime.startsWith("2") && lastChangedTime.compareTo(Version.BUILD_TIME) > 0) {
+        if (Long.valueOf(Version.REVISION) < getNewestRevision()) {
             log.info(" * New version available * ");
         }
     }
 
-    private static String getLastChangedTime() {
+    private static long getNewestRevision() {
         String[] commandline = {
-            "ruby",
-            ".externalToolBuilders/last_changed_time.rb",
+            "curl",
+            "https://raw.githubusercontent.com/xxjapp/HBShell/master/src/main/Version.java",
         };
 
         StringBuilder sbOutput = new StringBuilder();
         KDOs.runExternalExe(commandline, sbOutput);
-        return sbOutput.toString().trim();
+
+        String       output = sbOutput.toString();
+        List<String> groups = Utils.match(output, "REVISION *= *\"(\\d+)\";");
+
+        try {
+            return Long.valueOf(groups.get(1));
+        } catch (IndexOutOfBoundsException e) {
+            return 0;
+        }
     }
 }

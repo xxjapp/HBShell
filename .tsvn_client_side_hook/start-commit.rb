@@ -20,8 +20,8 @@ def create_version_file()
         f.puts "package main;"
         f.puts ""
         f.puts "public final class Version {"
-        f.puts "    public static final String REVISION   = \"#{next_version()}\";"
-        f.puts "    public static final String BUILD_TIME = \"#{Time.now}\";"
+        f.puts "    public static final String REVISION    = \"#{next_version()}\";"
+        f.puts "    public static final String COMMIT_TIME = \"#{Time.now}\";"
         f.puts "}"
     }
 end
