@@ -9,7 +9,7 @@ Execute:
     $ mkdir -p ~/tools
     $ cd ~/tools
     $ wget -q --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master -O /tmp/h
-    $ unzip /tmp/h
+    $ unzip -q /tmp/h
     $ rm -rf HBShell
     $ mv HBShell-master HBShell
     $ cd HBShell
