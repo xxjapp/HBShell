@@ -37,7 +37,7 @@ public class Task_version extends TaskBase {
     }
 
     private static void printVersion() {
-        log.info("HBase Shell");
+        log.info("HBShell");
         log.info(" - Simple but powerful replacement for ./hbase shell");
         log.info(" - Designed especially for KeepData database");
         log.info(" - Enter 'help<RETURN>' for list of supported commands");
