@@ -6,16 +6,19 @@ A simple but powerful replacement for ./hbase shell
 
 Execute:
 
-    $ wget --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master
-    $ unzip master
+    $ mkdir -p ~/tools
+    $ cd ~/tools
+    $ wget --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master -O /tmp/h
+    $ unzip /tmp/h
+    $ rm -rf HBShell
     $ mv HBShell-master HBShell
-    $ cd HBShell/
+    $ cd HBShell
     $ chmod +x run.rb
     $ ./run.rb
 
 Or execute:
 
-    $ wget --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master && unzip master && mv HBShell-master HBShell && cd HBShell/ && chmod +x run.rb && ./run.rb
+    $ bash <(curl -s https://raw.githubusercontent.com/xxjapp/HBShell/master/install.sh)
 
 ## System Shell Commands
 
