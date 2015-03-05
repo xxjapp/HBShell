@@ -18,7 +18,7 @@ Execute:
 
 Or execute:
 
-    $ bash <(curl -s https://raw.githubusercontent.com/xxjapp/HBShell/master/install.sh)
+    $ bash <(curl -sk https://raw.githubusercontent.com/xxjapp/HBShell/master/install.sh)
 
 ## System Shell Commands
 
