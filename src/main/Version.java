@@ -4,6 +4,6 @@
 package main;
 
 public final class Version {
-    public static final String REVISION    = "2718";
-    public static final String COMMIT_TIME = "2015-03-05 14:08:31 +0900";
+    public static final String REVISION    = "2719";
+    public static final String COMMIT_TIME = "2015-03-05 14:12:30 +0900";
 }

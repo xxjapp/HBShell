@@ -54,6 +54,7 @@ public class Task_version extends TaskBase {
     private static long getNewestRevision() {
         String[] commandline = {
             "curl",
+            "--insecure",
             "https://raw.githubusercontent.com/xxjapp/HBShell/master/src/main/Version.java",
         };
 
