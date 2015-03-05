@@ -6,6 +6,10 @@ A simple but powerful replacement for ./hbase shell
 
 Execute:
 
+    $ bash <(curl -sk https://raw.githubusercontent.com/xxjapp/HBShell/master/install.sh)
+
+Or execute:
+
     $ mkdir -p ~/tools
     $ cd ~/tools
     $ wget -q --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master -O /tmp/h
@@ -15,10 +19,6 @@ Execute:
     $ cd HBShell
     $ chmod +x run.rb
     $ ./run.rb
-
-Or execute:
-
-    $ bash <(curl -sk https://raw.githubusercontent.com/xxjapp/HBShell/master/install.sh)
 
 ## System Shell Commands
 
