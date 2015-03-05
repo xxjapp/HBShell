@@ -26,7 +26,6 @@ CLASSPATH_JOIN  = Gem.win_platform? ? ';' : ':'
 MAIN_CLASS_NAME = File.basename(THIS_FILE_DIR)
 MAIN_CLASS_FILE = "#{BIN_DIR}/main/#{MAIN_CLASS_NAME}.class"
 MAIN_CLASS      = "main.#{MAIN_CLASS_NAME}"
-VERSION_FILE    = "#{SRC_DIR}/main/Version.java"
 
 def exec_cmd(cmd)
     # open the following comment if commands are needed
@@ -66,9 +65,6 @@ def main_class_file_not_found()
 end
 
 def run_java(cmdline)
-    # create version file if not found or out of date
-    exec_cmd "ruby .externalToolBuilders/create_version_file.rb"
-
     # get files
     source_files = get_files(SRC_DIR, 'java')
     jar_files    = get_files(LIB_DIR, 'jar')
