@@ -64,7 +64,7 @@ def main_class_file_not_found()
     !File.exists?(MAIN_CLASS_FILE)
 end
 
-def run_java(cmdline)
+def run_java(args)
     # get files
     source_files = get_files(SRC_DIR, 'java')
     jar_files    = get_files(LIB_DIR, 'jar')
@@ -82,15 +82,12 @@ def run_java(cmdline)
     end
 
     # run java program
-    exec_cmd "java -classpath #{classpath_for_run} #{MAIN_CLASS} #{cmdline}"
+    exec_cmd "java -classpath #{classpath_for_run} #{MAIN_CLASS} #{args}"
 end
 
 def main(argv)
     Dir.chdir THIS_FILE_DIR
-
-    cmdline = argv.collect { |arg| '"' + arg + '"' }.join(' ')
-    run_java(cmdline)
-
+    run_java(argv.map { |x| x.index(/\s/) ? "\"#{x}\"" : x }.join(' '))
     Dir.chdir CURRENT_DIR
 end
 
