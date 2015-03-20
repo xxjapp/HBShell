@@ -8,7 +8,7 @@ import utils.Utils;
 import common.utils.KDOs;
 
 public class Task_version extends TaskBase {
-    private static final int VERSION_MAJOR = 0;
+    private static final int VERSION_MAJOR = 1;
     private static final int VERSION_MINOR = 2;
 
     @Override

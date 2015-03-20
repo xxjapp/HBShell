@@ -443,6 +443,7 @@ public abstract class TaskBase implements Task {
     // notify
     //
 
+    @SuppressWarnings("resource")
     public void notifyFound(TNodeBase node)
     throws IOException, HBSException {
         if (!notifyEnabled) {

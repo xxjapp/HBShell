@@ -1,15 +1,16 @@
 package task;
 
-import static common.Common.*;
+import static common.Common.str2bytes;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HRegionInfo;
@@ -76,19 +77,24 @@ public class Task_rename extends TaskBase {
 
         HBaseAdmin hBaseAdmin = new HBaseAdmin(Utils.conf());
 
-        hBaseAdmin.disableTable(oldTableName);
-        renameTable(oldTableName, newTableName);
-        hBaseAdmin.enableTable(newTableName);
+        try {
+            hBaseAdmin.disableTable(oldTableName);
+            renameTable(oldTableName, newTableName);
+            hBaseAdmin.enableTable(newTableName);
+        } finally {
+            IOUtils.closeQuietly(hBaseAdmin);
+        }
     }
 
     private static void renameTable(String oldTableName, String newTableName)
     throws IOException {
-        FileSystem    fs      = null;
-        ResultScanner scanner = null;
+        FileSystem    fs        = null;
+        ResultScanner scanner   = null;
+        HTable        metaTable = null;
 
         try {
             // Get configuration to use.
-            HBaseConfiguration c = Utils.conf();
+            Configuration c = Utils.conf();
 
             // Set hadoop filesystem configuration using the hbase.rootdir.
             // Otherwise, we'll always use localhost though the hbase.rootdir
@@ -111,8 +117,8 @@ public class Task_rename extends TaskBase {
             }
 
             // Run through the meta table moving region mentions from old to new table name.
-            HTable metaTable = new HTable(c, HConstants.META_TABLE_NAME);
-            scanner = metaTable.getScanner(new Scan());
+            metaTable = new HTable(c, HConstants.META_TABLE_NAME);
+            scanner   = metaTable.getScanner(new Scan());
 
             for (Result result : scanner) {
                 String      rowID  = Bytes.toString(result.getRow());
@@ -155,13 +161,9 @@ public class Task_rename extends TaskBase {
 
             fs.delete(oldTableDir, true);
         } finally {
-            if (scanner != null) {
-                scanner.close();
-            }
-
-            if (fs != null) {
-                fs.close();
-            }
+            IOUtils.closeQuietly(scanner);
+            IOUtils.closeQuietly(fs);
+            IOUtils.closeQuietly(metaTable);
         }
     }
 

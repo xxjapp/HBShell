@@ -21,12 +21,13 @@ import java.util.regex.Pattern;
 import main.HBShell;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.KeyValue;
-import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -251,11 +252,11 @@ public class Utils {
     // hbase
     //
 
-    private static final String       HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
-    private static final int          MAX_VERSIONS           = 1;
-    private static HBaseConfiguration m_hBaseConfiguration   = null;
+    private static final String  HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
+    private static final int     MAX_VERSIONS           = 1;
+    private static Configuration m_hBaseConfiguration   = null;
 
-    public static HBaseConfiguration conf() {
+    public static Configuration conf() {
         if (m_hBaseConfiguration == null) {
             setDefaultHBaseConfiguration();
         }
@@ -273,14 +274,19 @@ public class Utils {
     }
 
     private static void setDefaultHBaseConfiguration() {
-        m_hBaseConfiguration = new HBaseConfiguration();
+        m_hBaseConfiguration = HBaseConfiguration.create();
         m_hBaseConfiguration.addResource(new Path(OemInfo.hbaseSiteXml()));
     }
 
     public static HTableDescriptor[] listTables()
     throws IOException {
-        HBaseAdmin hBaseAdmin = new HBaseAdmin(conf());
-        return hBaseAdmin.listTables();
+        HBaseAdmin admin = new HBaseAdmin(conf());
+
+        try {
+            return admin.listTables();
+        } finally {
+            IOUtils.closeQuietly(admin);
+        }
     }
 
     // tableName
@@ -291,9 +297,14 @@ public class Utils {
     }
 
     public static boolean tableExists(String tableName)
-    throws MasterNotRunningException {
+    throws IOException {
         HBaseAdmin hBaseAdmin = new HBaseAdmin(conf());
-        return hBaseAdmin.tableExists(tableName);
+
+        try {
+            return hBaseAdmin.tableExists(tableName);
+        } finally {
+            IOUtils.closeQuietly(hBaseAdmin);
+        }
     }
 
     public static void createTable(String tableName, List< ? > families)
@@ -312,18 +323,28 @@ public class Utils {
 
     public static void createTable(HTableDescriptor tableDescriptor)
     throws IOException {
-        new HBaseAdmin(conf()).createTable(tableDescriptor);
+        HBaseAdmin admin = new HBaseAdmin(conf());
+
+        try {
+            admin.createTable(tableDescriptor);
+        } finally {
+            IOUtils.closeQuietly(admin);
+        }
     }
 
     public static void deleteTable(String tableName)
     throws IOException {
         RootLog.getLog().info(tableName);
 
-        HBaseAdmin hBaseAdmin = new HBaseAdmin(conf());
+        HBaseAdmin admin = new HBaseAdmin(conf());
 
-        if (hBaseAdmin.tableExists(tableName)) {
-            hBaseAdmin.disableTable(tableName);
-            hBaseAdmin.deleteTable(tableName);
+        try {
+            if (admin.tableExists(tableName)) {
+                admin.disableTable(tableName);
+                admin.deleteTable(tableName);
+            }
+        } finally {
+            IOUtils.closeQuietly(admin);
         }
     }
 

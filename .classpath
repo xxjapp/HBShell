@@ -3,9 +3,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="lib/hadoop-0.20.3-core.jar"/>
-	<classpathentry kind="lib" path="lib/hbase-0.20.4.jar"/>
-	<classpathentry kind="lib" path="lib/hbase-0.20.4-transactional.jar"/>
+	<classpathentry kind="lib" path="lib/hadoop-core-0.20.205.0.jar"/>
+	<classpathentry kind="lib" path="lib/hbase-0.90.6.jar"/>
 	<classpathentry kind="lib" path="lib/jline-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
