@@ -8,18 +8,6 @@ Execute:
 
     $ bash <(curl -sk https://raw.githubusercontent.com/xxjapp/HBShell/master/install.sh)
 
-Or execute:
-
-    $ mkdir -p ~/tools
-    $ cd ~/tools
-    $ wget -q --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master -O /tmp/h
-    $ unzip -q /tmp/h
-    $ rm -rf HBShell
-    $ mv HBShell-master HBShell
-    $ cd HBShell
-    $ chmod +x run.rb
-    $ ./run.rb
-
 ## System Shell Commands
 
     $ ruby run.rb
