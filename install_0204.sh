@@ -7,7 +7,7 @@ wget -q --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/e2
 unzip -q /tmp/h
 
 rm -rf HBShell
-mv HBShell-master HBShell
+mv HBShell-e26c46ac569696c75c0d16add28d0f77684eac25 HBShell
 
 cd HBShell
 chmod +x run.rb
