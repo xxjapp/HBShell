@@ -8,6 +8,10 @@ Execute:
 
     $ bash <(curl -sk https://raw.githubusercontent.com/xxjapp/HBShell/master/install.sh)
 
+NOTE: For hbase 0.20.4 execute:
+
+    $ bash <(curl -sk https://raw.githubusercontent.com/xxjapp/HBShell/master/install_0204.sh)
+
 ## System Shell Commands
 
     $ ruby run.rb
