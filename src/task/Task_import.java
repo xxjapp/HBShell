@@ -1,5 +1,8 @@
 package task;
 
+import static common.Common.decode;
+import static common.Common.encode;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -97,7 +100,12 @@ public class Task_import extends TaskBase {
 
     private static void importQualifier(HTable hTable, String table, String row, String family, String qualifier)
     throws IOException {
-        String valueFilePath = String.format("%s/%s/%s/%s/%s.txt", HBShell.binaryDataDir, table, row, family, qualifier);
+        String t = encode(table);
+        String r = encode(row);
+        String f = encode(family);
+        String q = encode(qualifier);
+
+        String valueFilePath = String.format("%s/%s/%s/%s/%s.txt", HBShell.binaryDataDir, t, r, f, q);
         byte[] bValue = FileUtils.readFileToByteArray(new File(valueFilePath));
 
         Utils.put(hTable, row, family, qualifier, bValue);
@@ -105,34 +113,45 @@ public class Task_import extends TaskBase {
 
     private static void importFamily(HTable hTable, String table, String row, String family)
     throws IOException {
-        String familyDirPath = String.format("%s/%s/%s/%s", HBShell.binaryDataDir, table, row, family);
-        File   familyDir     = new File(familyDirPath);
-        String[] qualifiers = familyDir.list();
+        String t = encode(table);
+        String r = encode(row);
+        String f = encode(family);
 
-        for (String qualifier : qualifiers) {
-            qualifier = qualifier.substring(0, qualifier.length() - ".txt".length());
+        String familyDirPath = String.format("%s/%s/%s/%s", HBShell.binaryDataDir, t, r, f);
+        File   familyDir     = new File(familyDirPath);
+        String[] qs = familyDir.list();
+
+        for (String q : qs) {
+            String qualifier = decode(q.substring(0, q.length() - ".txt".length()));
             importQualifier(hTable, table, row, family, qualifier);
         }
     }
 
     private static void importRow(HTable hTable, String table, String row)
     throws IOException {
-        String rowDirPath = String.format("%s/%s/%s", HBShell.binaryDataDir, table, row);
-        File   rowDir     = new File(rowDirPath);
-        String[] families = rowDir.list();
+        String t = encode(table);
+        String r = encode(row);
 
-        for (String family : families) {
+        String rowDirPath = String.format("%s/%s/%s", HBShell.binaryDataDir, t, r);
+        File   rowDir     = new File(rowDirPath);
+        String[] fs = rowDir.list();
+
+        for (String f : fs) {
+            String family = decode(f);
             importFamily(hTable, table, row, family);
         }
     }
 
     private static void importTable(HTable hTable, String table)
     throws IOException {
-        String tableDirPath = String.format("%s/%s", HBShell.binaryDataDir, table);
-        File   tableDir     = new File(tableDirPath);
-        String[] rows = tableDir.list();
+        String t = encode(table);
 
-        for (String row : rows) {
+        String tableDirPath = String.format("%s/%s", HBShell.binaryDataDir, t);
+        File   tableDir     = new File(tableDirPath);
+        String[] rs = tableDir.list();
+
+        for (String r : rs) {
+            String row = decode(r);
             importRow(hTable, table, row);
         }
     }
@@ -141,9 +160,10 @@ public class Task_import extends TaskBase {
     throws IOException {
         String dbDirPath = String.format("%s", HBShell.binaryDataDir);
         File   dbDir     = new File(dbDirPath);
-        String[] tables = dbDir.list();
+        String[] ts = dbDir.list();
 
-        for (String table : tables) {
+        for (String t : ts) {
+            String table  = decode(t);
             HTable hTable = Utils.getTable(table);
 
             try {

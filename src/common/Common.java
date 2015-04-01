@@ -1,8 +1,14 @@
 package common;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
+import org.apache.commons.logging.Log;
 
 public class Common {
+    static final Log log = LogHelper.getLog();
+
     public static StackTraceElement getCallerInfo() {
         StackTraceElement[] trace = Thread.currentThread().getStackTrace();
         return trace[3];
@@ -31,6 +37,31 @@ public class Common {
         return sb.toString();
     }
 
+    // encode & decode
+    public static String decode(String string) {
+        if (string != null) {
+            try {
+                return URLDecoder.decode(string, UTF_8);
+            } catch (UnsupportedEncodingException e) {
+                log.error(string, e);
+            }
+        }
+
+        return null;
+    }
+
+    public static String encode(String string) {
+        if (string != null) {
+            try {
+                return URLEncoder.encode(string, UTF_8).replace("+", "%20");
+            } catch (UnsupportedEncodingException e) {
+                log.error(string, e);
+            }
+        }
+
+        return null;
+    }
+
     //
     // bytes
     //
@@ -46,7 +77,7 @@ public class Common {
         try {
             return new String(bytes, UTF_8);
         } catch (UnsupportedEncodingException e) {
-            LogHelper.getLog().error(null, e);
+            log.error(null, e);
         }
 
         return null;
