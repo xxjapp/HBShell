@@ -117,4 +117,8 @@ public class Common {
     public static String getTmpDir() {
         return System.getProperty("java.io.tmpdir");
     }
+
+    public static String getHomeDir() {
+        return System.getProperty("user.home");
+    }
 }

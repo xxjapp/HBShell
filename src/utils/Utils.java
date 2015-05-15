@@ -1,6 +1,6 @@
 package utils;
 
-import static common.Common.getTmpDir;
+import static common.Common.getHomeDir;
 import static common.Common.isEmpty;
 import static common.Common.str2bytes;
 
@@ -433,12 +433,12 @@ public class Utils {
     public static void clearFamilyCache() {
         familiesMap.clear();
 
-        String path = String.format("%s/_families", getTmpDir());
+        String path = String.format("%s/.hbshell/_families", getHomeDir());
         FileUtils.deleteQuietly(new File(path));
     }
 
     private static File localFamilyFile(String tableName) {
-        String path = String.format("%s/_families/%s.txt", getTmpDir(), tableName);
+        String path = String.format("%s/.hbshell/_families/%s.txt", getHomeDir(), tableName);
         return new File(path);
     }
 
