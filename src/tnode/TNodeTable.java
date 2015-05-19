@@ -89,8 +89,7 @@ public class TNodeTable extends TNodeBase {
         }
     }
 
-    public HTable getTable()
-    throws IOException {
+    public HTable getTable() {
         if (table != null) {
             return table;
         }

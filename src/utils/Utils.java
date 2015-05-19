@@ -38,6 +38,7 @@ import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
 import common.Common;
 import common.OemInfo;
+import common.db.hbase.TablePool;
 
 public class Utils {
     private static final String UTF_8 = "UTF-8";
@@ -291,9 +292,8 @@ public class Utils {
 
     // tableName
 
-    public static HTable getTable(String tableName)
-    throws IOException {
-        return new HTable(conf(), tableName);
+    public static HTable getTable(String tableName) {
+        return (HTable) TablePool.inst().getTable(tableName);
     }
 
     public static boolean tableExists(String tableName)
