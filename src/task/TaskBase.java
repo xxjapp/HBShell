@@ -127,14 +127,16 @@ public abstract class TaskBase implements Task {
 
         resetAllCount();
 
+        log.setQuiet(quiet);
+
         try {
-            log.setQuiet(quiet);
             execute();
-            log.setQuiet(false);
         } catch (HBSExceptionRowLimitReached e) {
             // OK
         } catch (HBSException e) {
             log.error(null, e);
+        } finally {
+            log.setQuiet(false);
         }
     }
 
