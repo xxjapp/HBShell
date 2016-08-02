@@ -74,12 +74,13 @@ public abstract class TaskBase implements Task {
     private static Map<String, TaskType> aliasMap = null;
 
     // command modifiers
-    private static boolean forced      = false;
-    private static boolean quiet       = false;
-    private static boolean handleAll   = false;
-    private static boolean increasePut = false;
-    private static boolean appendPut   = false;
-    private static long    rowLimit    = Long.MAX_VALUE;
+    private static boolean forced       = false;
+    private static boolean quiet        = false;
+    private static boolean noResultFile = false;
+    private static boolean handleAll    = false;
+    private static boolean increasePut  = false;
+    private static boolean appendPut    = false;
+    private static long    rowLimit     = Long.MAX_VALUE;
 
     private TaskType taskType = null;
 
@@ -121,13 +122,17 @@ public abstract class TaskBase implements Task {
 
         parseArgs(args);
 
-        if (!doConfirm()) {
-            return;
-        }
-
         resetAllCount();
 
         log.setQuiet(quiet);
+        log.setNoResultFile(noResultFile);
+
+        // output
+        outputParam();
+
+        if (!doConfirm()) {
+            return;
+        }
 
         try {
             execute();
@@ -223,9 +228,6 @@ public abstract class TaskBase implements Task {
 
         // notifyEnabled
         this.notifyEnabled = notifyEnabled();
-
-        // output
-        outputParam();
     }
 
     protected abstract boolean checkArgNumber(int argNumber);
@@ -345,12 +347,13 @@ public abstract class TaskBase implements Task {
     }
 
     private static void initCommandModifiers() {
-        forced      = false;
-        quiet       = false;
-        handleAll   = false;
-        increasePut = false;
-        appendPut   = false;
-        rowLimit    = Long.MAX_VALUE;
+        forced       = false;
+        quiet        = false;
+        noResultFile = false;
+        handleAll    = false;
+        increasePut  = false;
+        appendPut    = false;
+        rowLimit     = Long.MAX_VALUE;
     }
 
     private static String parseCommand(String string) {
@@ -369,6 +372,12 @@ public abstract class TaskBase implements Task {
             if (string.endsWith("-")) {
                 quiet  = true;
                 string = string.substring(0, string.length() - 1);
+            }
+
+            // check if do not record to result file
+            if (string.endsWith("^")) {
+                noResultFile = true;
+                string       = string.substring(0, string.length() - 1);
             }
 
             // check if handle all

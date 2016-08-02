@@ -225,17 +225,22 @@ NOTE: For hbase 0.20.4 execute:
      - all commands can be added with a '-' mark to execute without logging to console and normal log file
      - e.g. scan- table
 
-## NOTE 5) - Command modifier/force to execute
+## NOTE 5) - Command modifier/no result file mode
+
+     - all commands can be added with a '^' mark to execute without logging result file
+     - e.g. scan^ table
+
+## NOTE 6) - Command modifier/force to execute
 
      - all commands can be added with a '!' mark to execute without confirmation
      - e.g. delete! table key family qualifier
 
-## NOTE 6) - Command modifier/increase put
+## NOTE 7) - Command modifier/increase put
 
      - put commands can be added with a '+' mark to put a numerical value added to the old numerical value
      - e.g. put+ table key family qualifier 22
 
-## NOTE 7) - Command modifier/append put
+## NOTE 8) - Command modifier/append put
 
      - put commands can be added with a '~' mark to append value to the old value
      - e.g. put~ table key family qualifier value

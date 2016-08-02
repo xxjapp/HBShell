@@ -16,10 +16,11 @@ public class ResultLog {
     private static final ResultLog LOG            = new ResultLog();
 
     private File    file          = null;
-    private boolean startNew      = false;  // log to a new file
-    private boolean stopLogToFile = false;  // logger.result defined in LOG4J_CONF_FILE will go on
-    private boolean infoEnabled   = true;   // info log enabled?
-    private boolean quiet         = false;  // this may disable log to normal log file and console on info level
+    private boolean startNew      = false; // log to a new file
+    private boolean stopLogToFile = false; // logger.result defined in LOG4J_CONF_FILE will go on
+    private boolean infoEnabled   = true;  // info log enabled?
+    private boolean quiet         = false; // this may disable log to normal log file and console on info level
+    private boolean noResultFile  = false; // this disables log to result file
 
     private ResultLog() {
         // call RootLog methods to make sure
@@ -48,6 +49,10 @@ public class ResultLog {
         this.quiet = quiet;
     }
 
+    public void setNoResultFile(boolean noResultFile) {
+        this.noResultFile = noResultFile;
+    }
+
     public void info(String string) {
         if (!infoEnabled) {
             return;
@@ -57,7 +62,9 @@ public class ResultLog {
             logger_result().info(string);
         }
 
-        appendToLogFile(string);
+        if (!noResultFile) {
+            appendToLogFile(string);
+        }
     }
 
     public void warn(String string) {
