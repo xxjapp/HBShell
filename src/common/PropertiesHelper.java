@@ -1,5 +1,7 @@
 package common;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -15,12 +17,16 @@ public class PropertiesHelper {
 
     public static Properties getProperties(String iniFilePath) {
         log.info(iniFilePath);
-        Properties properties = new Properties();
+        Properties      properties = new Properties();
+        FileInputStream in         = null;
 
         try {
-            properties.load(new FileInputStream(iniFilePath));
+            in = new FileInputStream(iniFilePath);
+            properties.load(in);
         } catch (IOException e) {
             log.warn("Couldn't open setting file(" + iniFilePath + ")... We use default setting", e);
+        } finally {
+            closeQuietly(in);
         }
 
         return properties;

@@ -1,5 +1,7 @@
 package utils;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -21,12 +23,16 @@ public class PropertiesHelper {
     }
 
     public static Properties getPropertiesBase(String iniFilePath) {
-        Properties properties = new Properties();
+        Properties      properties = new Properties();
+        FileInputStream in         = null;
 
         try {
-            properties.load(new FileInputStream(iniFilePath));
+            in = new FileInputStream(iniFilePath);
+            properties.load(in);
         } catch (IOException e) {
             log.error(null, e);
+        } finally {
+            closeQuietly(in);
         }
 
         return properties;
