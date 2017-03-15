@@ -1,6 +1,6 @@
 package tnode;
 
-import static common.Common.*;
+import static common.Common.str2bytes;
 
 import java.io.IOException;
 
@@ -13,9 +13,9 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
 
-import exception.HBSException;
 import task.TaskBase;
 import task.TaskBase.Level;
+import exception.HBSException;
 
 public class TNodeFamilyFileData extends TNodeFamily {
     private static final long MAX_FBLOCK_COUNT_IN_ONE_ROW = 400;
@@ -25,8 +25,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
     private final Integer firstFileDataValuelength;
     private final byte[]  firstFileDataBValue;
 
-    private final long minIndex;
-    private final long maxIndex;
+    private final long startIndex;
 
     private final TNodeFamily familyNode;
 
@@ -39,8 +38,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
         this.firstFileDataValuelength = firstFileDataValuelength;
         this.firstFileDataBValue      = firstFileDataBValue;
 
-        this.minIndex = fileDataQualifierIndex(firstFileDataQualifier);
-        this.maxIndex = minIndex + MAX_FBLOCK_COUNT_IN_ONE_ROW - 1;
+        this.startIndex = fileDataQualifierIndex(firstFileDataQualifier);
 
         this.familyNode = familyNode;
     }
@@ -60,8 +58,8 @@ public class TNodeFamilyFileData extends TNodeFamily {
     protected void travelChildren()
     throws IOException, HBSException {
         // find last file data qualifier
-        long firstIndex = minIndex;
-        long lastIndex  = searchLastFileDataQualifier(minIndex, maxIndex, maxIndex * 2 - minIndex);
+        long firstIndex = searchBoundaryFileDataQualifier(startIndex, startIndex - MAX_FBLOCK_COUNT_IN_ONE_ROW);
+        long lastIndex  = searchBoundaryFileDataQualifier(startIndex, startIndex + MAX_FBLOCK_COUNT_IN_ONE_ROW);
 
         if (travelQuickly()) {
             // no qualifier and value filter, show only the first and last file data qualifier
@@ -130,33 +128,36 @@ public class TNodeFamilyFileData extends TNodeFamily {
         }
     }
 
+    // startIndex  qualifier should always be OK
+    // maxEndIndex qualifier should always be NG
+    private long searchBoundaryFileDataQualifier(long startIndex, long maxEndIndex)
+    throws IOException {
+        if (Math.abs(startIndex - maxEndIndex) == 1) {
+            return startIndex;
+        }
+
+        long middleIndex = (startIndex + maxEndIndex) / 2;
+
+        if (qualifierExist(middleIndex)) {
+            return searchBoundaryFileDataQualifier(middleIndex, maxEndIndex);
+        } else {
+            return searchBoundaryFileDataQualifier(startIndex, middleIndex);
+        }
+    }
+
+    private boolean qualifierExist(long index)
+    throws IOException {
+        Get get = new Get(str2bytes(parent.name));
+        get.addColumn(str2bytes(name), str2bytes(fileDataQualifier(index)));
+        return table.exists(get);
+    }
+
     private boolean travelQuickly() {
         if (task.isHandleAll()) {
             return false;
         }
 
         return (task.levelParam.get(Level.QUALIFIER) == null) && (task.levelParam.get(Level.VALUE) == null) && (task.levelParam.get(Level.OTHER) == null);
-    }
-
-    // half search the last file data qualifier
-    private long searchLastFileDataQualifier(long min, long lastIndex, long max)
-    throws IOException {
-        Get get = new Get(str2bytes(parent.name));
-        get.addColumn(str2bytes(name), str2bytes(fileDataQualifier(lastIndex)));
-
-        if (table.exists(get)) {
-            if (lastIndex == maxIndex || lastIndex == max - 1) {
-                return lastIndex;           // last file data qualifier(lastIndex) found
-            }
-
-            return searchLastFileDataQualifier(lastIndex, (lastIndex + max) / 2, max);
-        }
-
-        if (lastIndex == min + 1) {
-            return min;                 // last file data qualifier(min) found
-        }
-
-        return searchLastFileDataQualifier(min, (min + lastIndex) / 2, lastIndex);
     }
 
     private static String fileDataQualifier(long index) {

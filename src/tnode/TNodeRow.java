@@ -1,6 +1,6 @@
 package tnode;
 
-import static common.Common.*;
+import static common.Common.str2bytes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
-import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
+import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 
-import exception.HBSException;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
+import exception.HBSException;
 
 public class TNodeRow extends TNodeBase {
     public final HTable  table;
@@ -179,6 +179,18 @@ public class TNodeRow extends TNodeBase {
 
         // do not filter qualifier & value, filter them in family level
 
+        // NOTE:
+        //
+        // f800
+        // f801
+        // f802
+        // ...
+        // f1000	<= this will be the first qualifier!
+        // f1001
+        // f1002
+        // ...
+        // f1199
+        //
         // get only first kv
         filterList.addFilter(new FirstKeyOnlyFilter());
 
