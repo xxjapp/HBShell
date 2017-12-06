@@ -21,24 +21,25 @@ import java.util.regex.Pattern;
 import main.HBShell;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.KeyValue;
+import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HConnection;
+import org.apache.hadoop.hbase.client.HConnectionManager;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
 import common.Common;
 import common.OemInfo;
-import common.db.hbase.TablePool;
 
 public class Utils {
     private static final String UTF_8 = "UTF-8";
@@ -94,13 +95,12 @@ public class Utils {
 
     public static void searchFileFromEnd(String fileName, FoundLine foundLine)
     throws IOException {
-        File             file       = new File(fileName);
-        RandomAccessFile rf         = new RandomAccessFile(file, "r");
-        long             fileLength = file.length();
-        StringBuilder    sb         = new StringBuilder();
-        boolean          endSearch  = false;
+        File          file       = new File(fileName);
+        long          fileLength = file.length();
+        StringBuilder sb         = new StringBuilder();
+        boolean       endSearch  = false;
 
-        try {
+        try (RandomAccessFile rf = new RandomAccessFile(file, "r")) {
             // read from end
             for (long filePointer = fileLength - 1; filePointer != -1; filePointer--) {
                 rf.seek(filePointer);
@@ -127,8 +127,6 @@ public class Utils {
                 // first line of the file
                 foundLine.foundLine(sb.reverse().toString());
             }
-        } finally {
-            rf.close();
         }
     }
 
@@ -227,7 +225,7 @@ public class Utils {
     // match("a0x12b", "a(\\d+)b") => []
     // match("a0012b", "a(\\d+)b") => [a0012b, 0012]
     public static List<String> match(String targetString, String patternString) {
-        List<String> groups = new ArrayList<String>();
+        List<String> groups = new ArrayList<>();
 
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(targetString);
@@ -253,9 +251,29 @@ public class Utils {
     // hbase
     //
 
-    private static final String  HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
-    private static final int     MAX_VERSIONS           = 1;
-    private static Configuration m_hBaseConfiguration   = null;
+    private static final String      HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
+    private static final int         MAX_VERSIONS           = 1;
+    private static Configuration     m_hBaseConfiguration   = null;
+    private static final HConnection conn;
+
+    static {
+        try {
+            conn = HConnectionManager.createConnection(conf());
+        } catch (ZooKeeperConnectionException e) {
+            throw new RuntimeException(e);
+        }
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                try {
+                    conn.close();
+                } catch (IOException e) {
+                    RootLog.getLog().warn("faild to close connection to ZK");
+                }
+            }
+        });
+    }
 
     public static Configuration conf() {
         if (m_hBaseConfiguration == null) {
@@ -281,29 +299,22 @@ public class Utils {
 
     public static HTableDescriptor[] listTables()
     throws IOException {
-        HBaseAdmin admin = new HBaseAdmin(conf());
-
-        try {
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             return admin.listTables();
-        } finally {
-            IOUtils.closeQuietly(admin);
         }
     }
 
     // tableName
 
-    public static HTable getTable(String tableName) {
-        return (HTable) TablePool.inst().getTable(tableName);
+    public static HTableInterface getTable(String tableName)
+    throws IOException {
+        return conn.getTable(tableName);
     }
 
     public static boolean tableExists(String tableName)
     throws IOException {
-        HBaseAdmin hBaseAdmin = new HBaseAdmin(conf());
-
-        try {
+        try (HBaseAdmin hBaseAdmin = new HBaseAdmin(conf())) {
             return hBaseAdmin.tableExists(tableName);
-        } finally {
-            IOUtils.closeQuietly(hBaseAdmin);
         }
     }
 
@@ -323,12 +334,8 @@ public class Utils {
 
     public static void createTable(HTableDescriptor tableDescriptor)
     throws IOException {
-        HBaseAdmin admin = new HBaseAdmin(conf());
-
-        try {
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             admin.createTable(tableDescriptor);
-        } finally {
-            IOUtils.closeQuietly(admin);
         }
     }
 
@@ -336,15 +343,11 @@ public class Utils {
     throws IOException {
         RootLog.getLog().info(tableName);
 
-        HBaseAdmin admin = new HBaseAdmin(conf());
-
-        try {
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             if (admin.tableExists(tableName)) {
                 admin.disableTable(tableName);
                 admin.deleteTable(tableName);
             }
-        } finally {
-            IOUtils.closeQuietly(admin);
         }
     }
 
@@ -357,7 +360,7 @@ public class Utils {
 
     // This should be used only in one family to avoid name-duplicated qualifier
     public static Map<String, Long> resultGetTimestampMap(Result result, String family) {
-        Map<String, Long> timestampMap = new HashMap<String, Long>();
+        Map<String, Long> timestampMap = new HashMap<>();
 
         for (KeyValue kv : result.list()) {
             if (bytes2str(kv.getFamily()).equals(family)) {
@@ -369,7 +372,7 @@ public class Utils {
     }
 
     public static Map<String, Integer> resultGetValueLengthMap(Result result, String family) {
-        Map<String, Integer> valuelengthMap = new HashMap<String, Integer>();
+        Map<String, Integer> valuelengthMap = new HashMap<>();
 
         for (KeyValue kv : result.list()) {
             if (bytes2str(kv.getFamily()).equals(family)) {
@@ -382,13 +385,13 @@ public class Utils {
 
     // table
 
-    private static String tableName(HTable hTable) {
+    private static String tableName(HTableInterface hTable) {
         return bytes2str(hTable.getTableName());
     }
 
-    private static final Map<String, List<String> > familiesMap = new TreeMap<String, List<String> >();
+    private static final Map<String, List<String>> familiesMap = new TreeMap<>();
 
-    public static List<String> getFamilies(HTable hTable)
+    public static List<String> getFamilies(HTableInterface hTable)
     throws IOException {
         if (!HBShell.usefamilycache) {
             return getFamilies2(hTable);
@@ -442,9 +445,9 @@ public class Utils {
         return new File(path);
     }
 
-    private static List<String> getFamilies2(HTable hTable)
+    private static List<String> getFamilies2(HTableInterface hTable)
     throws IOException {
-        List<String> families = new ArrayList<String>();
+        List<String> families = new ArrayList<>();
 
         HTableDescriptor descriptor = hTable.getTableDescriptor();
 
@@ -455,7 +458,7 @@ public class Utils {
         return families;
     }
 
-    public static String get(HTable table, String key, String family, String qualifier)
+    public static String get(HTableInterface table, String key, String family, String qualifier)
     throws IOException {
         byte[] bRow       = str2bytes(key);
         byte[] bFamily    = str2bytes(family);
@@ -482,7 +485,7 @@ public class Utils {
         return bytes2str(bValue);
     }
 
-    public static void put(HTable hTable, String rowKey, String family, String qualifier, String value)
+    public static void put(HTableInterface hTable, String rowKey, String family, String qualifier, String value)
     throws IOException {
         RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier + " = " + value);
 
@@ -491,7 +494,7 @@ public class Utils {
         hTable.put(put);
     }
 
-    public static void put(HTable hTable, String rowKey, String family, String qualifier, byte[] bValue)
+    public static void put(HTableInterface hTable, String rowKey, String family, String qualifier, byte[] bValue)
     throws IOException {
         RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier + " = " + "0x...");
 
@@ -500,7 +503,7 @@ public class Utils {
         hTable.put(put);
     }
 
-    public static void deleteRow(HTable hTable, String rowKey)
+    public static void deleteRow(HTableInterface hTable, String rowKey)
     throws IOException {
         RootLog.getLog().info(rowKey);
 
@@ -508,7 +511,7 @@ public class Utils {
         hTable.delete(delete);
     }
 
-    public static void deleteFamily(HTable hTable, String rowKey, String family)
+    public static void deleteFamily(HTableInterface hTable, String rowKey, String family)
     throws IOException {
         RootLog.getLog().info(rowKey + "/" + family);
 
@@ -517,7 +520,7 @@ public class Utils {
         hTable.delete(delete);
     }
 
-    public static void deleteQualifier(HTable hTable, String rowKey, String family, String qualifier)
+    public static void deleteQualifier(HTableInterface hTable, String rowKey, String family, String qualifier)
     throws IOException {
         RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier);
 

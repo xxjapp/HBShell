@@ -1,6 +1,6 @@
 package task;
 
-import static common.Common.*;
+import static common.Common.str2bytes;
 
 import java.io.IOException;
 import java.util.Map;
@@ -9,12 +9,11 @@ import java.util.NavigableMap;
 import main.HBShell;
 
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
-import exception.HBSException;
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
 import tnode.TNodeFamily;
@@ -23,6 +22,7 @@ import tnode.TNodeQualifier;
 import tnode.TNodeRow;
 import tnode.TNodeTable;
 import utils.Utils;
+import exception.HBSException;
 
 public class Task_get extends TaskBase {
     private static final String FAMILY_IS_VALID_BUT_WITHOUT_DATA = "(family is valid but without data)";
@@ -132,9 +132,7 @@ public class Task_get extends TaskBase {
         Get get = new Get(str2bytes(row));
         get.setFilter(new FirstKeyOnlyFilter());
 
-        HTable hTable = Utils.getTable(table);
-
-        try {
+        try (HTableInterface hTable = Utils.getTable(table)) {
             Result firstKVResult = hTable.get(get);
 
             if (firstKVResult.isEmpty()) {
@@ -142,8 +140,6 @@ public class Task_get extends TaskBase {
             }
 
             return new TNodeRow(this, nTable, hTable, firstKVResult, true);
-        } finally {
-            hTable.close();
         }
     }
 

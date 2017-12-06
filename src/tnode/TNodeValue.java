@@ -132,13 +132,10 @@ public class TNodeValue extends TNodeBase {
 
             if (!HBShell.multiline) {
                 // show only first line
-                String  firstLine = null;
-                Scanner scanner   = new Scanner(value);
+                String firstLine = null;
 
-                try {
+                try (Scanner scanner = new Scanner(value)) {
                     firstLine = scanner.nextLine();
-                } finally {
-                    scanner.close();
                 }
 
                 if (firstLine.length() < value.length()) {

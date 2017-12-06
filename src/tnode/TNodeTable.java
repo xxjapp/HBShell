@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import main.HBShell;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
@@ -23,7 +22,7 @@ import exception.HBSException;
 import exception.HBSExceptionRowLimitReached;
 
 public class TNodeTable extends TNodeBase {
-    private HTable table = null;
+    private HTableInterface table = null;
 
     public TNodeTable(TaskBase task, TNodeDatabase parent, String name, boolean toOutput)
     throws HBSException {
@@ -60,9 +59,7 @@ public class TNodeTable extends TNodeBase {
         this.table = Utils.getTable(name);
 
         try {
-            ResultScanner resultScanner = table.getScanner(scan);
-
-            try {
+            try (ResultScanner resultScanner = table.getScanner(scan)) {
                 for (Result firstKVResult : resultScanner) {
                     new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
 
@@ -71,8 +68,6 @@ public class TNodeTable extends TNodeBase {
                         throw new HBSExceptionRowLimitReached();
                     }
                 }
-            } finally {
-                IOUtils.closeQuietly(resultScanner);
             }
         } finally {
             table.close();
@@ -89,7 +84,8 @@ public class TNodeTable extends TNodeBase {
         }
     }
 
-    public HTable getTable() {
+    public HTableInterface getTable()
+    throws IOException {
         if (table != null) {
             return table;
         }
@@ -97,7 +93,7 @@ public class TNodeTable extends TNodeBase {
         return Utils.getTable(name);
     }
 
-    public void closeTable(HTable table)
+    public void closeTable(HTableInterface table)
     throws IOException {
         if (table != this.table) {
             table.close();

@@ -11,24 +11,22 @@
 require 'find'
 require 'fileutils'
 
-THIS_FILE_DIR = File.dirname(File.expand_path(__FILE__))
-CURRENT_DIR   = Dir.pwd
-
 # basic directories
-SRC_DIR = 'src'
-LIB_DIR = 'lib'
-BIN_DIR = 'bin'
-
-# platform related constances
-CLASSPATH_JOIN  = Gem.win_platform? ? ';' : ':'
+THIS_FILE_DIR   = File.dirname(File.expand_path(__FILE__))
+SRC_DIR         = 'src'
+LIB_DIR         = 'lib'
+BIN_DIR         = 'bin'
 
 # main class related constances
 MAIN_CLASS_NAME = File.basename(THIS_FILE_DIR)
 MAIN_CLASS_FILE = "#{BIN_DIR}/main/#{MAIN_CLASS_NAME}.class"
 MAIN_CLASS      = "main.#{MAIN_CLASS_NAME}"
 
+# platform related constances
+CLASSPATH_JOIN  = Gem.win_platform? ? ';' : ':'
+
 def exec_cmd(cmd)
-    # open the following comment if commands are needed
+    # open the following comment if necessary
     # puts cmd
     raise cmd if !system cmd
 end
@@ -87,9 +85,9 @@ def run_java(args)
 end
 
 def main(argv)
-    Dir.chdir THIS_FILE_DIR
-    run_java(argv.map { |x| x.index(/\s/) ? "\"#{x}\"" : x }.join(' '))
-    Dir.chdir CURRENT_DIR
+    Dir.chdir(THIS_FILE_DIR) {
+        run_java(argv.map { |x| x.index(/\s/) ? "\"#{x}\"" : x }.join(' '))
+    }
 end
 
 # run main

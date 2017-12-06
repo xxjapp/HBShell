@@ -38,7 +38,7 @@ public class MyStringTokenizer {
     throws IllegalArgumentException {
         input = input + ' ';
 
-        List<String>  tokens    = new ArrayList<String>();
+        List<String>  tokens    = new ArrayList<>();
         StringBuilder sbToken   = new StringBuilder();
         Status        status    = Status.READY;
         int           lastQuote = -1;

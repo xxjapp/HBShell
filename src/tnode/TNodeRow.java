@@ -11,7 +11,7 @@ import java.util.NavigableMap;
 import main.HBShell;
 
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
@@ -24,13 +24,13 @@ import utils.Utils;
 import exception.HBSException;
 
 public class TNodeRow extends TNodeBase {
-    public final HTable  table;
-    private final Result firstKVResult;
+    public final HTableInterface table;
+    private final Result         firstKVResult;
 
     private List<String> families         = null;
     private List<String> fileDataFamilies = null;
 
-    public TNodeRow(TaskBase task, TNodeTable parent, HTable table, Result firstKVResult, boolean toOutput)
+    public TNodeRow(TaskBase task, TNodeTable parent, HTableInterface table, Result firstKVResult, boolean toOutput)
     throws HBSException {
         super(task, parent, Utils.resultGetRowKey(firstKVResult), Level.ROW, toOutput);
 
@@ -58,8 +58,8 @@ public class TNodeRow extends TNodeBase {
     throws IOException, HBSException {
         // get filtered families and fileDataFamilies
         List<String> allFamilies = Utils.getFamilies(table);
-        this.families         = new ArrayList<String>();
-        this.fileDataFamilies = new ArrayList<String>();
+        this.families         = new ArrayList<>();
+        this.fileDataFamilies = new ArrayList<>();
 
         for (String family : allFamilies) {
             if (task.isMatch(Level.FAMILY, family)) {
@@ -122,7 +122,7 @@ public class TNodeRow extends TNodeBase {
             return;
         }
 
-        NavigableMap<byte[], NavigableMap<byte[], byte[]> > map = result.getNoVersionMap();
+        NavigableMap<byte[], NavigableMap<byte[], byte[]>> map = result.getNoVersionMap();
 
         for (byte[] bFamily : map.keySet()) {
             String family = Utils.bytes2str(bFamily);
@@ -202,9 +202,9 @@ public class TNodeRow extends TNodeBase {
         if (!result.isEmpty()) {
             NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
 
-            byte[] bFirstKey = familyMap.firstKey();
+            byte[] bFirstKey              = familyMap.firstKey();
             String firstFileDataQualifier = Utils.bytes2str(bFirstKey);
-            byte[] firstFileDataBValue = familyMap.get(bFirstKey);
+            byte[] firstFileDataBValue    = familyMap.get(bFirstKey);
 
             Long    timestamp   = HBShell.showtimestamp ? result.raw()[0].getTimestamp() : null;
             Integer valuelength = HBShell.showvaluelength ? firstFileDataBValue.length : null;

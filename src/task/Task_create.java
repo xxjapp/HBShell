@@ -3,6 +3,7 @@ package task;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.hadoop.hbase.TableExistsException;
 
 import utils.Utils;
@@ -37,7 +38,7 @@ public class Task_create extends TaskBase {
     protected void assignParam(String[] args) {
         levelParam.put(Level.TABLE, args[0]);
 
-        List<String> families = new ArrayList<String>();
+        List<String> families = new ArrayList<>();
 
         for (int i = 1; i < args.length; i++) {
             families.add(args[i]);

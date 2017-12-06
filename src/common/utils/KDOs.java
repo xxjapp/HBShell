@@ -1,8 +1,7 @@
 package common.utils;
 
-import static org.apache.commons.io.IOUtils.closeQuietly;
-
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -49,19 +48,22 @@ public class KDOs {
     public static int runExternalExe(String[] commandline, StringBuilder sbOutput) {
         log.info(Common.join(commandline, " "));
 
+        String         line           = null;
         String         exeName        = FilenameUtils.getName(commandline[0]);
         ProcessBuilder processBuilder = new ProcessBuilder(commandline);
+        Process        process        = null;
+
         processBuilder.redirectErrorStream(true);
 
-        String         line   = null;
-        BufferedReader reader = null;
-
         try {
-            Process process = processBuilder.start();
-            setTimeout(process, PROCESS_TIMEOUT * 1000);
+            process = processBuilder.start();
+        } catch (IOException e) {
+            log.error(null, e);
+            return -1;
+        }
 
-            InputStream stdout = process.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(stdout, CHARSET_NAME));
+        try (InputStream stdout = process.getInputStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, CHARSET_NAME))) {
+            setTimeout(process, PROCESS_TIMEOUT * 1000);
 
             log.info("-------- " + exeName + " log start --------");
 
@@ -79,8 +81,6 @@ public class KDOs {
         } catch (Exception e) {
             log.error(null, e);
             return -1;
-        } finally {
-            closeQuietly(reader);
         }
     }
 

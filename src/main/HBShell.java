@@ -101,7 +101,7 @@ public class HBShell {
     private static ConsoleReader consoleReader = null; // for linux
     private static String        lastCmd       = Task_history.getLastCmd();
 
-    private static final Map<String, Long> countMap = new HashMap<String, Long>();
+    private static final Map<String, Long> countMap = new HashMap<>();
 
     public static final String TABLE     = "table";
     public static final String ROW       = "row";
@@ -163,13 +163,13 @@ public class HBShell {
         // add signal handler
         // NOTE: No replacement found at present for these SUN private APIs
         Signal.handle(new Signal("INT"), new SignalHandler() {
-                          @Override
-                          public void handle(Signal signal) {
-                              if (currentTask != null) {
-                                  currentTask.cancel();
-                              }
-                          }
-                      });
+            @Override
+            public void handle(Signal signal) {
+                if (currentTask != null) {
+                    currentTask.cancel();
+                }
+            }
+        });
     }
 
     private static String removeQuotes(String string) {

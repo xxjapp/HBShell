@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 
 import exception.HBSException;
 import tnode.TNodeFamily;
@@ -53,7 +53,7 @@ public class Task_describe extends TaskBase {
     }
 
     @Override
-    protected void foundTable(HTable table)
+    protected void foundTable(HTableInterface table)
     throws IOException, HBSException {
         List<String> families = Utils.getFamilies(table);
 

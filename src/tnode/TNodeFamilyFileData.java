@@ -7,7 +7,7 @@ import java.io.IOException;
 import main.HBShell;
 
 import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
@@ -20,16 +20,16 @@ import exception.HBSException;
 public class TNodeFamilyFileData extends TNodeFamily {
     private static final long MAX_FBLOCK_COUNT_IN_ONE_ROW = 400;
 
-    private final HTable  table;
-    private final Long    firstFileDataTimestamp;
-    private final Integer firstFileDataValuelength;
-    private final byte[]  firstFileDataBValue;
+    private final HTableInterface table;
+    private final Long            firstFileDataTimestamp;
+    private final Integer         firstFileDataValuelength;
+    private final byte[]          firstFileDataBValue;
 
     private final long startIndex;
 
     private final TNodeFamily familyNode;
 
-    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTable table, String firstFileDataQualifier, Long firstFileDataTimestamp, Integer firstFileDataValuelength, byte[] firstFileDataBValue, TNodeFamily familyNode, boolean toOutput)
+    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTableInterface table, String firstFileDataQualifier, Long firstFileDataTimestamp, Integer firstFileDataValuelength, byte[] firstFileDataBValue, TNodeFamily familyNode, boolean toOutput)
     throws HBSException {
         super(task, parent, family, null, null, null, toOutput);
 

@@ -3,7 +3,7 @@ package task;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 
 import utils.Utils;
 
@@ -52,7 +52,7 @@ public class Task_clear extends TaskBase {
     }
 
     @Override
-    protected void foundTable(HTable table)
+    protected void foundTable(HTableInterface table)
     throws IOException {
         String       tableName = Utils.bytes2str(table.getTableName());
         List<String> families  = Utils.getFamilies(table);

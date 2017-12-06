@@ -8,14 +8,13 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import task.TaskBase;
-import task.TaskBase.TaskType;
-
 import jline.Completor;
 import jline.ConsoleReader;
 import jline.CursorBuffer;
 import jline.History;
 import jline.SimpleCompletor;
+import task.TaskBase;
+import task.TaskBase.TaskType;
 
 public class MyConsoleReader extends ConsoleReader {
     private static final String FILE_ENCODING   = System.getProperty("file.encoding");
@@ -23,7 +22,7 @@ public class MyConsoleReader extends ConsoleReader {
 
     private static final long MIN_INTERVAL_OF_NORMAL_TWO_KEY_PRESS = 30;
 
-    private final Map<Character, Long> times = new HashMap<Character, Long>();
+    private final Map<Character, Long> times = new HashMap<>();
 
     public MyConsoleReader()
     throws IOException {
@@ -40,7 +39,7 @@ public class MyConsoleReader extends ConsoleReader {
         Map<String, TaskType> aliasMap = TaskBase.getAliasMap();
 
         String[] aliases = new String[aliasMap.size()];
-        int i = 0;
+        int      i       = 0;
 
         for (Object alias : aliasMap.keySet().toArray()) {
             aliases[i++] = (String) alias;

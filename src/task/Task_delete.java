@@ -3,10 +3,10 @@ package task;
 import java.io.IOException;
 
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 
-import exception.HBSException;
 import utils.Utils;
+import exception.HBSException;
 
 public class Task_delete extends TaskBase {
     @Override
@@ -135,34 +135,22 @@ public class Task_delete extends TaskBase {
 
     private static void deleteRow(String table, String row)
     throws IOException {
-        HTable hTable = Utils.getTable(table);
-
-        try {
+        try (HTableInterface hTable = Utils.getTable(table)) {
             Utils.deleteRow(hTable, row);
-        } finally {
-            hTable.close();
         }
     }
 
     private static void deleteFamily(String table, String row, String family)
     throws IOException {
-        HTable hTable = Utils.getTable(table);
-
-        try {
+        try (HTableInterface hTable = Utils.getTable(table)) {
             Utils.deleteFamily(hTable, row, family);
-        } finally {
-            hTable.close();
         }
     }
 
     private static void deleteQualifier(String table, String row, String family, String qualifier)
     throws IOException {
-        HTable hTable = Utils.getTable(table);
-
-        try {
+        try (HTableInterface hTable = Utils.getTable(table)) {
             Utils.deleteQualifier(hTable, row, family, qualifier);
-        } finally {
-            hTable.close();
         }
     }
 }

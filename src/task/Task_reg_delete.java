@@ -2,7 +2,7 @@ package task;
 
 import java.io.IOException;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 
 import utils.Utils;
 
@@ -55,7 +55,7 @@ public class Task_reg_delete extends TaskBase {
     }
 
     @Override
-    protected void foundTable(HTable table)
+    protected void foundTable(HTableInterface table)
     throws IOException {
         if (level == Level.TABLE) {
             Utils.deleteTable(Utils.bytes2str(table.getTableName()));
@@ -63,7 +63,7 @@ public class Task_reg_delete extends TaskBase {
     }
 
     @Override
-    protected void foundRow(HTable table, String row)
+    protected void foundRow(HTableInterface table, String row)
     throws IOException {
         if (level == Level.ROW) {
             Utils.deleteRow(table, row);
@@ -71,7 +71,7 @@ public class Task_reg_delete extends TaskBase {
     }
 
     @Override
-    protected void foundFamily(HTable table, String row, String family)
+    protected void foundFamily(HTableInterface table, String row, String family)
     throws IOException {
         if (level == Level.FAMILY) {
             Utils.deleteFamily(table, row, family);
@@ -79,7 +79,7 @@ public class Task_reg_delete extends TaskBase {
     }
 
     @Override
-    protected void foundQualifier(HTable table, String row, String family, String qualifier)
+    protected void foundQualifier(HTableInterface table, String row, String family, String qualifier)
     throws IOException {
         if (level == Level.QUALIFIER) {
             Utils.deleteQualifier(table, row, family, qualifier);
@@ -87,7 +87,7 @@ public class Task_reg_delete extends TaskBase {
     }
 
     @Override
-    protected void foundValue(HTable table, String row, String family, String qualifier, String value)
+    protected void foundValue(HTableInterface table, String row, String family, String qualifier, String value)
     throws IOException {
         if (level == Level.VALUE) {
             Utils.deleteQualifier(table, row, family, qualifier);

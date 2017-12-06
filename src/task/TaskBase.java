@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import main.HBShell;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
@@ -64,7 +64,7 @@ public abstract class TaskBase implements Task {
 
     protected static final ResultLog log = ResultLog.getLog();
 
-    public Map<Level, Object> levelParam = new HashMap<Level, Object>();
+    public Map<Level, Object> levelParam = new HashMap<>();
     public Level              level      = null;
 
     private boolean notifyEnabled = false;
@@ -418,7 +418,7 @@ public abstract class TaskBase implements Task {
             String     taskClassName = getTaskClassName(taskType);
             Class< ? > clazz         = Class.forName(taskClassName);
 
-            Class< ? > [] parameterTypes = new Class[] {};
+            Class< ? > []    parameterTypes = new Class[] {};
             Constructor< ? > constructor = clazz.getConstructor(parameterTypes);
 
             return (Task) constructor.newInstance(new Object[] {});
@@ -434,7 +434,7 @@ public abstract class TaskBase implements Task {
             return aliasMap;
         }
 
-        aliasMap = new HashMap<String, TaskType>();
+        aliasMap = new HashMap<>();
 
         for (TaskType taskType : TaskType.values()) {
             Task      task    = TaskBase.getTask(taskType);
@@ -461,10 +461,10 @@ public abstract class TaskBase implements Task {
             return;
         }
 
-        HTable table = null;
+        HTableInterface table = null;
 
         switch (node.level) {
-        case TABLE :
+        case TABLE:
             table = ((TNodeTable)node).getTable();
 
             try {
@@ -475,17 +475,17 @@ public abstract class TaskBase implements Task {
 
             break;
 
-        case ROW :
+        case ROW:
             table = ((TNodeRow)node).table;
             foundRow(table, node.name);
             break;
 
-        case FAMILY :
+        case FAMILY:
             table = ((TNodeRow)node.parent).table;
             foundFamily(table, node.parent.name, node.name);
             break;
 
-        case QUALIFIER :
+        case QUALIFIER:
             table = ((TNodeRow)node.parent.parent).table;
             foundQualifier(table, node.parent.parent.name, node.parent.name, node.name);
             break;
@@ -505,7 +505,7 @@ public abstract class TaskBase implements Task {
      * @throws IOException
      * @throws HBSException
      */
-    protected void foundTable(HTable table)
+    protected void foundTable(HTableInterface table)
     throws IOException, HBSException {
         // Do nothing
     }
@@ -515,7 +515,7 @@ public abstract class TaskBase implements Task {
      * @param row
      * @throws IOException
      */
-    protected void foundRow(HTable table, String row)
+    protected void foundRow(HTableInterface table, String row)
     throws IOException {
         // Do nothing
     }
@@ -526,7 +526,7 @@ public abstract class TaskBase implements Task {
      * @param family
      * @throws IOException
      */
-    protected void foundFamily(HTable table, String row, String family)
+    protected void foundFamily(HTableInterface table, String row, String family)
     throws IOException {
         // Do nothing
     }
@@ -538,7 +538,7 @@ public abstract class TaskBase implements Task {
      * @param qualifier
      * @throws IOException
      */
-    protected void foundQualifier(HTable table, String row, String family, String qualifier)
+    protected void foundQualifier(HTableInterface table, String row, String family, String qualifier)
     throws IOException {
         // Do nothing
     }
@@ -551,7 +551,7 @@ public abstract class TaskBase implements Task {
      * @param value
      * @throws IOException
      */
-    protected void foundValue(HTable table, String row, String family, String qualifier, String value)
+    protected void foundValue(HTableInterface table, String row, String family, String qualifier, String value)
     throws IOException {
         // Do nothing
     }

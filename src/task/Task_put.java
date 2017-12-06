@@ -2,7 +2,7 @@ package task;
 
 import java.io.IOException;
 
-import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
 import utils.Utils;
@@ -51,9 +51,7 @@ public class Task_put extends TaskBase {
         String qualifier = (String) levelParam.get(Level.QUALIFIER);
         String value     = (String) levelParam.get(Level.VALUE);
 
-        HTable hTable = Utils.getTable(table);
-
-        try {
+        try (HTableInterface hTable = Utils.getTable(table)) {
             if (isIncreasePut()) {
                 String oldValue = Utils.get(hTable, row, family, qualifier);
                 value = String.valueOf(Double.valueOf(oldValue) + Double.valueOf(value));
@@ -72,8 +70,6 @@ public class Task_put extends TaskBase {
         } catch (NoSuchColumnFamilyException e) {
             // make error clear
             throw new NoSuchColumnFamilyException(family);
-        } finally {
-            hTable.close();
         }
     }
 }
