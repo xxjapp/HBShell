@@ -6,13 +6,10 @@ import java.net.URLEncoder;
 
 import org.apache.commons.logging.Log;
 
-public class Common {
-    static final Log log = LogHelper.getLog();
+import utils.RootLog;
 
-    public static StackTraceElement getCallerInfo() {
-        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-        return trace[3];
-    }
+public class Common {
+    private static final Log log = RootLog.getLog();
 
     //
     // string
@@ -92,7 +89,7 @@ public class Common {
         try {
             return string.getBytes(UTF_8);
         } catch (UnsupportedEncodingException e) {
-            LogHelper.getLog().error(null, e);
+            log.error(null, e);
         }
 
         return null;
@@ -113,10 +110,6 @@ public class Common {
     //
     // path
     //
-
-    public static String getTmpDir() {
-        return System.getProperty("java.io.tmpdir");
-    }
 
     public static String getHomeDir() {
         return System.getProperty("user.home");

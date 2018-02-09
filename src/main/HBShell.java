@@ -31,6 +31,8 @@ import utils.Utils;
 import common.Common;
 
 public class HBShell {
+    private static final ResultLog log = ResultLog.getLog();
+
     public static final String HISTORY_FILE = Utils.makePath(RootLog.logDir, "history.txt");
 
     private static final String CONFIRM_YES    = "yes";
@@ -44,8 +46,7 @@ public class HBShell {
 
     private static final String MAIN_CONF_FILE = "./conf/config.ini";
 
-    private static final ResultLog log         = ResultLog.getLog();
-    private static final File      historyFile = new File(HISTORY_FILE);
+    private static final File historyFile = new File(HISTORY_FILE);
 
     // config default values
     public static Long    maxPrintableDetectCnt   = 1000L;

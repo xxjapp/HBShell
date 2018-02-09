@@ -39,19 +39,10 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
 import common.Common;
-import common.OemInfo;
+import common.Settings;
 
 public class Utils {
     private static final String UTF_8 = "UTF-8";
-
-    //
-    // common
-    //
-
-    public static StackTraceElement getCallerInfo() {
-        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-        return trace[3];
-    }
 
     //
     // os
@@ -294,7 +285,7 @@ public class Utils {
 
     private static void setDefaultHBaseConfiguration() {
         m_hBaseConfiguration = HBaseConfiguration.create();
-        m_hBaseConfiguration.addResource(new Path(OemInfo.hbaseSiteXml()));
+        m_hBaseConfiguration.addResource(new Path(Settings.HBASE_SITE_XML));
     }
 
     public static HTableDescriptor[] listTables()

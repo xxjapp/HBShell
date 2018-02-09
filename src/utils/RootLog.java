@@ -27,8 +27,13 @@ public class RootLog {
     }
 
     public static Log getLog() {
-        StackTraceElement callerInfo = Utils.getCallerInfo();
+        StackTraceElement callerInfo = getCallerInfo();
         String            className  = callerInfo.getClassName();
         return LogFactory.getLog(className);
+    }
+
+    private static StackTraceElement getCallerInfo() {
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+        return trace[3];
     }
 }

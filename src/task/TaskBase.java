@@ -23,6 +23,8 @@ import exception.HBSException;
 import exception.HBSExceptionRowLimitReached;
 
 public abstract class TaskBase implements Task {
+    protected static final ResultLog log = ResultLog.getLog();
+
     public enum TaskType {
         CLEAR,
         CONNECT,
@@ -61,8 +63,6 @@ public abstract class TaskBase implements Task {
     }
 
     private static final String CLASS_NAME_PREFIX = "task.Task_";
-
-    protected static final ResultLog log = ResultLog.getLog();
 
     public Map<Level, Object> levelParam = new HashMap<>();
     public Level              level      = null;
@@ -419,7 +419,7 @@ public abstract class TaskBase implements Task {
             Class< ? > clazz         = Class.forName(taskClassName);
 
             Class< ? > []    parameterTypes = new Class[] {};
-            Constructor< ? > constructor = clazz.getConstructor(parameterTypes);
+            Constructor< ? > constructor    = clazz.getConstructor(parameterTypes);
 
             return (Task) constructor.newInstance(new Object[] {});
         } catch (Exception e) {         // all exceptions

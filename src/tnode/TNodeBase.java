@@ -3,18 +3,20 @@ package tnode;
 import java.io.IOException;
 
 import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
 import org.apache.hadoop.hbase.filter.QualifierFilter;
 import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.ValueFilter;
-import org.apache.hadoop.hbase.filter.CompareFilter.CompareOp;
 
-import exception.HBSException;
-import exception.HBSExceptionTaskCancelled;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.ResultLog;
+import exception.HBSException;
+import exception.HBSExceptionTaskCancelled;
 
 public abstract class TNodeBase implements TNode {
+    protected static final ResultLog log = ResultLog.getLog();
+
     protected static final String FILE_DATA_QUALIFIER_PATTERN = "^f\\d+$";
 
     protected final TaskBase task;
@@ -23,8 +25,6 @@ public abstract class TNodeBase implements TNode {
     public final String    name;
     public final Level     level;
     public final boolean   toOutput;
-
-    protected static final ResultLog log = ResultLog.getLog();
 
     protected boolean outputted         = false;
     private Boolean   otherFilterPassed = null;

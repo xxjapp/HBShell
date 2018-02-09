@@ -4,18 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 
+import utils.RootLog;
+
 import common.Common;
-import common.LogHelper;
 
 public class KDOs {
-    private static final Log log = LogHelper.getLog();
+    private static final Log log = RootLog.getLog();
 
     private static final long PROCESS_TIMEOUT = 10 * 60;
 
@@ -39,11 +39,6 @@ public class KDOs {
     //
 
     private static final String CHARSET_NAME = KDOs.isUnixLike() ? "UTF-8" : "Shift_JIS";
-
-    public static int runExternalExe(List<String> commandline, StringBuilder sbOutput) {
-        String[] array = commandline.toArray(new String[commandline.size()]);
-        return runExternalExe(array, sbOutput);
-    }
 
     public static int runExternalExe(String[] commandline, StringBuilder sbOutput) {
         log.info(Common.join(commandline, " "));
