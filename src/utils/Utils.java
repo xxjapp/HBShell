@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import main.HBShell;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -42,6 +43,8 @@ import common.Common;
 import common.Settings;
 
 public class Utils {
+    private static final Log log = RootLog.getLog();
+
     private static final String UTF_8 = "UTF-8";
 
     //
@@ -133,7 +136,7 @@ public class Utils {
         try {
             return new String(bytes, UTF_8);
         } catch (UnsupportedEncodingException e) {
-            RootLog.getLog().error(null, e);
+            log.error(null, e);
         }
 
         return null;
@@ -147,7 +150,7 @@ public class Utils {
         try {
             return new String(bytes, offset, length, UTF_8);
         } catch (UnsupportedEncodingException e) {
-            RootLog.getLog().error(null, e);
+            log.error(null, e);
         }
 
         return null;
@@ -260,7 +263,7 @@ public class Utils {
                 try {
                     conn.close();
                 } catch (IOException e) {
-                    RootLog.getLog().warn("faild to close connection to ZK");
+                    log.warn("faild to close connection to ZK");
                 }
             }
         });
@@ -332,7 +335,7 @@ public class Utils {
 
     public static void deleteTable(String tableName)
     throws IOException {
-        RootLog.getLog().info(tableName);
+        log.info(tableName);
 
         try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             if (admin.tableExists(tableName)) {
@@ -478,7 +481,7 @@ public class Utils {
 
     public static void put(HTableInterface hTable, String rowKey, String family, String qualifier, String value)
     throws IOException {
-        RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier + " = " + value);
+        log.info(rowKey + "/" + family + ":" + qualifier + " = " + value);
 
         Put put = new Put(str2bytes(rowKey));
         put.add(str2bytes(family), str2bytes(qualifier), str2bytes(value));
@@ -487,7 +490,7 @@ public class Utils {
 
     public static void put(HTableInterface hTable, String rowKey, String family, String qualifier, byte[] bValue)
     throws IOException {
-        RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier + " = " + "0x...");
+        log.info(rowKey + "/" + family + ":" + qualifier + " = " + "0x...");
 
         Put put = new Put(str2bytes(rowKey));
         put.add(str2bytes(family), str2bytes(qualifier), bValue);
@@ -496,7 +499,7 @@ public class Utils {
 
     public static void deleteRow(HTableInterface hTable, String rowKey)
     throws IOException {
-        RootLog.getLog().info(rowKey);
+        log.info(rowKey);
 
         Delete delete = new Delete(str2bytes(rowKey));
         hTable.delete(delete);
@@ -504,7 +507,7 @@ public class Utils {
 
     public static void deleteFamily(HTableInterface hTable, String rowKey, String family)
     throws IOException {
-        RootLog.getLog().info(rowKey + "/" + family);
+        log.info(rowKey + "/" + family);
 
         Delete delete = new Delete(str2bytes(rowKey));
         delete.deleteFamily(str2bytes(family));
@@ -513,7 +516,7 @@ public class Utils {
 
     public static void deleteQualifier(HTableInterface hTable, String rowKey, String family, String qualifier)
     throws IOException {
-        RootLog.getLog().info(rowKey + "/" + family + ":" + qualifier);
+        log.info(rowKey + "/" + family + ":" + qualifier);
 
         Delete delete = new Delete(str2bytes(rowKey));
         delete.deleteColumns(str2bytes(family), str2bytes(qualifier));

@@ -13,10 +13,15 @@ import jline.ConsoleReader;
 import jline.CursorBuffer;
 import jline.History;
 import jline.SimpleCompletor;
+
+import org.apache.commons.logging.Log;
+
 import task.TaskBase;
 import task.TaskBase.TaskType;
 
 public class MyConsoleReader extends ConsoleReader {
+    private static final Log log = RootLog.getLog();
+
     private static final String FILE_ENCODING   = System.getProperty("file.encoding");
     private static final String OUTPUT_ENCODING = System.getProperty("jline.WindowsTerminal.output.encoding", FILE_ENCODING);
 
@@ -74,7 +79,7 @@ public class MyConsoleReader extends ConsoleReader {
             try {
                 putString(Character.toString(ch));
             } catch (IOException e1) {
-                RootLog.getLog().error(null, e1);
+                log.error(null, e1);
             }
         }
     }
@@ -102,7 +107,7 @@ public class MyConsoleReader extends ConsoleReader {
                     putString(Character.toString(ch));
                 }
             } catch (IOException e1) {
-                RootLog.getLog().error(null, e1);
+                log.error(null, e1);
             }
         }
 
