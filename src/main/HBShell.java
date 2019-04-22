@@ -30,6 +30,9 @@ import utils.Utils;
 
 import common.Common;
 
+import exception.HBSException;
+import exception.HBSExceptionNullInput;
+
 public class HBShell {
     private static final ResultLog log = ResultLog.getLog();
 
@@ -233,12 +236,14 @@ public class HBShell {
 
             try {
                 cmdArgs = getCmdArgs(commandlineCommand);
-            } catch (Exception e) {         // all exceptions
-                log.error(null, e);
-                continue;
+            } catch (HBSExceptionNullInput e) {
+                return;
+            } catch (Exception e) {         // all other exceptions
+                RootLog.getLog().error(null, e);
+                return;
             }
 
-            if (sessionMode == SessionMode.multi && cmdArgs != null &&cmdArgs.length == 0) {
+            if (sessionMode == SessionMode.multi && cmdArgs != null && cmdArgs.length == 0) {
                 continue;
             }
 
@@ -302,8 +307,14 @@ public class HBShell {
 
     public static boolean confirmFor(String message)
     throws IOException {
-        String userInput = getUserInput(message + " \t" + CONFIRM_YES + "/[no] : ");
-        return userInput.equals(CONFIRM_YES);
+        try {
+            String userInput = getUserInput(message + " \t" + CONFIRM_YES + "/[no] : ");
+            return userInput.equals(CONFIRM_YES);
+        } catch (HBSException e) {
+            // return false
+        }
+
+        return false;
     }
 
     public static void resetAllCount() {
@@ -335,7 +346,7 @@ public class HBShell {
     }
 
     private static String[] getCmdArgs(String commandlineCommand)
-    throws IOException {
+    throws IOException, HBSException {
         if (sessionMode == SessionMode.multi) {
             return MyStringTokenizer.getTokens(getUserInput("> "));
         }
@@ -348,12 +359,17 @@ public class HBShell {
     }
 
     private static String getUserInput(String prompt)
-    throws IOException {
+    throws IOException, HBSException {
         String line = null;
 
         if (!Utils.isWindows()) {
             // No exception can be caught, so nothing changes when user press ^C in linux
             line = getConsoleReader().readLine(prompt);
+
+            // SEE: https://jline.github.io/jline2/apidocs/reference/jline/console/ConsoleReader.html#readLine(java.lang.String,%20java.lang.Character)
+            if (line == null) {
+                throw new HBSExceptionNullInput();
+            }
         } else {
             System.out.print(prompt);
 
