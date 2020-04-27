@@ -11,14 +11,13 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import main.HBShell;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -41,6 +40,7 @@ import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
 import common.Common;
 import common.Settings;
+import main.HBShell;
 
 public class Utils {
     private static final Log log = RootLog.getLog();
@@ -89,10 +89,10 @@ public class Utils {
 
     public static void searchFileFromEnd(String fileName, FoundLine foundLine)
     throws IOException {
-        File          file       = new File(fileName);
-        long          fileLength = file.length();
-        StringBuilder sb         = new StringBuilder();
-        boolean       endSearch  = false;
+        File       file       = new File(fileName);
+        long       fileLength = file.length();
+        List<Byte> bytes      = new ArrayList<>();
+        boolean    endSearch  = false;
 
         try (RandomAccessFile rf = new RandomAccessFile(file, "r")) {
             // read from end
@@ -104,24 +104,37 @@ public class Utils {
                 if (b == '\r') {
                     continue;
                 } else if (b == '\n') {
-                    endSearch = foundLine.foundLine(sb.reverse().toString());
+                    Collections.reverse(bytes);
+                    endSearch = foundLine.foundLine(bytes2str(byteListtoArray(bytes)));
 
                     if (endSearch) {
                         break;
                     }
 
                     // prepare to collect another line
-                    sb = new StringBuilder();
+                    bytes = new ArrayList<>();
                 } else {
-                    sb.append((char)b);
+                    bytes.add((byte) b);
                 }
             }
 
             if (!endSearch) {
                 // first line of the file
-                foundLine.foundLine(sb.reverse().toString());
+                Collections.reverse(bytes);
+                foundLine.foundLine(bytes2str(byteListtoArray(bytes)));
             }
         }
+    }
+
+    public static byte[] byteListtoArray(List<Byte> list) {
+        int    len   = list.size();
+        byte[] array = new byte[len];
+
+        for (int i = 0; i < len; i++) {
+            array[i] = list.get(i);
+        }
+
+        return array;
     }
 
     //
@@ -189,9 +202,9 @@ public class Utils {
             return true;
         }
 
-        return (!Character.isISOControl(c)) &&
-               c != KeyEvent.CHAR_UNDEFINED &&
-               block != null &&
+        return (!Character.isISOControl(c)) && 
+               c != KeyEvent.CHAR_UNDEFINED && 
+               block != null && 
                block != Character.UnicodeBlock.SPECIALS;
     }
 
@@ -422,6 +435,7 @@ public class Utils {
                 return Arrays.asList(familyInfo.split("\n"));
             }
         } catch (IOException e) {
+            // OK?
         }
 
         return null;
