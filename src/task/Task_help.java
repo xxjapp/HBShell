@@ -27,7 +27,7 @@ public class Task_help extends TaskBase {
 
     @Override
     protected void assignParam(String[] args) {
-        List<String> topics = new ArrayList<>();
+        List<String> topics = new ArrayList<String>();
 
         for (int i = 0; i < args.length; i++) {
             topics.add(args[i]);

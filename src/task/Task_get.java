@@ -4,6 +4,7 @@ import static common.Common.str2bytes;
 
 import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTableInterface;
@@ -129,7 +130,10 @@ public class Task_get extends TaskBase {
         Get get = new Get(str2bytes(row));
         get.setFilter(new FirstKeyOnlyFilter());
 
-        try (HTableInterface hTable = Utils.getTable(table)) {
+        HTableInterface hTable = null;
+
+        try {
+            hTable = Utils.getTable(table);
             Result firstKVResult = hTable.get(get);
 
             if (firstKVResult.isEmpty()) {
@@ -137,6 +141,8 @@ public class Task_get extends TaskBase {
             }
 
             return new TNodeRow(this, nTable, hTable, firstKVResult.raw()[0], true);
+        } finally {
+            IOUtils.closeQuietly(hTable);
         }
     }
 

@@ -38,7 +38,7 @@ public class Task_create extends TaskBase {
     protected void assignParam(String[] args) {
         levelParam.put(Level.TABLE, args[0]);
 
-        List<String> families = new ArrayList<>();
+        List<String> families = new ArrayList<String>();
 
         for (int i = 1; i < args.length; i++) {
             families.add(args[i]);

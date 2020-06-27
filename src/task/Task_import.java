@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
 import main.HBShell;
@@ -61,7 +62,10 @@ public class Task_import extends TaskBase {
             return;
         }
 
-        try (HTableInterface hTable = Utils.getTable(table)) {
+        HTableInterface hTable = null;
+
+        try {
+            hTable = Utils.getTable(table);
             String row = (String) levelParam.get(Level.ROW);
 
             // get table
@@ -88,6 +92,8 @@ public class Task_import extends TaskBase {
 
             // get qualifier
             importQualifier(hTable, table, row, family, qualifier);
+        } finally {
+            IOUtils.closeQuietly(hTable);
         }
     }
 
@@ -156,10 +162,14 @@ public class Task_import extends TaskBase {
         String[] ts        = dbDir.list();
 
         for (String t : ts) {
-            String table = decode(t);
+            String          table  = decode(t);
+            HTableInterface hTable = null;
 
-            try (HTableInterface hTable = Utils.getTable(table)) {
+            try {
+                hTable = Utils.getTable(table);
                 importTable(hTable, table);
+            } finally {
+                IOUtils.closeQuietly(hTable);
             }
         }
     }

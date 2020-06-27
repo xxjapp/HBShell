@@ -102,7 +102,7 @@ public class HBShell {
     private static ConsoleReader consoleReader = null; // for linux
     private static String        lastCmd       = Task_history.getLastCmd();
 
-    private static final Map<String, Long> countMap = new HashMap<>();
+    private static final Map<String, Long> countMap = new HashMap<String, Long>();
 
     public static final String TABLE     = "table";
     public static final String ROW       = "row";

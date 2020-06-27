@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
 import utils.Utils;
@@ -37,7 +38,7 @@ public class Task_rename extends TaskBase {
 
     @Override
     protected void assignParam(String[] args) {
-        List<String> tableNames = new ArrayList<>();
+        List<String> tableNames = new ArrayList<String>();
 
         for (int i = 0; i < args.length; i++) {
             tableNames.add(args[i]);
@@ -54,10 +55,15 @@ public class Task_rename extends TaskBase {
         String oldTableName = (String) tableNames.get(0);
         String newTableName = (String) tableNames.get(1);
 
-        try (HBaseAdmin admin = new HBaseAdmin(Utils.conf())) {
+        HBaseAdmin admin = null;
+
+        try {
+            admin = new HBaseAdmin(Utils.conf());
             admin.disableTable(oldTableName);
             renameTable(oldTableName, newTableName);
             admin.enableTable(newTableName);
+        } finally {
+            IOUtils.closeQuietly(admin);
         }
     }
 
