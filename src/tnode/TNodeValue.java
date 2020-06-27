@@ -134,9 +134,9 @@ public class TNodeValue extends TNodeBase {
                     scanner   = new Scanner(value);
                     firstLine = scanner.nextLine();
                 } finally {
-                	if (scanner != null) {
-                		scanner.close();
-                	}
+                    if (scanner != null) {
+                        scanner.close();
+                    }
                 }
 
                 if (firstLine.length() < value.length()) {
