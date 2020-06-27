@@ -8,14 +8,13 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+
 import jline.Completor;
 import jline.ConsoleReader;
 import jline.CursorBuffer;
 import jline.History;
 import jline.SimpleCompletor;
-
-import org.apache.commons.logging.Log;
-
 import task.TaskBase;
 import task.TaskBase.TaskType;
 
@@ -64,10 +63,10 @@ public class MyConsoleReader extends ConsoleReader {
     }
 
     // SpecialKeyPressed handler
-    class SpecialKeyPressed implements ActionListener {
+    private class SpecialKeyPressed implements ActionListener {
         private final char ch;
 
-        public SpecialKeyPressed(char ch) {
+        private SpecialKeyPressed(char ch) {
             this.ch = ch;
             times.put(ch, 0L);
         }
@@ -85,7 +84,7 @@ public class MyConsoleReader extends ConsoleReader {
     }
 
     // KeyWavePressed handler
-    class KeyWavePressed implements ActionListener {
+    private class KeyWavePressed implements ActionListener {
         private static final char ch = '~';
 
         @Override

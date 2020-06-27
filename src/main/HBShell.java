@@ -11,10 +11,12 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Scanner;
 
-import jline.ConsoleReader;
-
 import org.apache.commons.io.FileUtils;
 
+import common.Common;
+import exception.HBSException;
+import exception.HBSExceptionNullInput;
+import jline.ConsoleReader;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
 import task.Task;
@@ -27,11 +29,6 @@ import utils.PropertiesHelper;
 import utils.ResultLog;
 import utils.RootLog;
 import utils.Utils;
-
-import common.Common;
-
-import exception.HBSException;
-import exception.HBSExceptionNullInput;
 
 public class HBShell {
     private static final ResultLog log = ResultLog.getLog();

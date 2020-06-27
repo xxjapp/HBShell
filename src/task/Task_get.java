@@ -3,17 +3,15 @@ package task;
 import static common.Common.str2bytes;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.NavigableMap;
 
-import main.HBShell;
-
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.regionserver.NoSuchColumnFamilyException;
 
+import exception.HBSException;
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
 import tnode.TNodeFamily;
@@ -22,7 +20,6 @@ import tnode.TNodeQualifier;
 import tnode.TNodeRow;
 import tnode.TNodeTable;
 import utils.Utils;
-import exception.HBSException;
 
 public class Task_get extends TaskBase {
     private static final String FAMILY_IS_VALID_BUT_WITHOUT_DATA = "(family is valid but without data)";
@@ -139,7 +136,7 @@ public class Task_get extends TaskBase {
                 throw new IOException("row not found '" + row + "'");
             }
 
-            return new TNodeRow(this, nTable, hTable, firstKVResult, true);
+            return new TNodeRow(this, nTable, hTable, firstKVResult.raw()[0], true);
         }
     }
 
@@ -172,11 +169,7 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + FAMILY_IS_VALID_BUT_WITHOUT_DATA);
         }
 
-        Map<String, Long>    timestampMap   = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result, family) : null;
-        Map<String, Integer> valuelengthMap = HBShell.showvaluelength ? Utils.resultGetValueLengthMap(result, family) : null;
-
-        NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
-        return new TNodeFamily(this, nRow, family, timestampMap, valuelengthMap, familyMap, true);
+        return new TNodeFamily(this, nRow, family, result.raw(), 0, true);
     }
 
     // see: TNodeRow.getFamilyFileData()
@@ -202,7 +195,6 @@ public class Task_get extends TaskBase {
         Get get = new Get(bRow);
 
         // filter family & qualifier
-
         get.addColumn(bFamily, bQualifier);
 
         // get result
@@ -219,25 +211,8 @@ public class Task_get extends TaskBase {
             throw new NoSuchColumnFamilyException(family + ":" + qualifier);
         }
 
-        Map<String, Long> timestampMap = null;
-        Long              timestamp    = null;
-
-        if (HBShell.showtimestamp) {
-            timestampMap = Utils.resultGetTimestampMap(result, family);
-            timestamp    = timestampMap.get(qualifier);
-        }
-
-        Map<String, Integer> valuelengthMap = null;
-        Integer              valuelength    = null;
-
-        if (HBShell.showvaluelength) {
-            valuelengthMap = Utils.resultGetValueLengthMap(result, family);
-            valuelength    = valuelengthMap.get(qualifier);
-        }
-
-        byte[] bValue = result.getValue(bFamily, bQualifier);
-
-        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, timestampMap, valuelengthMap, result.getFamilyMap(bFamily), true);
-        return new TNodeQualifier(this, nFamily, qualifier, timestamp, valuelength, bValue, true);
+        KeyValue[]  kvs     = result.raw();
+        TNodeFamily nFamily = new TNodeFamily(this, nRow, family, kvs, 0, true);
+        return new TNodeQualifier(this, nFamily, qualifier, kvs[0], true);
     }
 }

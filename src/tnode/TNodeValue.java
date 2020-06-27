@@ -9,30 +9,25 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
-import main.HBShell;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.hadoop.hbase.KeyValue;
 
+import exception.HBSException;
+import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
-import exception.HBSException;
 
 public class TNodeValue extends TNodeBase {
     private static final SimpleDateFormat timestampFormat   = new SimpleDateFormat(HBShell.format_timestamp, Locale.US);
     private static final String           valuelengthFormat = HBShell.format_valuelength;
 
-    private final byte[] bValue;
-    private final String timestamp;
-    private final String valuelength;
+    private final KeyValue kv;
 
-    public TNodeValue(TaskBase task, TNodeQualifier parent, Long timestamp, Integer valuelength, byte[] bValue, boolean toOutput)
+    public TNodeValue(TaskBase task, TNodeQualifier parent, KeyValue kv, boolean toOutput)
     throws HBSException {
-        super(task, parent, valueString(bValue), Level.VALUE, toOutput);
-
-        this.bValue      = bValue;
-        this.timestamp   = timestampString(timestamp);
-        this.valuelength = valuelengthString(valuelength);
+        super(task, parent, valueString(kv.getValue()), Level.VALUE, toOutput);
+        this.kv = kv;
     }
 
     @Override
@@ -66,11 +61,11 @@ public class TNodeValue extends TNodeBase {
             parent.parent.output();
 
             if (HBShell.showtimestamp && HBShell.showvaluelength) {
-                log.info(String.format(formatString(), parent.name, timestamp, valuelength, name));
+                log.info(String.format(formatString(), parent.name, timestampString(kv.getTimestamp()), valuelengthString(kv.getValueLength()), name));
             } else if (HBShell.showtimestamp && !HBShell.showvaluelength) {
-                log.info(String.format(formatString(), parent.name, timestamp, name));
+                log.info(String.format(formatString(), parent.name, timestampString(kv.getTimestamp()), name));
             } else if (!HBShell.showtimestamp && HBShell.showvaluelength) {
-                log.info(String.format(formatString(), parent.name, valuelength, name));
+                log.info(String.format(formatString(), parent.name, valuelengthString(kv.getValueLength()), name));
             } else {
                 log.info(String.format(formatString(), parent.name, name));
             }
@@ -82,7 +77,7 @@ public class TNodeValue extends TNodeBase {
                 String q = encode(parent.name);
 
                 String valueFilePath = String.format("%s/%s/%s/%s/%s.txt", HBShell.binaryDataDir, t, r, f, q);
-                FileUtils.writeByteArrayToFile(new File(valueFilePath), bValue);
+                FileUtils.writeByteArrayToFile(new File(valueFilePath), kv.getValue());
             }
         }
 

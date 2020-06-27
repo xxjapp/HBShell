@@ -5,11 +5,8 @@ import static common.Common.str2bytes;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
 
-import main.HBShell;
-
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
@@ -18,24 +15,25 @@ import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
 import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 
+import exception.HBSException;
+import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
-import exception.HBSException;
 
 public class TNodeRow extends TNodeBase {
     public final HTableInterface table;
-    private final Result         firstKVResult;
+    private final KeyValue       firstKv;
 
     private List<String> families         = null;
     private List<String> fileDataFamilies = null;
 
-    public TNodeRow(TaskBase task, TNodeTable parent, HTableInterface table, Result firstKVResult, boolean toOutput)
+    public TNodeRow(TaskBase task, TNodeTable parent, HTableInterface table, KeyValue firstKv, boolean toOutput)
     throws HBSException {
-        super(task, parent, Utils.resultGetRowKey(firstKVResult), Level.ROW, toOutput);
+        super(task, parent, Utils.bytes2str(firstKv.getRow()), Level.ROW, toOutput);
 
-        this.table         = table;
-        this.firstKVResult = firstKVResult;
+        this.table   = table;
+        this.firstKv = firstKv;
     }
 
     @Override
@@ -122,10 +120,11 @@ public class TNodeRow extends TNodeBase {
             return;
         }
 
-        NavigableMap<byte[], NavigableMap<byte[], byte[]>> map = result.getNoVersionMap();
+        KeyValue[] kvs = result.raw();
 
-        for (byte[] bFamily : map.keySet()) {
-            String family = Utils.bytes2str(bFamily);
+        for (int kvIndex = 0; kvIndex < kvs.length; kvIndex++) {
+            KeyValue kv     = kvs[kvIndex];
+            String   family = Utils.bytes2str(kv.getFamily());
 
             // if no result, hbase will get all families
             // so filter family again
@@ -133,10 +132,7 @@ public class TNodeRow extends TNodeBase {
                 continue;
             }
 
-            Map<String, Long>    timestampMap   = HBShell.showtimestamp ? Utils.resultGetTimestampMap(result, family) : null;
-            Map<String, Integer> valuelengthMap = HBShell.showvaluelength ? Utils.resultGetValueLengthMap(result, family) : null;
-
-            TNodeFamily familyNode = new TNodeFamily(task, this, family, timestampMap, valuelengthMap, map.get(bFamily), toOutput);
+            TNodeFamily familyNode = new TNodeFamily(task, this, family, kvs, kvIndex, toOutput);
 
             familyNode.handle();
 
@@ -149,6 +145,8 @@ public class TNodeRow extends TNodeBase {
 
                 fileDataFamilies.remove(family);
             }
+
+            kvIndex = familyNode.getLastKvIndex();
         }
     }
 
@@ -200,16 +198,7 @@ public class TNodeRow extends TNodeBase {
         Result result = table.get(get);
 
         if (!result.isEmpty()) {
-            NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(str2bytes(family));
-
-            byte[] bFirstKey              = familyMap.firstKey();
-            String firstFileDataQualifier = Utils.bytes2str(bFirstKey);
-            byte[] firstFileDataBValue    = familyMap.get(bFirstKey);
-
-            Long    timestamp   = HBShell.showtimestamp ? result.raw()[0].getTimestamp() : null;
-            Integer valuelength = HBShell.showvaluelength ? firstFileDataBValue.length : null;
-
-            return new TNodeFamilyFileData(task, this, family, table, firstFileDataQualifier, timestamp, valuelength, firstFileDataBValue, familyNode, toOutput);
+            return new TNodeFamilyFileData(task, this, family, table, result.raw()[0], familyNode, toOutput);
         }
 
         return null;
@@ -217,22 +206,12 @@ public class TNodeRow extends TNodeBase {
 
     private TNodeFamilyFileData getFamilyFileDataUsingFirstKVResult(String family, TNodeFamily familyNode)
     throws HBSException {
-        NavigableMap<byte[], byte[]> familyMap = firstKVResult.getFamilyMap(str2bytes(family));
+        String qualifier = Utils.bytes2str(firstKv.getQualifier());
 
-        if (!familyMap.isEmpty()) {
-            byte[] bFirstKey = familyMap.firstKey();
-            String qualifier = Utils.bytes2str(bFirstKey);
-
-            if (Utils.isMatch(qualifier, FILE_DATA_QUALIFIER_PATTERN)) {
-                byte[] bValue = familyMap.get(bFirstKey);
-
-                Long    timestamp   = HBShell.showtimestamp ? firstKVResult.raw()[0].getTimestamp() : null;
-                Integer valuelength = HBShell.showvaluelength ? bValue.length : null;
-
-                return new TNodeFamilyFileData(task, this, family, table, qualifier, timestamp, valuelength, bValue, familyNode, toOutput);
-            }
+        if (!Utils.isMatch(qualifier, FILE_DATA_QUALIFIER_PATTERN)) {
+            return null;
         }
 
-        return null;
+        return new TNodeFamilyFileData(task, this, family, table, firstKv, familyNode, toOutput);
     }
 }

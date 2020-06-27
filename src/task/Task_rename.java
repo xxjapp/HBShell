@@ -54,10 +54,10 @@ public class Task_rename extends TaskBase {
         String oldTableName = (String) tableNames.get(0);
         String newTableName = (String) tableNames.get(1);
 
-        try (HBaseAdmin hBaseAdmin = new HBaseAdmin(Utils.conf())) {
-            hBaseAdmin.disableTable(oldTableName);
+        try (HBaseAdmin admin = new HBaseAdmin(Utils.conf())) {
+            admin.disableTable(oldTableName);
             renameTable(oldTableName, newTableName);
-            hBaseAdmin.enableTable(newTableName);
+            admin.enableTable(newTableName);
         }
     }
 

@@ -63,10 +63,10 @@ public class Common {
     // bytes
     //
 
-    public static final String UTF_8     = "UTF-8";
-    public static final byte[] UTF_8_BOM = new byte[] { (byte)0xEF, (byte)0xBB, (byte)0xBF };
+    private static final String UTF_8     = "UTF-8";
+    private static final byte[] UTF_8_BOM = new byte[] { (byte)0xEF, (byte)0xBB, (byte)0xBF };
 
-    public static String bytes2str(byte[] bytes) {
+    private static String bytes2str(byte[] bytes) {
         if (bytes == null) {
             return null;
         }

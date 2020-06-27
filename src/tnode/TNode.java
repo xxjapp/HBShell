@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import exception.HBSException;
 
-public interface TNode {
+interface TNode {
     public abstract void handle()
     throws IOException, HBSException;
 }

@@ -10,7 +10,7 @@ import java.util.List;
 //  - use (\\) to input (\)
 
 public class MyStringTokenizer {
-    enum Status {
+    private enum Status {
         // ready
         READY,
 

@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
-import utils.Utils;
 import exception.HBSException;
+import utils.Utils;
 
 public class Task_delete extends TaskBase {
     @Override

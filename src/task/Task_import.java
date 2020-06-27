@@ -6,11 +6,10 @@ import static common.Common.encode;
 import java.io.File;
 import java.io.IOException;
 
-import main.HBShell;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
+import main.HBShell;
 import utils.Utils;
 
 public class Task_import extends TaskBase {

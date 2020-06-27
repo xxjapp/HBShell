@@ -12,7 +12,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,7 +25,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -126,7 +124,7 @@ public class Utils {
         }
     }
 
-    public static byte[] byteListtoArray(List<Byte> list) {
+    private static byte[] byteListtoArray(List<Byte> list) {
         int    len   = list.size();
         byte[] array = new byte[len];
 
@@ -320,8 +318,8 @@ public class Utils {
 
     public static boolean tableExists(String tableName)
     throws IOException {
-        try (HBaseAdmin hBaseAdmin = new HBaseAdmin(conf())) {
-            return hBaseAdmin.tableExists(tableName);
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
+            return admin.tableExists(tableName);
         }
     }
 
@@ -339,7 +337,7 @@ public class Utils {
         createTable(tableDescriptor);
     }
 
-    public static void createTable(HTableDescriptor tableDescriptor)
+    private static void createTable(HTableDescriptor tableDescriptor)
     throws IOException {
         try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             admin.createTable(tableDescriptor);
@@ -356,38 +354,6 @@ public class Utils {
                 admin.deleteTable(tableName);
             }
         }
-    }
-
-    // result
-
-    public static String resultGetRowKey(Result result) {
-        byte[] bRowKey = result.getRow();
-        return bytes2str(bRowKey);
-    }
-
-    // This should be used only in one family to avoid name-duplicated qualifier
-    public static Map<String, Long> resultGetTimestampMap(Result result, String family) {
-        Map<String, Long> timestampMap = new HashMap<>();
-
-        for (KeyValue kv : result.list()) {
-            if (bytes2str(kv.getFamily()).equals(family)) {
-                timestampMap.put(bytes2str(kv.getQualifier()), kv.getTimestamp());
-            }
-        }
-
-        return timestampMap;
-    }
-
-    public static Map<String, Integer> resultGetValueLengthMap(Result result, String family) {
-        Map<String, Integer> valuelengthMap = new HashMap<>();
-
-        for (KeyValue kv : result.list()) {
-            if (bytes2str(kv.getFamily()).equals(family)) {
-                valuelengthMap.put(bytes2str(kv.getQualifier()), kv.getValueLength());
-            }
-        }
-
-        return valuelengthMap;
     }
 
     // table

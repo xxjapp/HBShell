@@ -2,23 +2,20 @@ package tnode;
 
 import java.io.IOException;
 
+import org.apache.hadoop.hbase.KeyValue;
+
 import exception.HBSException;
 import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
 
 public class TNodeQualifier extends TNodeBase {
-    private final byte[]  bValue;
-    private final Long    timestamp;
-    private final Integer valuelength;
+    private final KeyValue kv;
 
-    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, Long timestamp, Integer valuelength, byte[] bValue, boolean toOutput)
+    public TNodeQualifier(TaskBase task, TNodeFamily parent, String qualifier, KeyValue kv, boolean toOutput)
     throws HBSException {
         super(task, parent, qualifier, Level.QUALIFIER, toOutput);
-
-        this.timestamp   = timestamp;
-        this.valuelength = valuelength;
-        this.bValue      = bValue;
+        this.kv = kv;
     }
 
     @Override
@@ -39,6 +36,6 @@ public class TNodeQualifier extends TNodeBase {
     @Override
     protected void travelChildren()
     throws IOException, HBSException {
-        new TNodeValue(task, this, timestamp, valuelength, bValue, toOutput).handle();
+        new TNodeValue(task, this, kv, toOutput).handle();
     }
 }

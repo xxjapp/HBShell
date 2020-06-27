@@ -4,8 +4,7 @@ import static common.Common.str2bytes;
 
 import java.io.IOException;
 
-import main.HBShell;
-
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
@@ -13,34 +12,27 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.filter.FilterList.Operator;
 
+import exception.HBSException;
 import task.TaskBase;
 import task.TaskBase.Level;
-import exception.HBSException;
+import utils.Utils;
 
 public class TNodeFamilyFileData extends TNodeFamily {
     private static final long MAX_FBLOCK_COUNT_IN_ONE_ROW = 400;
 
     private final HTableInterface table;
-    private final Long            firstFileDataTimestamp;
-    private final Integer         firstFileDataValuelength;
-    private final byte[]          firstFileDataBValue;
+    private final long            startIndex;
+    private final TNodeFamily     familyNode;
+    private final KeyValue        firstKv;
 
-    private final long startIndex;
-
-    private final TNodeFamily familyNode;
-
-    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTableInterface table, String firstFileDataQualifier, Long firstFileDataTimestamp, Integer firstFileDataValuelength, byte[] firstFileDataBValue, TNodeFamily familyNode, boolean toOutput)
+    public TNodeFamilyFileData(TaskBase task, TNodeRow parent, String family, HTableInterface table, KeyValue firstKv, TNodeFamily familyNode, boolean toOutput)
     throws HBSException {
-        super(task, parent, family, null, null, null, toOutput);
+        super(task, parent, family, null, 0, toOutput);
 
-        this.table                    = table;
-        this.firstFileDataTimestamp   = firstFileDataTimestamp;
-        this.firstFileDataValuelength = firstFileDataValuelength;
-        this.firstFileDataBValue      = firstFileDataBValue;
-
-        this.startIndex = fileDataQualifierIndex(firstFileDataQualifier);
-
+        this.table      = table;
+        this.startIndex = fileDataQualifierIndex(Utils.bytes2str(firstKv.getQualifier()));
         this.familyNode = familyNode;
+        this.firstKv    = firstKv;
     }
 
     @Override
@@ -65,7 +57,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
             // no qualifier and value filter, show only the first and last file data qualifier
 
             // first file data qualifier
-            new TNodeQualifier(task, this, fileDataQualifier(firstIndex), firstFileDataTimestamp, firstFileDataValuelength, firstFileDataBValue, toOutput).handle();
+            new TNodeQualifier(task, this, fileDataQualifier(firstIndex), firstKv, toOutput).handle();
 
             if (lastIndex != firstIndex) {
                 if (lastIndex > firstIndex + 1) {
@@ -78,12 +70,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
                 get.addColumn(str2bytes(name), str2bytes(lastFileDataQualifier));
 
                 Result result = table.get(get);
-                byte[] bValue = result.getValue(str2bytes(name), str2bytes(lastFileDataQualifier));
-
-                Long    timestamp   = HBShell.showtimestamp ? result.raw()[0].getTimestamp() : null;
-                Integer valuelength = HBShell.showvaluelength ? bValue.length : null;
-
-                new TNodeQualifier(task, this, lastFileDataQualifier, timestamp, valuelength, bValue, toOutput).handle();
+                new TNodeQualifier(task, this, lastFileDataQualifier, result.raw()[0], toOutput).handle();
             }
         } else {
             // qualifier or value filter exists, so filter all
@@ -117,12 +104,7 @@ public class TNodeFamilyFileData extends TNodeFamily {
                 Result result = table.get(get);
 
                 if (!result.isEmpty()) {
-                    byte[] bValue = result.getValue(str2bytes(name), str2bytes(fileDataQualifierI));
-
-                    Long    timestamp   = HBShell.showtimestamp ? result.raw()[0].getTimestamp() : null;
-                    Integer valuelength = HBShell.showvaluelength ? bValue.length : null;
-
-                    new TNodeQualifier(task, this, fileDataQualifierI, timestamp, valuelength, bValue, toOutput).handle();
+                    new TNodeQualifier(task, this, fileDataQualifierI, result.raw()[0], toOutput).handle();
                 }
             }
         }

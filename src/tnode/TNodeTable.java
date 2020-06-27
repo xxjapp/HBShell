@@ -2,8 +2,6 @@ package tnode;
 
 import java.io.IOException;
 
-import main.HBShell;
-
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -15,11 +13,12 @@ import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
 import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.RowFilter;
 
+import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
+import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
 import utils.Utils;
-import exception.HBSException;
-import exception.HBSExceptionRowLimitReached;
 
 public class TNodeTable extends TNodeBase {
     private HTableInterface table = null;
@@ -61,7 +60,7 @@ public class TNodeTable extends TNodeBase {
         try {
             try (ResultScanner resultScanner = table.getScanner(scan)) {
                 for (Result firstKVResult : resultScanner) {
-                    new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
+                    new TNodeRow(task, this, table, firstKVResult.raw()[0], toOutput).handle();
 
                     // check row limit
                     if (HBShell.getCount(HBShell.ROW) >= task.getRowLimit()) {

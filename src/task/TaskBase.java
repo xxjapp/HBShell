@@ -9,18 +9,17 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import main.HBShell;
-
 import org.apache.hadoop.hbase.client.HTableInterface;
 
+import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
+import main.HBShell;
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
 import tnode.TNodeRow;
 import tnode.TNodeTable;
 import utils.ResultLog;
 import utils.Utils;
-import exception.HBSException;
-import exception.HBSExceptionRowLimitReached;
 
 public abstract class TaskBase implements Task {
     protected static final ResultLog log = ResultLog.getLog();
@@ -211,7 +210,7 @@ public abstract class TaskBase implements Task {
         log.startNew();
     }
 
-    protected final void parseArgs(String[] args)
+    private final void parseArgs(String[] args)
     throws IOException {
         if (!checkArgNumber(args.length)) {
             throw new IOException("Invalid argument number '" + args.length + "'");

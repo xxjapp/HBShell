@@ -1,0 +1,20 @@
+# ruby run.rb -c "r script_demo/ex1_restore_delete.hbc"
+#
+# restore logically deleted file
+
+ro 0
+
+# restore summary in parent
+p 137595600077777777777777777777777777777777 1375956109d497c13a76a2b02b18b6ab7810e8f6af_myFolderRoot event1 a4f2c1aa42a735c8620d2595a15a3fcb 'a4f2c1aa42a735c8620d2595a15a3fcb,c49290e2-e8d9-9d52-490b-ac9e0b1f8eb8file,TsPlayTestActivity.html,,20200531001944,2,file,test001,name of test001,20200531001944,,test001,name of test001,1590851984276,,0,b6d767d2f8ed5d21a44b0e5886680cb9'
+
+# restore flags in self
+d 137595600077777777777777777777777777777777 c49290e2-e8d9-9d52-490b-ac9e0b1f8eb8file fileinfo deletedBy
+d 137595600077777777777777777777777777777777 c49290e2-e8d9-9d52-490b-ac9e0b1f8eb8file fileinfo fake_deleted
+p 137595600077777777777777777777777777777777 c49290e2-e8d9-9d52-490b-ac9e0b1f8eb8file fileinfo status 'isCompleted=YES,'
+
+# remove item in mst_delete
+d mst_delete 137595600077777777777777777777777777777777 event1 c49290e2-e8d9-9d52-490b-ac9e0b1f8eb8file
+
+# NOTE: storage not fixed
+
+ro 1

@@ -1,0 +1,16 @@
+# ruby run.rb -c "r script_demo/ex2_delete_copied_folder.hbc"
+#
+# delete folder created by copying
+
+ro 0
+
+# delete created folder
+d 137595600077777777777777777777777777777777 c7efabc9-e8d8-7355-2e3c-a7ecdb894dfdfolder
+
+# delete summary in parent
+d 137595600077777777777777777777777777777777 700905a7-e8d9-1f20-3e15-6931651d9442folder event1 415290769594460e2e485922904f345d
+
+# delete job
+d mst_job 2_normal_17278caa-d3be-47b5-b2f1-89a774373c13
+
+ro 1

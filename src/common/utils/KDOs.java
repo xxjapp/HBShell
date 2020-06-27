@@ -10,9 +10,8 @@ import java.util.TimerTask;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 
-import utils.RootLog;
-
 import common.Common;
+import utils.RootLog;
 
 public class KDOs {
     private static final Log log = RootLog.getLog();
@@ -21,7 +20,7 @@ public class KDOs {
 
     private static Boolean isUnixLike = null;
 
-    public static boolean isUnixLike() {
+    private static boolean isUnixLike() {
         if (isUnixLike == null) {
             isUnixLike = !isWindows();
         }
@@ -29,9 +28,9 @@ public class KDOs {
         return isUnixLike;
     }
 
-    public static boolean isWindows() {
+    private static boolean isWindows() {
         String os = System.getProperty("os.name");
-        return os != null &&os.startsWith("Windows");
+        return os != null && os.startsWith("Windows");
     }
 
     //

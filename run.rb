@@ -81,7 +81,7 @@ def run_java(args)
     end
 
     # run java program
-    exec_cmd "java -Xmx1g -classpath #{classpath_for_run} #{MAIN_CLASS} #{args}"
+    exec_cmd "java -Xmx1g -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp -classpath #{classpath_for_run} #{MAIN_CLASS} #{args}"
 end
 
 def main(argv)
