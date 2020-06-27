@@ -183,7 +183,7 @@ public class TNodeRow extends TNodeBase {
         // f801
         // f802
         // ...
-        // f1000	<= this will be the first qualifier!
+        // f1000    <= this will be the first qualifier!
         // f1001
         // f1002
         // ...
