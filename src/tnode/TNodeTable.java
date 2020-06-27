@@ -2,7 +2,6 @@ package tnode;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
@@ -59,11 +58,7 @@ public class TNodeTable extends TNodeBase {
         this.table = Utils.getTable(name);
 
         try {
-            ResultScanner resultScanner = null;
-
-            try {
-                resultScanner = table.getScanner(scan);
-
+            try (ResultScanner resultScanner = table.getScanner(scan)) {
                 for (Result firstKVResult : resultScanner) {
                     new TNodeRow(task, this, table, firstKVResult.raw()[0], toOutput).handle();
 
@@ -72,8 +67,6 @@ public class TNodeTable extends TNodeBase {
                         throw new HBSExceptionRowLimitReached();
                     }
                 }
-            } finally {
-                IOUtils.closeQuietly(resultScanner);
             }
         } finally {
             table.close();

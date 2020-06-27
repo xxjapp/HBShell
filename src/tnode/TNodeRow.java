@@ -56,8 +56,8 @@ public class TNodeRow extends TNodeBase {
     throws IOException, HBSException {
         // get filtered families and fileDataFamilies
         List<String> allFamilies = Utils.getFamilies(table);
-        this.families         = new ArrayList<String>();
-        this.fileDataFamilies = new ArrayList<String>();
+        this.families         = new ArrayList<>();
+        this.fileDataFamilies = new ArrayList<>();
 
         for (String family : allFamilies) {
             if (task.isMatch(Level.FAMILY, family)) {
@@ -183,7 +183,7 @@ public class TNodeRow extends TNodeBase {
         // f801
         // f802
         // ...
-        // f1000    <= this will be the first qualifier!
+        // f1000	<= this will be the first qualifier!
         // f1001
         // f1002
         // ...

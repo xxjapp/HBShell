@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.KeyValue;
 
 import exception.HBSException;
@@ -128,14 +127,10 @@ public class TNodeValue extends TNodeBase {
 
             if (!HBShell.multiline) {
                 // show only first line
-                String  firstLine = null;
-                Scanner scanner   = null;
+                String firstLine = null;
 
-                try {
-                    scanner   = new Scanner(value);
+                try (Scanner scanner = new Scanner(value)) {
                     firstLine = scanner.nextLine();
-                } finally {
-                    IOUtils.closeQuietly(scanner);
                 }
 
                 if (firstLine.length() < value.length()) {

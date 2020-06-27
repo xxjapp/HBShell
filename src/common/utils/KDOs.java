@@ -8,7 +8,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 
 import common.Common;
@@ -57,13 +56,7 @@ public class KDOs {
             return -1;
         }
 
-        InputStream    stdout = null;
-        BufferedReader reader = null;
-
-        try {
-            stdout = process.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(stdout, CHARSET_NAME));
-
+        try (InputStream stdout = process.getInputStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, CHARSET_NAME))) {
             setTimeout(process, PROCESS_TIMEOUT * 1000);
 
             log.info("-------- " + exeName + " log start --------");
@@ -82,9 +75,6 @@ public class KDOs {
         } catch (Exception e) {
             log.error(null, e);
             return -1;
-        } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(stdout);
         }
     }
 

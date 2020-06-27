@@ -19,7 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -88,15 +87,12 @@ public class Utils {
 
     public static void searchFileFromEnd(String fileName, FoundLine foundLine)
     throws IOException {
-        File             file       = new File(fileName);
-        long             fileLength = file.length();
-        List<Byte>       bytes      = new ArrayList<Byte>();
-        boolean          endSearch  = false;
-        RandomAccessFile rf         = null;
+        File       file       = new File(fileName);
+        long       fileLength = file.length();
+        List<Byte> bytes      = new ArrayList<>();
+        boolean    endSearch  = false;
 
-        try {
-            rf = new RandomAccessFile(file, "r");
-
+        try (RandomAccessFile rf = new RandomAccessFile(file, "r")) {
             // read from end
             for (long filePointer = fileLength - 1; filePointer != -1; filePointer--) {
                 rf.seek(filePointer);
@@ -114,7 +110,7 @@ public class Utils {
                     }
 
                     // prepare to collect another line
-                    bytes = new ArrayList<Byte>();
+                    bytes = new ArrayList<>();
                 } else {
                     bytes.add((byte) b);
                 }
@@ -125,8 +121,6 @@ public class Utils {
                 Collections.reverse(bytes);
                 foundLine.foundLine(bytes2str(byteListtoArray(bytes)));
             }
-        } finally {
-            IOUtils.closeQuietly(rf);
         }
     }
 
@@ -236,7 +230,7 @@ public class Utils {
     // match("a0x12b", "a(\\d+)b") => []
     // match("a0012b", "a(\\d+)b") => [a0012b, 0012]
     public static List<String> match(String targetString, String patternString) {
-        List<String> groups = new ArrayList<String>();
+        List<String> groups = new ArrayList<>();
 
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(targetString);
@@ -310,13 +304,8 @@ public class Utils {
 
     public static HTableDescriptor[] listTables()
     throws IOException {
-        HBaseAdmin admin = null;
-
-        try {
-            admin = new HBaseAdmin(conf());
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             return admin.listTables();
-        } finally {
-            IOUtils.closeQuietly(admin);
         }
     }
 
@@ -329,13 +318,8 @@ public class Utils {
 
     public static boolean tableExists(String tableName)
     throws IOException {
-        HBaseAdmin admin = null;
-
-        try {
-            admin = new HBaseAdmin(conf());
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             return admin.tableExists(tableName);
-        } finally {
-            IOUtils.closeQuietly(admin);
         }
     }
 
@@ -355,13 +339,8 @@ public class Utils {
 
     private static void createTable(HTableDescriptor tableDescriptor)
     throws IOException {
-        HBaseAdmin admin = null;
-
-        try {
-            admin = new HBaseAdmin(conf());
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             admin.createTable(tableDescriptor);
-        } finally {
-            IOUtils.closeQuietly(admin);
         }
     }
 
@@ -369,17 +348,11 @@ public class Utils {
     throws IOException {
         log.info(tableName);
 
-        HBaseAdmin admin = null;
-
-        try {
-            admin = new HBaseAdmin(conf());
-
+        try (HBaseAdmin admin = new HBaseAdmin(conf())) {
             if (admin.tableExists(tableName)) {
                 admin.disableTable(tableName);
                 admin.deleteTable(tableName);
             }
-        } finally {
-            IOUtils.closeQuietly(admin);
         }
     }
 
@@ -389,7 +362,7 @@ public class Utils {
         return bytes2str(hTable.getTableName());
     }
 
-    private static final Map<String, List<String>> familiesMap = new TreeMap<String, List<String>>();
+    private static final Map<String, List<String>> familiesMap = new TreeMap<>();
 
     public static List<String> getFamilies(HTableInterface hTable)
     throws IOException {
@@ -448,7 +421,7 @@ public class Utils {
 
     private static List<String> getFamilies2(HTableInterface hTable)
     throws IOException {
-        List<String> families = new ArrayList<String>();
+        List<String> families = new ArrayList<>();
 
         HTableDescriptor descriptor = hTable.getTableDescriptor();
 

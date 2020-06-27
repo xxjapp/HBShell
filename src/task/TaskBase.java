@@ -63,7 +63,7 @@ public abstract class TaskBase implements Task {
 
     private static final String CLASS_NAME_PREFIX = "task.Task_";
 
-    public Map<Level, Object> levelParam = new HashMap<Level, Object>();
+    public Map<Level, Object> levelParam = new HashMap<>();
     public Level              level      = null;
 
     private boolean notifyEnabled = false;
@@ -433,7 +433,7 @@ public abstract class TaskBase implements Task {
             return aliasMap;
         }
 
-        aliasMap = new HashMap<String, TaskType>();
+        aliasMap = new HashMap<>();
 
         for (TaskType taskType : TaskType.values()) {
             Task      task    = TaskBase.getTask(taskType);

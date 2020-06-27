@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 
 public class PropertiesHelper {
@@ -22,17 +21,12 @@ public class PropertiesHelper {
     }
 
     public static Properties getPropertiesBase(String iniFilePath) {
-        Properties      properties = new Properties();
-        FileInputStream in         = null;
+        Properties properties = new Properties();
 
-        try {
-            in = new FileInputStream(iniFilePath);
-
+        try (FileInputStream in = new FileInputStream(iniFilePath)) {
             properties.load(in);
         } catch (IOException e) {
             log.error(null, e);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
 
         return properties;

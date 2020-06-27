@@ -26,7 +26,7 @@ public class MyConsoleReader extends ConsoleReader {
 
     private static final long MIN_INTERVAL_OF_NORMAL_TWO_KEY_PRESS = 30;
 
-    private final Map<Character, Long> times = new HashMap<Character, Long>();
+    private final Map<Character, Long> times = new HashMap<>();
 
     public MyConsoleReader()
     throws IOException {

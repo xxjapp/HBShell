@@ -2,7 +2,6 @@ package task;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
@@ -136,37 +135,22 @@ public class Task_delete extends TaskBase {
 
     private static void deleteRow(String table, String row)
     throws IOException {
-        HTableInterface hTable = null;
-
-        try {
-            hTable = Utils.getTable(table);
+        try (HTableInterface hTable = Utils.getTable(table)) {
             Utils.deleteRow(hTable, row);
-        } finally {
-            IOUtils.closeQuietly(hTable);
         }
     }
 
     private static void deleteFamily(String table, String row, String family)
     throws IOException {
-        HTableInterface hTable = null;
-
-        try {
-            hTable = Utils.getTable(table);
+        try (HTableInterface hTable = Utils.getTable(table)) {
             Utils.deleteFamily(hTable, row, family);
-        } finally {
-            IOUtils.closeQuietly(hTable);
         }
     }
 
     private static void deleteQualifier(String table, String row, String family, String qualifier)
     throws IOException {
-        HTableInterface hTable = null;
-
-        try {
-            hTable = Utils.getTable(table);
+        try (HTableInterface hTable = Utils.getTable(table)) {
             Utils.deleteQualifier(hTable, row, family, qualifier);
-        } finally {
-            IOUtils.closeQuietly(hTable);
         }
     }
 }
