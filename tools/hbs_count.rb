@@ -13,58 +13,58 @@
 
 module HbsCounter
     def self.count file
-        result          = {nTable: 0, nRow: 0, nFamily:0, nQualifier: 0, hasMoreQualifier: false, tables: {}}
-        cur_table       = nil
-        cur_row         = nil
-        cur_family      = nil
-        status          = :ready
+        result  = {nTable: 0, nRow: 0, nFamily:0, nQualifier: 0, hasMoreQualifier: false, tables: {}}
+        t       = nil
+        r       = nil
+        f       = nil
+        status  = :ready
 
         handle_table = -> {
-            cur_table = $1
-            result[:tables][cur_table] = {nRow: 0, nFamily:0, nQualifier: 0, hasMoreQualifier: false, rows: {}}
+            t = $1
+            result[:tables][t] = {nRow: 0, nFamily:0, nQualifier: 0, hasMoreQualifier: false, rows: {}}
             result[:nTable] += 1
             status = :table_found
         }
 
         handle_row = -> {
-            cur_row = $1
-            result[:tables][cur_table][:rows][cur_row] = {nFamily: 0, nQualifier: 0, hasMoreQualifier: false, families: {}}
-            result[:tables][cur_table][:nRow] += 1
+            r = $1
+            result[:tables][t][:rows][r] = {nFamily: 0, nQualifier: 0, hasMoreQualifier: false, families: {}}
+            result[:tables][t][:nRow] += 1
             result[:nRow] += 1
             status = :row_found
         }
 
         handle_family = -> {
-            cur_family = $1
-            result[:tables][cur_table][:rows][cur_row][:families][cur_family] = {nQualifier: 0, hasMoreQualifier: false}
-            result[:tables][cur_table][:rows][cur_row][:nFamily] += 1
-            result[:tables][cur_table][:nFamily] += 1
+            f = $1
+            result[:tables][t][:rows][r][:families][f] = {nQualifier: 0, hasMoreQualifier: false}
+            result[:tables][t][:rows][r][:nFamily] += 1
+            result[:tables][t][:nFamily] += 1
             result[:nFamily] += 1
             status = :family_found
         }
 
         handle_qualifier = -> {
-            result[:tables][cur_table][:rows][cur_row][:families][cur_family][:nQualifier] += 1
-            result[:tables][cur_table][:rows][cur_row][:nQualifier] += 1
-            result[:tables][cur_table][:nQualifier] += 1
+            result[:tables][t][:rows][r][:families][f][:nQualifier] += 1
+            result[:tables][t][:rows][r][:nQualifier] += 1
+            result[:tables][t][:nQualifier] += 1
             result[:nQualifier] += 1
             status = :qualifier_found
         }
 
         handle_qualifier_omit = -> {
-            result[:tables][cur_table][:rows][cur_row][:families][cur_family][:nQualifier] += 1
-            result[:tables][cur_table][:rows][cur_row][:nQualifier] += 1
-            result[:tables][cur_table][:nQualifier] += 1
+            result[:tables][t][:rows][r][:families][f][:nQualifier] += 1
+            result[:tables][t][:rows][r][:nQualifier] += 1
+            result[:tables][t][:nQualifier] += 1
             result[:nQualifier] += 1
-            result[:tables][cur_table][:rows][cur_row][:families][cur_family][:hasMoreQualifier] = true
-            result[:tables][cur_table][:rows][cur_row][:hasMoreQualifier] = true
-            result[:tables][cur_table][:hasMoreQualifier] = true
+            result[:tables][t][:rows][r][:families][f][:hasMoreQualifier] = true
+            result[:tables][t][:rows][r][:hasMoreQualifier] = true
+            result[:tables][t][:hasMoreQualifier] = true
             result[:hasMoreQualifier] = true
             status = :qualifier_found
         }
 
-        File.open file, 'r:utf-8' do |f|
-            f.each do |line|
+        File.open file, 'r:utf-8' do |fobj|
+            fobj.each do |line|
                 line.chomp!
                 break if line.empty?
 
