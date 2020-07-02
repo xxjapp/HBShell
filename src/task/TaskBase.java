@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.apache.hadoop.hbase.client.HTableInterface;
 
 import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
 import main.HBShell;
 import tnode.TNodeBase;
 import tnode.TNodeDatabase;
@@ -134,6 +135,8 @@ public abstract class TaskBase implements Task {
 
         try {
             execute();
+        } catch (HBSExceptionRowLimitReached e) {
+            // OK
         } catch (HBSException e) {
             log.error(null, e);
         } finally {
@@ -182,6 +185,8 @@ public abstract class TaskBase implements Task {
 
         try {
             confirm();
+        } catch (HBSExceptionRowLimitReached e) {
+            // OK
         } catch (HBSException e) {
             log.error(null, e);
         }

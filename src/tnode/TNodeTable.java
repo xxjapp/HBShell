@@ -18,6 +18,7 @@ import org.apache.hadoop.hbase.filter.RegexStringComparator;
 import org.apache.hadoop.hbase.filter.RowFilter;
 
 import exception.HBSException;
+import exception.HBSExceptionRowLimitReached;
 import main.HBShell;
 import task.TaskBase;
 import task.TaskBase.Level;
@@ -78,6 +79,11 @@ public class TNodeTable extends TNodeBase {
 
                 for (KeyValue firstKv : firstKvs) {
                     new TNodeRow(task, this, table, firstKv, toOutput).handle();
+
+                    // check row limit
+                    if (HBShell.getCount(HBShell.ROW) >= task.getRowLimit()) {
+                        throw new HBSExceptionRowLimitReached();
+                    }
                 }
             } finally {
                 IOUtils.closeQuietly(resultScanner);
